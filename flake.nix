@@ -14,7 +14,6 @@
       packages.ironfetch = naersk-lib.buildPackage {
         pname = "ironfetch";
         root = ./.;
-        nativeBuildInputs = [ pkgs.libsmbios pkgs.clang ];
       };
       packages.default = packages.ironfetch;
 
@@ -24,9 +23,8 @@
       apps.default = apps.ironfetch;
 
       devShells.default = pkgs.mkShell {
-        nativeBuildInputs = with pkgs; [ rustc cargo libsmbios pkgs.stdenv.cc.libc llvmPackages.libclang ];
+        nativeBuildInputs = with pkgs; [ rustc cargo ];
         RUST_SRC_PATH = "${pkgs.rust.packages.stable.rustPlatform.rustLibSrc}";
-        LIBCLANG_PATH="${pkgs.llvmPackages.libclang.lib}/lib";
       };
     });
 }
