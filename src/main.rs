@@ -3,6 +3,8 @@ use crate::kernel::Kernel;
 
 mod cpu;
 use crate::cpu::Cpu;
+
+mod fetchline;
 fn main() {
     println!("Hello, world!");
     let kernel_info = Kernel::new();
