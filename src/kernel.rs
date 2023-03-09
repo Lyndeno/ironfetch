@@ -1,7 +1,7 @@
 use nix::sys::utsname::{UtsName, uname};
 use std::ffi::OsStr;
 
-use crate::fetchline::{Fetchline, gen_fetchline};
+use crate::fetchline::{Fetchline};
 pub struct Kernel {
     release: Option<String>,
     architecture: Option<String>,
@@ -29,12 +29,8 @@ impl Kernel {
 
 impl std::fmt::Display for Kernel {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}", self.get_fetchline())
+        write!(f, "{}", self.gen_fetchline(Vec::from([self.name.as_ref(), self.release.as_ref(), self.architecture.as_ref()])))
     }
 }
 
-impl Fetchline for Kernel {
-    fn get_fetchline(&self) -> String {
-        gen_fetchline(Vec::from([self.name.as_ref(), self.release.as_ref(), self.architecture.as_ref()]))
-    }
-}
+impl Fetchline for Kernel { }
