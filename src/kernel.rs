@@ -33,4 +33,4 @@ impl std::fmt::Display for Kernel {
     }
 }
 
-impl Fetchline for Kernel { }
+impl Fetchline for Kernel {}

@@ -1,5 +1,7 @@
 use sys_info::{cpu_num,cpu_speed};
 
+use crate::fetchline::Fetchline;
+
 pub struct Cpu {
     core_count: Option<u32>,
 }
@@ -14,10 +16,8 @@ impl Cpu {
 
 impl std::fmt::Display for Cpu {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        let mut s = String::new();
-        if let Some(v) = &self.core_count {
-            s = String::from(v.to_string());
-        };
-        write!(f, "{}", s)
+        write!(f, "{}", self.gen_fetchline(Vec::from([self.core_count.as_ref()])))
     }
 }
+
+impl Fetchline for Cpu {}
