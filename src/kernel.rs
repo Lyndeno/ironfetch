@@ -1,21 +1,31 @@
 use nix::sys::utsname::{UtsName, uname};
-use std::{ffi::OsStr, sync::Arc};
+use std::{ffi::OsStr};
 
+type Result<T> = std::result::Result<T, KernelError>;
+
+#[derive(Debug, Clone)]
+pub struct KernelError;
 pub struct Kernel {
     release: Option<String>,
     architecture: Option<String>,
     name: Option<String>,
 }
 
+impl std::fmt::Display for KernelError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "Could not get kernel information!")
+    }
+}
+
 impl Kernel {
-    pub fn new() -> Self {
-        let info: UtsName = uname().unwrap();
-        Self {
+    pub fn new() -> Result<Self> {
+        let info: UtsName = uname().map_err(|_| KernelError)?;
+        Ok(Self {
             // TODO: Error correction
             release: Self::os_str_to_string(info.release()),
             architecture: Self::os_str_to_string(info.machine()),
             name: Self::os_str_to_string(info.sysname()),
-        }
+        })
     }
 
     fn os_str_to_string(v: &OsStr) -> Option<String> {

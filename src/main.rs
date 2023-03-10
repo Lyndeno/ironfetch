@@ -40,7 +40,10 @@ fn main() {
 
     let os = os_release::OsRelease::new().unwrap();
     println!("Distro: {}", os.pretty_name);
-    println!("Kernel: {}", kernel_info);
+    match kernel_info {
+        Ok(fl) => println!("Kernel: {}", fl),
+        Err(e) => eprintln!("Error: {:?}", e),
+    };
     println!("CPU: {}", cpu_info);
     println!("Memory: {}", mem_display);
     println!("OS: {}", os.pretty_name);
