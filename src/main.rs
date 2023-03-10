@@ -28,7 +28,7 @@ struct Args {
 
 struct Fetchline {
     name: String,
-    content: Box<dyn fmt::Display>,
+    content: String,
 }
 
 fn main() {
@@ -37,12 +37,12 @@ fn main() {
     //let kernel_info = Kernel::new();
     match Kernel::new() {
         Ok(v) => {
-            lines.push(Fetchline { name: "Kernel".to_string(), content: Box::new(v) });
+            lines.push(Fetchline { name: "Kernel".to_string(), content: v.to_string() });
         },
         Err(e) => eprintln!("Error: {:?}", e),
     };
     //let cpu_info = Cpu::new();
-    lines.push(Fetchline { name: "CPU".to_string(), content: Box::new(Cpu::new()) });
+    lines.push(Fetchline { name: "CPU".to_string(), content: Cpu::new().to_string() });
     
     let mem_info = Memory::new();
     let mem_display = match args.gigabyte {
@@ -52,13 +52,18 @@ fn main() {
             false => mem_info.display_gb(),
         }
     };
-    lines.push(Fetchline { name: "Memory".to_string(), content: Box::new(mem_display) });
+    lines.push(Fetchline { name: "Memory".to_string(), content: mem_display });
 
     let os = os_release::OsRelease::new().unwrap();
 
-    lines.push(Fetchline { name: "OS".to_string(), content:Box::new(os.pretty_name) });
+    lines.push(Fetchline { name: "OS".to_string(), content: os.pretty_name });
+    let mut indent = 0;
+    for line in &mut lines {
+        let length = line.name.len();
+        indent = if length > indent { length } else { indent };
+    }
     for line in lines {
-        println!("{}: {}", line.name, line.content);
+        println!("{:>indent$}: {}", line.name, line.content, indent=indent);
     }
 
 }
