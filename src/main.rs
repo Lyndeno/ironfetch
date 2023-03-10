@@ -11,6 +11,8 @@ use clap::Parser;
 
 use os_release;
 
+use std::fmt;
+
 /// Simple fetching program
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
@@ -24,10 +26,23 @@ struct Args {
     megabyte: bool,
 }
 
+struct Fetchline {
+    name: String,
+    content: Box<dyn fmt::Display>,
+}
+
 fn main() {
     let args = Args::parse();
-    let kernel_info = Kernel::new();
-    let cpu_info = Cpu::new();
+    let mut lines: Vec<Fetchline> = Vec::new();
+    //let kernel_info = Kernel::new();
+    match Kernel::new() {
+        Ok(v) => {
+            lines.push(Fetchline { name: "Kernel".to_string(), content: Box::new(v) });
+        },
+        Err(e) => eprintln!("Error: {:?}", e),
+    };
+    //let cpu_info = Cpu::new();
+    lines.push(Fetchline { name: "CPU".to_string(), content: Box::new(Cpu::new()) });
     
     let mem_info = Memory::new();
     let mem_display = match args.gigabyte {
@@ -37,14 +52,13 @@ fn main() {
             false => mem_info.display_gb(),
         }
     };
+    lines.push(Fetchline { name: "Memory".to_string(), content: Box::new(mem_display) });
 
     let os = os_release::OsRelease::new().unwrap();
-    println!("Distro: {}", os.pretty_name);
-    match kernel_info {
-        Ok(fl) => println!("Kernel: {}", fl),
-        Err(e) => eprintln!("Error: {:?}", e),
-    };
-    println!("CPU: {}", cpu_info);
-    println!("Memory: {}", mem_display);
-    println!("OS: {}", os.pretty_name);
+
+    lines.push(Fetchline { name: "OS".to_string(), content:Box::new(os.pretty_name) });
+    for line in lines {
+        println!("{}: {}", line.name, line.content);
+    }
+
 }
