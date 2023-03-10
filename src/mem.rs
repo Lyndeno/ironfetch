@@ -1,9 +1,10 @@
 use std::ops::{Add,Sub};
 
 use sys_info::{mem_info, MemInfo};
+use std::fmt::Write;
 
 #[derive(Copy,Clone)]
-struct MemBytes(u64);
+pub struct MemBytes(u64);
 pub struct Memory {
     total: MemBytes,
     free: MemBytes,
@@ -17,6 +18,21 @@ pub struct Memory {
 impl Memory {
     pub fn new() -> Self {
         Self::from(mem_info().unwrap())
+    }
+
+    pub fn used(&self) -> MemBytes {
+        self.total - self.avail
+    }
+
+    pub fn display_gb(&self) -> String {
+        let mut s = String::new();
+        write!(s, "{:.2}GiB / {:.2}GiB", self.used().to_gb(), self.total.to_gb()).unwrap();
+        s
+    }
+    pub fn display_mb(&self) -> String {
+        let mut s = String::new();
+        write!(s, "{:.2}MiB / {:.2}MiB", self.used().to_mb(), self.total.to_mb()).unwrap();
+        s
     }
 }
 
@@ -37,6 +53,9 @@ impl From<MemInfo> for Memory {
 impl MemBytes {
     fn to_gb(&self) -> f64 {
        (self.0 as f64) / (1024 as f64) / (1024 as f64)
+    }
+    fn to_mb(&self) -> f64 {
+       (self.0 as f64) / (1024 as f64)
     }
 }
 
@@ -62,6 +81,6 @@ impl From<u64> for MemBytes {
 
 impl std::fmt::Display for Memory {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{:.2}GiB / {:.2}GiB", (self.total - self.avail).to_gb(), self.total.to_gb())
+        write!(f, "{}", self.display_gb())
     }
 }
