@@ -84,3 +84,14 @@ impl std::fmt::Display for Memory {
         write!(f, "{}", self.display_gb())
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::MemBytes;
+
+    #[test]
+    fn byte_math() {
+        let m = MemBytes(1048576);
+        assert_eq!(m.to_mb() / 1024 as f64, m.to_gb());
+    }
+}
