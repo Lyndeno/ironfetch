@@ -7,11 +7,10 @@ use crate::cpu::Cpu;
 mod mem;
 use crate::mem::Memory;
 
+mod distro;
+use crate::distro::Distro;
+
 use clap::Parser;
-
-use os_release;
-
-use std::fmt;
 
 /// Simple fetching program
 #[derive(Parser, Debug)]
@@ -34,6 +33,12 @@ struct Fetchline {
 fn main() {
     let args = Args::parse();
     let mut lines: Vec<Fetchline> = Vec::new();
+
+    match Distro::new() {
+        Ok(os) => lines.push(Fetchline { name: "OS".to_string(), content: os.to_string() }),
+        Err(e) => eprintln!("Error: {:?}", e),
+    };
+
     //let kernel_info = Kernel::new();
     match Kernel::new() {
         Ok(v) => {
@@ -54,9 +59,6 @@ fn main() {
     };
     lines.push(Fetchline { name: "Memory".to_string(), content: mem_display });
 
-    let os = os_release::OsRelease::new().unwrap();
-
-    lines.push(Fetchline { name: "OS".to_string(), content: os.pretty_name });
     let mut indent = 0;
     for line in &mut lines {
         let length = line.name.len();
