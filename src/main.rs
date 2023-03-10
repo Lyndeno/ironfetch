@@ -4,11 +4,14 @@ use crate::kernel::Kernel;
 mod cpu;
 use crate::cpu::Cpu;
 
-mod fetchline;
+mod mem;
+use crate::mem::Memory;
+
 fn main() {
-    println!("Hello, world!");
     let kernel_info = Kernel::new();
     let cpu_info = Cpu::new();
+    let mem_info = Memory::new();
     println!("Kernel: {}", kernel_info);
     println!("CPU: {}", cpu_info);
+    println!("Memory: {}", mem_info);
 }
