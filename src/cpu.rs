@@ -24,6 +24,7 @@ impl std::fmt::Display for Cpu {
     }
 }
 
+// TODO: Error handling, these unwraps are gross
 fn read_cpu_model() -> String {
     let file = File::open("/proc/cpuinfo").unwrap();
     let reader = BufReader::new(file);
