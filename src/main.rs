@@ -47,7 +47,10 @@ fn main() {
         Err(e) => eprintln!("Error: {:?}", e),
     };
     //let cpu_info = Cpu::new();
-    lines.push(Fetchline { name: "CPU".to_string(), content: Cpu::new().to_string() });
+    match Cpu::new() {
+        Ok(c) => lines.push(Fetchline { name: "CPU".to_string(), content: c.to_string() }),
+        Err(e) => eprint!("Error: {:?}", e),
+    }
     
     let mem_info = Memory::new();
     let mem_display = match args.gigabyte {
