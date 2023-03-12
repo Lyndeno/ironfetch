@@ -26,21 +26,28 @@ impl std::fmt::Display for Cpu {
 
 // TODO: Error handling, these unwraps are gross
 fn read_cpu_model() -> String {
-    let file = File::open("/proc/cpuinfo").unwrap();
+    let path = "/proc/cpuinfo";
+    match proc_parse(path, "model name") {
+        Ok(Some(v)) => v,
+        Err(_) => "ERROR".to_string(),
+        Ok(None) => { match proc_parse(path, "Hardware") {
+            Ok(Some(v)) => v,
+            Err(_) => "Error".to_string(),
+            Ok(None) => "N/A".to_string(),
+        }}
+    }
+}
+
+fn proc_parse(path: &str, field: &str) -> Result<Option<String>, std::io::Error> {
+    let file = File::open(path)?;
     let reader = BufReader::new(file);
 
-    let mut model = String::new();
     for line in reader.lines() {
-        let l = line.unwrap();
-        if l.contains("model name") {
+        let l = line?;
+        if l.contains(field) {
             let n: Vec<&str> = l.split(":").collect();
-            model = n[1].trim().to_string();
-            break;
-        } else if l.contains("Hardware") {
-            let n: Vec<&str> = l.split(":").collect();
-            model = n[1].trim().to_string();
-            break;
+            return Ok(Some(n[1].trim().to_string()))
         }
     }
-    model
+    Ok(None)
 }
