@@ -27,15 +27,21 @@ impl std::fmt::Display for Cpu {
 // TODO: Error handling, these unwraps are gross
 fn read_cpu_model() -> String {
     let path = "/proc/cpuinfo";
-    match proc_parse(path, "model name") {
+    match proc_parse_try(path, &["model name", "Hardware"]) {
         Ok(Some(v)) => v,
+        Ok(None) => "N/A".to_string(),
         Err(_) => "ERROR".to_string(),
-        Ok(None) => { match proc_parse(path, "Hardware") {
-            Ok(Some(v)) => v,
-            Err(_) => "Error".to_string(),
-            Ok(None) => "N/A".to_string(),
-        }}
     }
+}
+
+fn proc_parse_try(path: &str, fields: &[&str]) -> Result<Option<String>, std::io::Error> {
+    for &field in fields {
+        match proc_parse(path, field)? {
+            Some(v) => return Ok(Some(v)),
+            None => {},
+        }
+    }
+    Ok(None)
 }
 
 fn proc_parse(path: &str, field: &str) -> Result<Option<String>, std::io::Error> {
