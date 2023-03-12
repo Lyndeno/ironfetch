@@ -1,7 +1,8 @@
 use std::ops::{Add,Sub};
 
-use sys_info::{mem_info, MemInfo};
 use std::fmt::Write;
+
+use crate::proc::proc_parse;
 
 #[derive(Copy,Clone)]
 pub struct MemBytes(u64);
@@ -17,7 +18,11 @@ pub struct Memory {
 
 impl Memory {
     pub fn new() -> Self {
-        Self::from(mem_info().unwrap())
+        let path = "/proc/meminfo";
+        Self {
+            total: MemBytes::from_proc(proc_parse(path, "MemTotal").unwrap().unwrap()),
+            avail: MemBytes::from_proc(proc_parse(path, "MemAvailable").unwrap().unwrap()),
+        }
     }
 
     pub fn used(&self) -> MemBytes {
@@ -38,26 +43,15 @@ impl Memory {
     }
 }
 
-impl From<MemInfo> for Memory {
-    fn from(m: MemInfo) -> Self {
-        Self {
-            total: MemBytes::from(m.total),
-            //free: MemBytes::from(m.free),
-            avail: MemBytes::from(m.avail),
-            //buffers: MemBytes::from(m.buffers),
-            //cached: MemBytes::from(m.cached),
-            //swap_total: MemBytes::from(m.swap_total),
-            //swap_free: MemBytes::from(m.swap_free),
-        }
-    }
-}
-
 impl MemBytes {
     fn to_gb(&self) -> f64 {
        self.to_mb() / (1024 as f64)
     }
     fn to_mb(&self) -> f64 {
        (self.0 as f64) / (1024 as f64)
+    }
+    fn from_proc(line: String) -> Self {
+        Self::from(line.replace("kB","").trim().parse::<u64>().unwrap())
     }
 }
 
