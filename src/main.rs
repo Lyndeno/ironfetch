@@ -10,6 +10,8 @@ use crate::mem::Memory;
 mod distro;
 use crate::distro::Distro;
 
+mod proc;
+
 use clap::Parser;
 
 /// Simple fetching program
