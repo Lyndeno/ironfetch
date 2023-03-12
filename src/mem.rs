@@ -7,12 +7,12 @@ use std::fmt::Write;
 pub struct MemBytes(u64);
 pub struct Memory {
     total: MemBytes,
-    free: MemBytes,
+    //free: MemBytes,
     avail: MemBytes,
-    buffers: MemBytes,
-    cached: MemBytes,
-    swap_total: MemBytes,
-    swap_free: MemBytes,
+    //buffers: MemBytes,
+    //cached: MemBytes,
+    //swap_total: MemBytes,
+    //swap_free: MemBytes,
 }
 
 impl Memory {
@@ -40,12 +40,12 @@ impl From<MemInfo> for Memory {
     fn from(m: MemInfo) -> Self {
         Self {
             total: MemBytes::from(m.total),
-            free: MemBytes::from(m.free),
+            //free: MemBytes::from(m.free),
             avail: MemBytes::from(m.avail),
-            buffers: MemBytes::from(m.buffers),
-            cached: MemBytes::from(m.cached),
-            swap_total: MemBytes::from(m.swap_total),
-            swap_free: MemBytes::from(m.swap_free),
+            //buffers: MemBytes::from(m.buffers),
+            //cached: MemBytes::from(m.cached),
+            //swap_total: MemBytes::from(m.swap_total),
+            //swap_free: MemBytes::from(m.swap_free),
         }
     }
 }
