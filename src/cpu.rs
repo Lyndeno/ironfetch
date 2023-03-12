@@ -36,6 +36,10 @@ fn read_cpu_model() -> String {
             let n: Vec<&str> = l.split(":").collect();
             model = n[1].trim().to_string();
             break;
+        } else if l.contains("Hardware") {
+            let n: Vec<&str> = l.split(":").collect();
+            model = n[1].trim().to_string();
+            break;
         }
     }
     model
