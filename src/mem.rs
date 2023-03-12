@@ -25,13 +25,15 @@ impl Memory {
     }
 
     pub fn display_gb(&self) -> String {
-        let mut s = String::new();
-        write!(s, "{:.2}GiB / {:.2}GiB", self.used().to_gb(), self.total.to_gb()).unwrap();
-        s
+        self.display(self.used().to_gb(), self.total.to_gb(), "GiB")
     }
     pub fn display_mb(&self) -> String {
+        self.display(self.used().to_mb(), self.total.to_mb(), "MiB")
+    }
+
+    fn display(&self, used: f64, total: f64, unit: &str) -> String {
         let mut s = String::new();
-        write!(s, "{:.2}MiB / {:.2}MiB", self.used().to_mb(), self.total.to_mb()).unwrap();
+        write!(s, "{:.2}{} / {:.2}{}", used, unit, total, unit).unwrap();
         s
     }
 }
@@ -52,7 +54,7 @@ impl From<MemInfo> for Memory {
 
 impl MemBytes {
     fn to_gb(&self) -> f64 {
-       (self.0 as f64) / (1024 as f64) / (1024 as f64)
+       self.to_mb() / (1024 as f64)
     }
     fn to_mb(&self) -> f64 {
        (self.0 as f64) / (1024 as f64)
