@@ -14,6 +14,9 @@ mod proc;
 mod hostname;
 use crate::hostname::HostName;
 
+mod uptime;
+use crate::uptime::Uptime;
+
 use clap::Parser;
 
 /// Simple fetching program
@@ -53,7 +56,13 @@ fn main() {
 
     match HostName::new() {
         Ok(v) => {
-            lines.push(Fetchline { name: "Hostname".to_string(), content: v});
+            lines.push(Fetchline { name: "Hostname".to_string(), content: v.to_string()});
+        },
+        Err(e) => eprintln!("Error: {:?}", e),
+    };
+    match Uptime::new() {
+        Ok(v) => {
+            lines.push(Fetchline { name: "Hostname".to_string(), content: v.to_string()});
         },
         Err(e) => eprintln!("Error: {:?}", e),
     };
