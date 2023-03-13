@@ -11,6 +11,8 @@ mod distro;
 use crate::distro::Distro;
 
 mod proc;
+mod hostname;
+use crate::hostname::HostName;
 
 use clap::Parser;
 
@@ -48,11 +50,18 @@ fn main() {
         },
         Err(e) => eprintln!("Error: {:?}", e),
     };
+
+    match HostName::new() {
+        Ok(v) => {
+            lines.push(Fetchline { name: "Hostname".to_string(), content: v});
+        },
+        Err(e) => eprintln!("Error: {:?}", e),
+    };
     //let cpu_info = Cpu::new();
     match Cpu::new() {
         Ok(c) => lines.push(Fetchline { name: "CPU".to_string(), content: c.to_string() }),
         Err(e) => eprint!("Error: {:?}", e),
-    }
+    };
     
     let mem_info = Memory::new();
     let mem_display = match args.gigabyte {
