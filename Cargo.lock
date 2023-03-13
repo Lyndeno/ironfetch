@@ -111,7 +111,6 @@ name = "ironfetch"
 version = "0.1.0"
 dependencies = [
  "clap",
- "libc",
  "nix",
  "os-release",
  "sys-info",
