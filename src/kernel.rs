@@ -1,5 +1,5 @@
-use nix::sys::utsname::{UtsName, uname};
-use std::{ffi::OsStr};
+use nix::sys::utsname::{uname, UtsName};
+use std::ffi::OsStr;
 
 type Result<T> = std::result::Result<T, KernelError>;
 
@@ -39,17 +39,23 @@ impl Kernel {
 impl std::fmt::Display for Kernel {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let mut s = String::new();
-        let arr = [ self.name.as_ref(), self.release.as_ref(), self.architecture.as_ref() ];
+        let arr = [
+            self.name.as_ref(),
+            self.release.as_ref(),
+            self.architecture.as_ref(),
+        ];
         let mut index = 0;
         for item in arr {
-        match item {
-            Some(s2) => {
-                if index > 0 { s.push_str(" ")};
-                s.push_str(s2.to_string().as_str());
-                index = index + 1;
-            },
-            None => {},
-        };
+            match item {
+                Some(s2) => {
+                    if index > 0 {
+                        s.push_str(" ")
+                    };
+                    s.push_str(s2.to_string().as_str());
+                    index = index + 1;
+                }
+                None => {}
+            };
         }
         write!(f, "{}", s)
     }

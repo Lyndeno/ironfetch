@@ -1,10 +1,10 @@
-use std::ops::{Add,Sub};
+use std::ops::{Add, Sub};
 
 use std::fmt::Write;
 
 use crate::proc::proc_parse;
 
-#[derive(Copy,Clone)]
+#[derive(Copy, Clone)]
 pub struct MemBytes(u64);
 pub struct Memory {
     total: MemBytes,
@@ -45,13 +45,13 @@ impl Memory {
 
 impl MemBytes {
     fn to_gb(&self) -> f64 {
-       self.to_mb() / (1024 as f64)
+        self.to_mb() / (1024 as f64)
     }
     fn to_mb(&self) -> f64 {
-       (self.0 as f64) / (1024 as f64)
+        (self.0 as f64) / (1024 as f64)
     }
     fn from_proc(line: String) -> Self {
-        Self::from(line.replace("kB","").trim().parse::<u64>().unwrap())
+        Self::from(line.replace("kB", "").trim().parse::<u64>().unwrap())
     }
 }
 

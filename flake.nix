@@ -23,7 +23,7 @@
       apps.default = apps.ironfetch;
 
       devShells.default = pkgs.mkShell {
-        nativeBuildInputs = with pkgs; [ rustc cargo ];
+        nativeBuildInputs = with pkgs; [ rustc cargo rustfmt ];
         RUST_SRC_PATH = "${pkgs.rust.packages.stable.rustPlatform.rustLibSrc}";
       };
     });

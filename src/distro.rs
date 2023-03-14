@@ -1,4 +1,4 @@
-use os_release::{OsRelease};
+use os_release::OsRelease;
 use std::io;
 
 pub struct Distro(OsRelease);
@@ -12,7 +12,9 @@ impl Distro {
 
 impl std::fmt::Display for Distro {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{} {} ({})",
+        write!(
+            f,
+            "{} {} ({})",
             self.0.name,
             match self.0.extra.get("BUILD_ID") {
                 Some(id) => id.replace("\"", ""),

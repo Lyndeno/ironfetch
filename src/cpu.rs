@@ -1,5 +1,5 @@
-use sys_info::{cpu_num,cpu_speed,Error};
 use crate::proc::proc_parse_try;
+use sys_info::{cpu_num, cpu_speed, Error};
 
 pub struct Cpu {
     core_count: u32,
@@ -19,7 +19,13 @@ impl Cpu {
 
 impl std::fmt::Display for Cpu {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{} ({}) @ {:.3}GHz", self.model, self.core_count, self.speed as f64 / 1000 as f64)
+        write!(
+            f,
+            "{} ({}) @ {:.3}GHz",
+            self.model,
+            self.core_count,
+            self.speed as f64 / 1000 as f64
+        )
     }
 }
 

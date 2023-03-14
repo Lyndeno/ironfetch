@@ -10,8 +10,8 @@ use crate::mem::Memory;
 mod distro;
 use crate::distro::Distro;
 
-mod proc;
 mod hostname;
+mod proc;
 use crate::hostname::HostName;
 
 mod uptime;
@@ -26,7 +26,7 @@ struct Args {
     /// Whether to use gigabytes
     #[arg(short, long)]
     gigabyte: bool,
-    
+
     /// Whether to use megabytes
     #[arg(short, long)]
     megabyte: bool,
@@ -42,45 +42,63 @@ fn main() {
     let mut lines: Vec<Fetchline> = Vec::new();
 
     match Distro::new() {
-        Ok(os) => lines.push(Fetchline { name: "OS".to_string(), content: os.to_string() }),
+        Ok(os) => lines.push(Fetchline {
+            name: "OS".to_string(),
+            content: os.to_string(),
+        }),
         Err(e) => eprintln!("Error: {:?}", e),
     };
 
     //let kernel_info = Kernel::new();
     match Kernel::new() {
         Ok(v) => {
-            lines.push(Fetchline { name: "Kernel".to_string(), content: v.to_string() });
-        },
+            lines.push(Fetchline {
+                name: "Kernel".to_string(),
+                content: v.to_string(),
+            });
+        }
         Err(e) => eprintln!("Error: {:?}", e),
     };
 
     match HostName::new() {
         Ok(v) => {
-            lines.push(Fetchline { name: "Hostname".to_string(), content: v.to_string()});
-        },
+            lines.push(Fetchline {
+                name: "Hostname".to_string(),
+                content: v.to_string(),
+            });
+        }
         Err(e) => eprintln!("Error: {:?}", e),
     };
     match Uptime::new() {
         Ok(v) => {
-            lines.push(Fetchline { name: "Hostname".to_string(), content: v.to_string()});
-        },
+            lines.push(Fetchline {
+                name: "Hostname".to_string(),
+                content: v.to_string(),
+            });
+        }
         Err(e) => eprintln!("Error: {:?}", e),
     };
     //let cpu_info = Cpu::new();
     match Cpu::new() {
-        Ok(c) => lines.push(Fetchline { name: "CPU".to_string(), content: c.to_string() }),
+        Ok(c) => lines.push(Fetchline {
+            name: "CPU".to_string(),
+            content: c.to_string(),
+        }),
         Err(e) => eprint!("Error: {:?}", e),
     };
-    
+
     let mem_info = Memory::new();
     let mem_display = match args.gigabyte {
         true => mem_info.display_gb(),
         false => match args.megabyte {
             true => mem_info.display_mb(),
             false => mem_info.display_gb(),
-        }
+        },
     };
-    lines.push(Fetchline { name: "Memory".to_string(), content: mem_display });
+    lines.push(Fetchline {
+        name: "Memory".to_string(),
+        content: mem_display,
+    });
 
     let mut indent = 0;
     for line in &mut lines {
@@ -88,7 +106,6 @@ fn main() {
         indent = if length > indent { length } else { indent };
     }
     for line in lines {
-        println!("{:>indent$}: {}", line.name, line.content, indent=indent);
+        println!("{:>indent$}: {}", line.name, line.content, indent = indent);
     }
-
 }
