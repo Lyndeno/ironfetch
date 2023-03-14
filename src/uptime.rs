@@ -38,7 +38,7 @@ impl std::fmt::Display for Uptime {
                 if unit.1 .1 != 1 {
                     s.push('s')
                 };
-                if unit.0 != len - 1 {
+                if unit.0 < len - 1 {
                     s.push_str(", ")
                 };
             }
