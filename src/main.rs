@@ -72,7 +72,7 @@ fn main() {
     match Uptime::new() {
         Ok(v) => {
             lines.push(Fetchline {
-                name: "Hostname".to_string(),
+                name: "Uptime".to_string(),
                 content: v.to_string(),
             });
         }
