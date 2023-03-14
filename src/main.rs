@@ -17,6 +17,9 @@ use crate::hostname::HostName;
 mod uptime;
 use crate::uptime::Uptime;
 
+mod model;
+use crate::model::Model;
+
 use clap::Parser;
 
 /// Simple fetching program
@@ -54,6 +57,16 @@ fn main() {
         Ok(v) => {
             lines.push(Fetchline {
                 name: "Kernel".to_string(),
+                content: v.to_string(),
+            });
+        }
+        Err(e) => eprintln!("Error: {:?}", e),
+    };
+
+    match Model::new() {
+        Ok(v) => {
+            lines.push(Fetchline {
+                name: "Model".to_string(),
                 content: v.to_string(),
             });
         }
