@@ -1,5 +1,4 @@
 use std::time::Duration;
-use sys_info::boottime;
 
 const SECONDS_MIN: u64 = 60;
 const SECONDS_HOUR: u64 = SECONDS_MIN * 60;
@@ -7,8 +6,8 @@ const SECONDS_DAY: u64 = SECONDS_HOUR * 24;
 pub struct Uptime(pub Duration);
 
 impl Uptime {
-    pub fn new() -> Result<Self, sys_info::Error> {
-        Ok(Self(Duration::from_secs(boottime()?.tv_sec as u64)))
+    pub fn new() -> Result<Self, String> {
+        Ok(Self(uptime_lib::get()?))
     }
 }
 
