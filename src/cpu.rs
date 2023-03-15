@@ -12,7 +12,7 @@ impl Cpu {
         Ok(Self {
             core_count: cpu_num()?,
             speed: cpu_speed()?,
-            model: read_cpu_model(),
+            model: read_cpu_model()?,
         })
     }
 }
@@ -29,12 +29,11 @@ impl std::fmt::Display for Cpu {
     }
 }
 
-// TODO: Error handling, these unwraps are gross
-fn read_cpu_model() -> String {
-    let path = "/proc/cpuinfo";
-    match proc_parse_try(path, &["model name", "Hardware"]) {
-        Ok(Some(v)) => v,
-        Ok(None) => "N/A".to_string(),
-        Err(_) => "ERROR".to_string(),
-    }
+fn read_cpu_model() -> Result<String, Error> {
+    Ok(
+        match proc_parse_try("/proc/cpuinfo", &["model name", "Hardware"])? {
+            Some(v) => v,
+            None => "N/A".to_string(),
+        },
+    )
 }
