@@ -24,7 +24,7 @@ impl std::fmt::Display for Cpu {
             "{} ({}) @ {:.3}GHz",
             self.model,
             self.core_count,
-            self.speed as f64 / 1000 as f64
+            self.speed as f64 / 1000_f64
         )
     }
 }

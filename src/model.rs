@@ -22,7 +22,7 @@ fn read_product_info(path: &str) -> Result<String, std::io::Error> {
     let f = File::open(path)?;
     let mut s = String::new();
     BufReader::new(f).read_line(&mut s)?;
-    Ok(s.replace("\n", ""))
+    Ok(s.replace('\n', ""))
 }
 
 impl std::fmt::Display for Model {

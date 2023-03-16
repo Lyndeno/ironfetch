@@ -17,7 +17,7 @@ impl std::fmt::Display for Distro {
             "{} {} ({})",
             self.0.name,
             match self.0.extra.get("BUILD_ID") {
-                Some(id) => id.replace("\"", ""),
+                Some(id) => id.replace('\"', ""),
                 None => self.0.version_id.clone(),
             },
             self.0.version_codename

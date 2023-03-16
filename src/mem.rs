@@ -30,10 +30,10 @@ impl Memory {
     }
 
     pub fn display_gb(&self) -> String {
-        self.display(self.used().to_gb(), self.total.to_gb(), "GiB")
+        self.display(self.used().as_gb(), self.total.as_gb(), "GiB")
     }
     pub fn display_mb(&self) -> String {
-        self.display(self.used().to_mb(), self.total.to_mb(), "MiB")
+        self.display(self.used().as_mb(), self.total.as_mb(), "MiB")
     }
 
     fn display(&self, used: f64, total: f64, unit: &str) -> String {
@@ -44,11 +44,11 @@ impl Memory {
 }
 
 impl MemBytes {
-    fn to_gb(&self) -> f64 {
-        self.to_mb() / (1024 as f64)
+    fn as_gb(&self) -> f64 {
+        self.as_mb() / (1024_f64)
     }
-    fn to_mb(&self) -> f64 {
-        (self.0 as f64) / (1024 as f64)
+    fn as_mb(&self) -> f64 {
+        (self.0 as f64) / (1024f64)
     }
     fn from_proc(line: String) -> Self {
         Self::from(line.replace("kB", "").trim().parse::<u64>().unwrap())
@@ -88,6 +88,6 @@ mod tests {
     #[test]
     fn byte_math() {
         let m = MemBytes(1048576);
-        assert_eq!(m.to_mb() / 1024 as f64, m.to_gb());
+        assert_eq!(m.as_mb() / 1024_f64, m.as_gb());
     }
 }
