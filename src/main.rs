@@ -49,7 +49,7 @@ fn main() {
             name: "OS".to_string(),
             content: os.to_string(),
         }),
-        Err(e) => eprintln!("Error: {:?}", e),
+        Err(_) => {}
     };
 
     //let kernel_info = Kernel::new();
@@ -60,7 +60,7 @@ fn main() {
                 content: v.to_string(),
             });
         }
-        Err(e) => eprintln!("Error: {:?}", e),
+        Err(_) => {}
     };
 
     match Model::new() {
@@ -70,7 +70,7 @@ fn main() {
                 content: v.to_string(),
             });
         }
-        Err(e) => eprintln!("Error: {:?}", e),
+        Err(_) => {}
     };
 
     match HostName::new() {
@@ -80,7 +80,7 @@ fn main() {
                 content: v.to_string(),
             });
         }
-        Err(e) => eprintln!("Error: {:?}", e),
+        Err(_) => {}
     };
     match Uptime::new() {
         Ok(v) => {
@@ -89,7 +89,7 @@ fn main() {
                 content: v.to_string(),
             });
         }
-        Err(e) => eprintln!("Error: {:?}", e),
+        Err(_) => {}
     };
     //let cpu_info = Cpu::new();
     match Cpu::new() {
@@ -97,7 +97,7 @@ fn main() {
             name: "CPU".to_string(),
             content: c.to_string(),
         }),
-        Err(e) => eprint!("Error: {:?}", e),
+        Err(_) => {}
     };
 
     let mem_info = Memory::new();
