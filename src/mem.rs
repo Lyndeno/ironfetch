@@ -5,6 +5,11 @@ use std::fmt::Write;
 use crate::fetchitem::FetchItem;
 use crate::proc::proc_parse;
 
+pub enum MemUnits {
+    MB,
+    GB,
+}
+
 #[derive(Copy, Clone)]
 pub struct MemBytes(u64);
 pub struct Memory {
@@ -15,14 +20,16 @@ pub struct Memory {
     //cached: MemBytes,
     //swap_total: MemBytes,
     //swap_free: MemBytes,
+    display_unit: MemUnits,
 }
 
 impl Memory {
-    pub fn new() -> Self {
+    pub fn new(unit: Option<MemUnits>) -> Self {
         let path = "/proc/meminfo";
         Self {
             total: MemBytes::from_proc(proc_parse(path, "MemTotal").unwrap().unwrap()),
             avail: MemBytes::from_proc(proc_parse(path, "MemAvailable").unwrap().unwrap()),
+            display_unit: unit.unwrap_or(MemUnits::GB),
         }
     }
 
@@ -31,16 +38,23 @@ impl Memory {
     }
 
     pub fn display_gb(&self) -> String {
-        self.display(self.used().as_gb(), self.total.as_gb(), "GiB")
+        self.display_unit(self.used().as_gb(), self.total.as_gb(), "GiB")
     }
     pub fn display_mb(&self) -> String {
-        self.display(self.used().as_mb(), self.total.as_mb(), "MiB")
+        self.display_unit(self.used().as_mb(), self.total.as_mb(), "MiB")
     }
 
-    fn display(&self, used: f64, total: f64, unit: &str) -> String {
+    fn display_unit(&self, used: f64, total: f64, unit: &str) -> String {
         let mut s = String::new();
         write!(s, "{:.2}{} / {:.2}{}", used, unit, total, unit).unwrap();
         s
+    }
+
+    fn display(&self) -> String {
+        match self.display_unit {
+            MemUnits::GB => self.display_gb(),
+            MemUnits::MB => self.display_mb(),
+        }
     }
 }
 
@@ -78,7 +92,7 @@ impl From<u64> for MemBytes {
 
 impl std::fmt::Display for Memory {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}", self.display_gb())
+        write!(f, "{}", self.display())
     }
 }
 

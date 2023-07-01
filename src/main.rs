@@ -5,7 +5,7 @@ mod cpu;
 use crate::cpu::Cpu;
 
 mod mem;
-use crate::mem::Memory;
+use crate::mem::{MemUnits, Memory};
 
 mod distro;
 use crate::distro::Distro;
@@ -70,18 +70,14 @@ fn main() {
     lines.push(Fetchline::from(Uptime::new().unwrap()));
     lines.push(Fetchline::from(Cpu::new().unwrap()));
 
-    let mem_info = Memory::new();
     let mem_display = match args.gigabyte {
-        true => mem_info.display_gb(),
+        true => Some(MemUnits::GB),
         false => match args.megabyte {
-            true => mem_info.display_mb(),
-            false => mem_info.display_gb(),
+            true => Some(MemUnits::MB),
+            false => None,
         },
     };
-    lines.push(Fetchline {
-        name: "Memory".to_string(),
-        content: mem_display,
-    });
+    lines.push(Fetchline::from(Memory::new(mem_display)));
 
     let mut indent = 0;
     for line in &mut lines {
