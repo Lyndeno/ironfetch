@@ -20,6 +20,9 @@ use crate::uptime::Uptime;
 mod model;
 use crate::model::Model;
 
+mod shell;
+use crate::shell::Shell;
+
 use clap::Parser;
 
 /// Simple fetching program
@@ -51,6 +54,11 @@ fn main() {
         }),
         Err(_) => {}
     };
+
+    lines.push(Fetchline {
+        name: "Shell".to_string(),
+        content: Shell::new().name(),
+    });
 
     //let kernel_info = Kernel::new();
     match Kernel::new() {
