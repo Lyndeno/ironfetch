@@ -2,6 +2,7 @@ use std::ops::{Add, Sub};
 
 use std::fmt::Write;
 
+use crate::fetchitem::FetchItem;
 use crate::proc::proc_parse;
 
 #[derive(Copy, Clone)]
@@ -78,6 +79,12 @@ impl From<u64> for MemBytes {
 impl std::fmt::Display for Memory {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}", self.display_gb())
+    }
+}
+
+impl FetchItem for Memory {
+    fn name(&self) -> String {
+        String::from("Memory")
     }
 }
 

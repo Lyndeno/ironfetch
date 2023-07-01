@@ -24,6 +24,9 @@ mod shell;
 use crate::shell::Shell;
 
 use clap::Parser;
+use fetchitem::FetchItem;
+
+mod fetchitem;
 
 /// Simple fetching program
 #[derive(Parser, Debug)]
@@ -43,70 +46,29 @@ struct Fetchline {
     content: String,
 }
 
+impl<T> From<T> for Fetchline
+where
+    T: FetchItem,
+{
+    fn from(value: T) -> Self {
+        Self {
+            name: value.name(),
+            content: value.content(),
+        }
+    }
+}
+
 fn main() {
     let args = Args::parse();
-    let mut lines: Vec<Fetchline> = Vec::new();
+    let mut lines: Vec<Fetchline> = Vec::with_capacity(8);
 
-    match Distro::new() {
-        Ok(os) => lines.push(Fetchline {
-            name: "OS".to_string(),
-            content: os.to_string(),
-        }),
-        Err(_) => {}
-    };
-
-    lines.push(Fetchline {
-        name: "Shell".to_string(),
-        content: Shell::new().name(),
-    });
-
-    //let kernel_info = Kernel::new();
-    match Kernel::new() {
-        Ok(v) => {
-            lines.push(Fetchline {
-                name: "Kernel".to_string(),
-                content: v.to_string(),
-            });
-        }
-        Err(_) => {}
-    };
-
-    match Model::new() {
-        Ok(v) => {
-            lines.push(Fetchline {
-                name: "Model".to_string(),
-                content: v.to_string(),
-            });
-        }
-        Err(_) => {}
-    };
-
-    match HostName::new() {
-        Ok(v) => {
-            lines.push(Fetchline {
-                name: "Hostname".to_string(),
-                content: v.to_string(),
-            });
-        }
-        Err(_) => {}
-    };
-    match Uptime::new() {
-        Ok(v) => {
-            lines.push(Fetchline {
-                name: "Uptime".to_string(),
-                content: v.to_string(),
-            });
-        }
-        Err(_) => {}
-    };
-    //let cpu_info = Cpu::new();
-    match Cpu::new() {
-        Ok(c) => lines.push(Fetchline {
-            name: "CPU".to_string(),
-            content: c.to_string(),
-        }),
-        Err(_) => {}
-    };
+    lines.push(Fetchline::from(Distro::new().unwrap()));
+    lines.push(Fetchline::from(Shell::new()));
+    lines.push(Fetchline::from(Kernel::new().unwrap()));
+    lines.push(Fetchline::from(Model::new().unwrap()));
+    lines.push(Fetchline::from(HostName::new().unwrap()));
+    lines.push(Fetchline::from(Uptime::new().unwrap()));
+    lines.push(Fetchline::from(Cpu::new().unwrap()));
 
     let mem_info = Memory::new();
     let mem_display = match args.gigabyte {

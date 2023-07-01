@@ -2,6 +2,8 @@ use std::{
     fs::File,
     io::{BufRead, BufReader},
 };
+
+use crate::fetchitem::FetchItem;
 pub struct Model {
     product_name: String,
     board_vendor: String,
@@ -32,5 +34,11 @@ impl std::fmt::Display for Model {
             "{} {} {}",
             self.board_vendor, self.product_name, self.board_name
         )
+    }
+}
+
+impl FetchItem for Model {
+    fn name(&self) -> String {
+        String::from("Model")
     }
 }

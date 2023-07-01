@@ -1,4 +1,4 @@
-use crate::proc::proc_parse_try;
+use crate::{fetchitem::FetchItem, proc::proc_parse_try};
 use sys_info::{cpu_num, cpu_speed, Error};
 
 pub struct Cpu {
@@ -36,4 +36,10 @@ fn read_cpu_model() -> Result<String, Error> {
             None => "N/A".to_string(),
         },
     )
+}
+
+impl FetchItem for Cpu {
+    fn name(&self) -> String {
+        String::from("CPU")
+    }
 }

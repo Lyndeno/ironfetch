@@ -1,5 +1,7 @@
 use std::time::Duration;
 
+use crate::fetchitem::FetchItem;
+
 const SECONDS_MIN: u64 = 60;
 const SECONDS_HOUR: u64 = SECONDS_MIN * 60;
 const SECONDS_DAY: u64 = SECONDS_HOUR * 24;
@@ -43,5 +45,11 @@ impl std::fmt::Display for Uptime {
             }
         }
         write!(f, "{}", s)
+    }
+}
+
+impl FetchItem for Uptime {
+    fn name(&self) -> String {
+        String::from("Uptime")
     }
 }

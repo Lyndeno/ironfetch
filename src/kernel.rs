@@ -1,6 +1,8 @@
 use nix::sys::utsname::{uname, UtsName};
 use std::ffi::OsStr;
 
+use crate::fetchitem::FetchItem;
+
 type Result<T> = std::result::Result<T, KernelError>;
 
 #[derive(Debug, Clone)]
@@ -39,5 +41,11 @@ impl Kernel {
 impl std::fmt::Display for Kernel {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{} {} {}", self.name, self.release, self.architecture)
+    }
+}
+
+impl FetchItem for Kernel {
+    fn name(&self) -> String {
+        String::from("Kernel")
     }
 }

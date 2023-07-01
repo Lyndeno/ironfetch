@@ -1,6 +1,8 @@
 use os_release::OsRelease;
 use std::io;
 
+use crate::fetchitem::FetchItem;
+
 pub struct Distro(OsRelease);
 
 impl Distro {
@@ -22,5 +24,11 @@ impl std::fmt::Display for Distro {
             },
             self.0.version_codename
         )
+    }
+}
+
+impl FetchItem for Distro {
+    fn name(&self) -> String {
+        String::from("OS")
     }
 }
