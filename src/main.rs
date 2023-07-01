@@ -32,13 +32,9 @@ mod fetchitem;
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
 struct Args {
-    /// Whether to use gigabytes
-    #[arg(short, long)]
-    gigabyte: bool,
-
-    /// Whether to use megabytes
-    #[arg(short, long)]
-    megabyte: bool,
+    /// Memory units to use
+    #[arg(long, value_enum)]
+    memory_unit: Option<MemUnits>,
 }
 
 struct Fetchline {
@@ -70,14 +66,7 @@ fn main() {
     lines.push(Fetchline::from(Uptime::new().unwrap()));
     lines.push(Fetchline::from(Cpu::new().unwrap()));
 
-    let mem_display = match args.gigabyte {
-        true => Some(MemUnits::GB),
-        false => match args.megabyte {
-            true => Some(MemUnits::MB),
-            false => None,
-        },
-    };
-    lines.push(Fetchline::from(Memory::new(mem_display)));
+    lines.push(Fetchline::from(Memory::new(args.memory_unit)));
 
     let mut indent = 0;
     for line in &mut lines {
