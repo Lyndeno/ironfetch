@@ -84,7 +84,7 @@ fn main() {
     }
 
     let mut indent = 0;
-    for line in &mut lines {
+    for line in &lines {
         let length = line.name.len();
         indent = if length > indent { length } else { indent };
     }
