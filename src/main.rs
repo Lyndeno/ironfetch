@@ -24,6 +24,7 @@ mod shell;
 use crate::shell::Shell;
 
 use clap::Parser;
+use fetcherror::FetchError;
 use fetchitem::FetchItem;
 
 mod fetchitem;
@@ -37,6 +38,9 @@ struct Args {
     /// Memory units to use
     #[arg(long, value_enum)]
     memory_unit: Option<MemUnits>,
+
+    #[arg(long, short, default_value = "false")]
+    verbose: bool,
 }
 
 struct Fetchline {
@@ -60,15 +64,14 @@ fn main() {
     let args = Args::parse();
     let mut lines: Vec<Fetchline> = Vec::with_capacity(8);
 
-    lines.push(Fetchline::from(Distro::new().unwrap()));
-    lines.push(Fetchline::from(Shell::new().unwrap()));
-    lines.push(Fetchline::from(Kernel::new().unwrap()));
-    lines.push(Fetchline::from(Model::new().unwrap()));
-    lines.push(Fetchline::from(HostName::new().unwrap()));
-    lines.push(Fetchline::from(Uptime::new().unwrap()));
-    lines.push(Fetchline::from(Cpu::new().unwrap()));
-
-    lines.push(Fetchline::from(Memory::new(args.memory_unit).unwrap()));
+    push_fetchline(Distro::new(), &mut lines, args.verbose);
+    push_fetchline(Shell::new(), &mut lines, args.verbose);
+    push_fetchline(Kernel::new(), &mut lines, args.verbose);
+    push_fetchline(Model::new(), &mut lines, args.verbose);
+    push_fetchline(HostName::new(), &mut lines, args.verbose);
+    push_fetchline(Uptime::new(), &mut lines, args.verbose);
+    push_fetchline(Cpu::new(), &mut lines, args.verbose);
+    push_fetchline(Memory::new(args.memory_unit), &mut lines, args.verbose);
 
     let mut indent = 0;
     for line in &mut lines {
@@ -78,4 +81,19 @@ fn main() {
     for line in lines {
         println!("{:>indent$}: {}", line.name, line.content, indent = indent);
     }
+}
+
+fn push_fetchline<T: FetchItem>(
+    item: Result<T, FetchError>,
+    line_array: &mut Vec<Fetchline>,
+    print_error: bool,
+) {
+    match item {
+        Ok(f) => line_array.push(Fetchline::from(f)),
+        Err(e) => {
+            if print_error {
+                println!("Error: {}", e)
+            }
+        }
+    };
 }
