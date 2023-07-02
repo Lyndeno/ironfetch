@@ -18,7 +18,7 @@ impl Shell {
     pub fn name(&self) -> Result<String, FetchError> {
         match self.path.file_name() {
             Some(v) => Ok(v.to_string_lossy().to_string()),
-            None => Err(FetchError::OsStrError),
+            None => Err(FetchError::OsStr),
         }
     }
 }

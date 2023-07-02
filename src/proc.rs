@@ -6,11 +6,11 @@ pub fn proc_parse_try(path: &str, fields: &[&str]) -> Result<String, FetchError>
     for &field in fields {
         match proc_parse(path, field) {
             Ok(v) => return Ok(v),
-            Err(FetchError::ProcError) => {}
+            Err(FetchError::Proc) => {}
             Err(e) => return Err(e),
         };
     }
-    Err(FetchError::ProcError)
+    Err(FetchError::Proc)
 }
 
 pub fn proc_parse(path: &str, field: &str) -> Result<String, FetchError> {
@@ -24,5 +24,5 @@ pub fn proc_parse(path: &str, field: &str) -> Result<String, FetchError> {
             return Ok(n[1].trim().to_string());
         }
     }
-    Err(FetchError::ProcError)
+    Err(FetchError::Proc)
 }

@@ -25,7 +25,7 @@ impl Kernel {
     fn os_str_to_string(v: &OsStr) -> Result<String> {
         match v.to_str() {
             Some(s) => Ok(String::from(s)),
-            None => Err(FetchError::OsStrError),
+            None => Err(FetchError::OsStr),
         }
     }
 }

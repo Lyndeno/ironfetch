@@ -32,7 +32,7 @@ impl std::fmt::Display for Cpu {
 fn read_cpu_model() -> Result<String, FetchError> {
     match proc_parse_try("/proc/cpuinfo", &["model name", "Hardware"]) {
         Ok(v) => Ok(v),
-        Err(FetchError::ProcError) => Ok("N/A".to_string()),
+        Err(FetchError::Proc) => Ok("N/A".to_string()),
         Err(e) => Err(e),
     }
 }
