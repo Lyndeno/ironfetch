@@ -1,4 +1,6 @@
 mod kernel;
+use std::vec;
+
 use crate::kernel::Kernel;
 
 mod cpu;
@@ -63,15 +65,23 @@ where
 fn main() {
     let args = Args::parse();
     let mut lines: Vec<Fetchline> = Vec::with_capacity(8);
+    let lines_result = vec![
+        gen_fl(Distro::new()),
+        gen_fl(Shell::new()),
+        gen_fl(Kernel::new()),
+        gen_fl(Model::new()),
+        gen_fl(HostName::new()),
+        gen_fl(Uptime::new()),
+        gen_fl(Cpu::new()),
+        gen_fl(Memory::new(args.memory_unit)),
+    ];
 
-    push_fetchline(Distro::new(), &mut lines, args.verbose);
-    push_fetchline(Shell::new(), &mut lines, args.verbose);
-    push_fetchline(Kernel::new(), &mut lines, args.verbose);
-    push_fetchline(Model::new(), &mut lines, args.verbose);
-    push_fetchline(HostName::new(), &mut lines, args.verbose);
-    push_fetchline(Uptime::new(), &mut lines, args.verbose);
-    push_fetchline(Cpu::new(), &mut lines, args.verbose);
-    push_fetchline(Memory::new(args.memory_unit), &mut lines, args.verbose);
+    for line in lines_result {
+        match line {
+            Ok(fl) => lines.push(fl),
+            Err(e) => println!("Error: {}", e),
+        };
+    }
 
     let mut indent = 0;
     for line in &mut lines {
@@ -83,17 +93,9 @@ fn main() {
     }
 }
 
-fn push_fetchline<T: FetchItem>(
-    item: Result<T, FetchError>,
-    line_array: &mut Vec<Fetchline>,
-    print_error: bool,
-) {
+fn gen_fl<T: FetchItem>(item: Result<T, FetchError>) -> Result<Fetchline, FetchError> {
     match item {
-        Ok(f) => line_array.push(Fetchline::from(f)),
-        Err(e) => {
-            if print_error {
-                println!("Error: {}", e)
-            }
-        }
-    };
+        Ok(f) => Ok(Fetchline::from(f)),
+        Err(e) => Err(e),
+    }
 }
