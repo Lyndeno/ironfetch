@@ -1,6 +1,6 @@
 use std::time::Duration;
 
-use crate::fetchitem::FetchItem;
+use crate::{fetcherror::FetchError, fetchitem::FetchItem};
 
 const SECONDS_MIN: u64 = 60;
 const SECONDS_HOUR: u64 = SECONDS_MIN * 60;
@@ -8,7 +8,7 @@ const SECONDS_DAY: u64 = SECONDS_HOUR * 24;
 pub struct Uptime(pub Duration);
 
 impl Uptime {
-    pub fn new() -> Result<Self, String> {
+    pub fn new() -> Result<Self, FetchError> {
         Ok(Self(uptime_lib::get()?))
     }
 }

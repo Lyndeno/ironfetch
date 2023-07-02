@@ -28,6 +28,8 @@ use fetchitem::FetchItem;
 
 mod fetchitem;
 
+mod fetcherror;
+
 /// Simple fetching program
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
@@ -59,14 +61,14 @@ fn main() {
     let mut lines: Vec<Fetchline> = Vec::with_capacity(8);
 
     lines.push(Fetchline::from(Distro::new().unwrap()));
-    lines.push(Fetchline::from(Shell::new()));
+    lines.push(Fetchline::from(Shell::new().unwrap()));
     lines.push(Fetchline::from(Kernel::new().unwrap()));
     lines.push(Fetchline::from(Model::new().unwrap()));
     lines.push(Fetchline::from(HostName::new().unwrap()));
     lines.push(Fetchline::from(Uptime::new().unwrap()));
     lines.push(Fetchline::from(Cpu::new().unwrap()));
 
-    lines.push(Fetchline::from(Memory::new(args.memory_unit)));
+    lines.push(Fetchline::from(Memory::new(args.memory_unit).unwrap()));
 
     let mut indent = 0;
     for line in &mut lines {

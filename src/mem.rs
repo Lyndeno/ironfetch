@@ -4,6 +4,7 @@ use std::fmt::Write;
 
 use clap::ValueEnum;
 
+use crate::fetcherror::FetchError;
 use crate::fetchitem::FetchItem;
 use crate::proc::proc_parse;
 
@@ -40,13 +41,13 @@ pub struct Memory {
 }
 
 impl Memory {
-    pub fn new(unit: Option<MemUnits>) -> Self {
+    pub fn new(unit: Option<MemUnits>) -> Result<Self, FetchError> {
         let path = "/proc/meminfo";
-        Self {
-            total: MemBytes::from_proc(proc_parse(path, "MemTotal").unwrap().unwrap()),
-            avail: MemBytes::from_proc(proc_parse(path, "MemAvailable").unwrap().unwrap()),
+        Ok(Self {
+            total: MemBytes::from_proc(proc_parse(path, "MemTotal")?),
+            avail: MemBytes::from_proc(proc_parse(path, "MemAvailable")?),
             display_unit: unit.unwrap_or(MemUnits::GB),
-        }
+        })
     }
 
     pub fn used(&self) -> MemBytes {

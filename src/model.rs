@@ -3,7 +3,7 @@ use std::{
     io::{BufRead, BufReader},
 };
 
-use crate::fetchitem::FetchItem;
+use crate::{fetcherror::FetchError, fetchitem::FetchItem};
 pub struct Model {
     product_name: String,
     board_vendor: String,
@@ -11,7 +11,7 @@ pub struct Model {
 }
 
 impl Model {
-    pub fn new() -> Result<Self, std::io::Error> {
+    pub fn new() -> Result<Self, FetchError> {
         Ok(Self {
             product_name: read_product_info("/sys/devices/virtual/dmi/id/product_name")?,
             board_vendor: read_product_info("/sys/devices/virtual/dmi/id/board_vendor")?,

@@ -1,12 +1,11 @@
 use os_release::OsRelease;
-use std::io;
 
-use crate::fetchitem::FetchItem;
+use crate::{fetcherror::FetchError, fetchitem::FetchItem};
 
 pub struct Distro(OsRelease);
 
 impl Distro {
-    pub fn new() -> Result<Self, io::Error> {
+    pub fn new() -> Result<Self, FetchError> {
         let os = OsRelease::new()?;
         Ok(Self(os))
     }

@@ -1,6 +1,6 @@
 use std::{env, path::PathBuf};
 
-use crate::fetchitem::FetchItem;
+use crate::{fetcherror::FetchError, fetchitem::FetchItem};
 
 pub struct Shell {
     pub path: PathBuf,
@@ -8,21 +8,24 @@ pub struct Shell {
 }
 
 impl Shell {
-    pub fn new() -> Self {
-        Self {
-            path: PathBuf::from(env::var("SHELL").unwrap()),
+    pub fn new() -> Result<Self, FetchError> {
+        Ok(Self {
+            path: PathBuf::from(env::var("SHELL")?),
             version: String::from(""),
-        }
+        })
     }
 
-    pub fn name(&self) -> String {
-        self.path.file_name().unwrap().to_str().unwrap().to_string()
+    pub fn name(&self) -> Result<String, FetchError> {
+        match self.path.file_name() {
+            Some(v) => Ok(v.to_string_lossy().to_string()),
+            None => Err(FetchError::OsStrError),
+        }
     }
 }
 
 impl std::fmt::Display for Shell {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}", self.name())
+        write!(f, "{}", self.name().unwrap_or(String::from("")))
     }
 }
 

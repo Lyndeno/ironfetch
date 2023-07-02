@@ -1,5 +1,5 @@
-use crate::{fetchitem::FetchItem, proc::proc_parse_try};
-use sys_info::{cpu_num, cpu_speed, Error};
+use crate::{fetcherror::FetchError, fetchitem::FetchItem, proc::proc_parse_try};
+use sys_info::{cpu_num, cpu_speed};
 
 pub struct Cpu {
     core_count: u32,
@@ -8,7 +8,7 @@ pub struct Cpu {
 }
 
 impl Cpu {
-    pub fn new() -> Result<Self, Error> {
+    pub fn new() -> Result<Self, FetchError> {
         Ok(Self {
             core_count: cpu_num()?,
             speed: cpu_speed()?,
@@ -29,13 +29,12 @@ impl std::fmt::Display for Cpu {
     }
 }
 
-fn read_cpu_model() -> Result<String, Error> {
-    Ok(
-        match proc_parse_try("/proc/cpuinfo", &["model name", "Hardware"])? {
-            Some(v) => v,
-            None => "N/A".to_string(),
-        },
-    )
+fn read_cpu_model() -> Result<String, FetchError> {
+    match proc_parse_try("/proc/cpuinfo", &["model name", "Hardware"]) {
+        Ok(v) => Ok(v),
+        Err(FetchError::ProcError) => Ok("N/A".to_string()),
+        Err(e) => Err(e),
+    }
 }
 
 impl FetchItem for Cpu {

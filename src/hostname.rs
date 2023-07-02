@@ -1,10 +1,10 @@
 use sys_info::hostname;
 
-use crate::fetchitem::FetchItem;
+use crate::{fetcherror::FetchError, fetchitem::FetchItem};
 pub struct HostName(pub String);
 
 impl HostName {
-    pub fn new() -> Result<Self, sys_info::Error> {
+    pub fn new() -> Result<Self, FetchError> {
         Ok(Self(hostname()?))
     }
 }

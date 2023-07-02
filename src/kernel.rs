@@ -1,27 +1,19 @@
 use nix::sys::utsname::{uname, UtsName};
 use std::ffi::OsStr;
 
-use crate::fetchitem::FetchItem;
+use crate::{fetcherror::FetchError, fetchitem::FetchItem};
 
-type Result<T> = std::result::Result<T, KernelError>;
+type Result<T> = std::result::Result<T, FetchError>;
 
-#[derive(Debug, Clone)]
-pub struct KernelError;
 pub struct Kernel {
     release: String,
     architecture: String,
     name: String,
 }
 
-impl std::fmt::Display for KernelError {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "Could not get kernel information!")
-    }
-}
-
 impl Kernel {
     pub fn new() -> Result<Self> {
-        let info: UtsName = uname().map_err(|_| KernelError)?;
+        let info: UtsName = uname()?;
         Ok(Self {
             // TODO: Error correction
             release: Self::os_str_to_string(info.release())?,
@@ -33,7 +25,7 @@ impl Kernel {
     fn os_str_to_string(v: &OsStr) -> Result<String> {
         match v.to_str() {
             Some(s) => Ok(String::from(s)),
-            None => Err(KernelError),
+            None => Err(FetchError::OsStrError),
         }
     }
 }

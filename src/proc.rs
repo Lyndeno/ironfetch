@@ -1,15 +1,19 @@
 use std::fs::File;
 use std::io::{BufRead, BufReader};
-pub fn proc_parse_try(path: &str, fields: &[&str]) -> Result<Option<String>, std::io::Error> {
+
+use crate::fetcherror::FetchError;
+pub fn proc_parse_try(path: &str, fields: &[&str]) -> Result<String, FetchError> {
     for &field in fields {
-        if let Some(v) = proc_parse(path, field)? {
-            return Ok(Some(v));
-        }
+        match proc_parse(path, field) {
+            Ok(v) => return Ok(v),
+            Err(FetchError::ProcError) => {}
+            Err(e) => return Err(e),
+        };
     }
-    Ok(None)
+    Err(FetchError::ProcError)
 }
 
-pub fn proc_parse(path: &str, field: &str) -> Result<Option<String>, std::io::Error> {
+pub fn proc_parse(path: &str, field: &str) -> Result<String, FetchError> {
     let file = File::open(path)?;
     let reader = BufReader::new(file);
 
@@ -17,8 +21,8 @@ pub fn proc_parse(path: &str, field: &str) -> Result<Option<String>, std::io::Er
         let l = line?;
         if l.contains(field) {
             let n: Vec<&str> = l.split(':').collect();
-            return Ok(Some(n[1].trim().to_string()));
+            return Ok(n[1].trim().to_string());
         }
     }
-    Ok(None)
+    Err(FetchError::ProcError)
 }
