@@ -23,6 +23,13 @@
       naersk-lib = naersk.lib."${system}";
     in rec {
       packages.ironfetch = naersk-lib.buildPackage {
+        nativeBuildInputs = [pkgs.installShellFiles];
+        postInstall = ''
+          installShellCompletion --cmd ironfetch \
+            --bash $releaseDir/build/ironfetch-*/out/ironfetch.bash \
+            --fish $releaseDir/build/ironfetch-*/out/ironfetch.fish \
+            --zsh $releaseDir/build/ironfetch-*/out/_ironfetch
+        '';
         pname = "ironfetch";
         root = ./.;
       };

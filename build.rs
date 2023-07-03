@@ -18,7 +18,7 @@ fn main() -> Result<(), Error> {
 
     let mut cmd = <Args as CommandFactory>::command();
     for &shell in Shell::value_variants() {
-        generate_to(shell, &mut cmd, "myapp", outdir.clone())?;
+        generate_to(shell, &mut cmd, "ironfetch", outdir.clone())?;
     }
 
     Ok(())
