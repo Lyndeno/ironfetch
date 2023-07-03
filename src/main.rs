@@ -7,7 +7,7 @@ mod cpu;
 use crate::cpu::Cpu;
 
 mod mem;
-use crate::mem::{MemUnits, Memory};
+use crate::mem::Memory;
 
 mod distro;
 use crate::distro::Distro;
@@ -33,18 +33,12 @@ mod fetchitem;
 
 mod fetcherror;
 
+mod memunit;
+
+mod args;
+use crate::args::Args;
+
 /// Simple fetching program
-#[derive(Parser, Debug)]
-#[command(author, version, about, long_about = None)]
-struct Args {
-    /// Memory units to use
-    #[arg(long, value_enum)]
-    memory_unit: Option<MemUnits>,
-
-    #[arg(long, short, default_value = "false")]
-    verbose: bool,
-}
-
 struct Fetchline {
     name: String,
     content: String,

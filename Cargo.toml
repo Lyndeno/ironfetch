@@ -11,3 +11,7 @@ nix = "0.26.2"
 os-release = "0.1.0"
 sys-info = "0.9.1"
 uptime_lib = "0.2.2"
+
+[build-dependencies]
+clap = { version = "4.1.8", features = ["derive"] }
+clap_complete = "4.3.1"
