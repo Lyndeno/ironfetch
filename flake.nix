@@ -26,9 +26,9 @@
         nativeBuildInputs = [pkgs.installShellFiles];
         postInstall = ''
           installShellCompletion --cmd ironfetch \
-            --bash $releaseDir/build/ironfetch-*/out/ironfetch.bash \
-            --fish $releaseDir/build/ironfetch-*/out/ironfetch.fish \
-            --zsh $releaseDir/build/ironfetch-*/out/_ironfetch
+            --bash ./target/release/build/ironfetch-*/out/ironfetch.bash \
+            --fish ./target/release/build/ironfetch-*/out/ironfetch.fish \
+            --zsh ./target/release/build/ironfetch-*/out/_ironfetch
         '';
         pname = "ironfetch";
         root = ./.;
