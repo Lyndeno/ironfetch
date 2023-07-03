@@ -22,10 +22,8 @@ impl std::fmt::Display for Cpu {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(
             f,
-            "{} ({}) @ {:.3}GHz",
-            self.model,
-            self.core_count,
-            self.speed.as_gigahertz()
+            "{} ({}) @ {:.3}",
+            self.model, self.core_count, self.speed
         )
     }
 }
