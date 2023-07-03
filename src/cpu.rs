@@ -1,9 +1,10 @@
 use crate::{fetcherror::FetchError, fetchitem::FetchItem, proc::proc_parse_try};
+use measurements::frequency::Frequency;
 use sys_info::{cpu_num, cpu_speed};
 
 pub struct Cpu {
     core_count: u32,
-    speed: u64,
+    speed: Frequency,
     model: String,
 }
 
@@ -11,7 +12,7 @@ impl Cpu {
     pub fn new() -> Result<Self, FetchError> {
         Ok(Self {
             core_count: cpu_num()?,
-            speed: cpu_speed()?,
+            speed: Frequency::from_megahertz(cpu_speed()? as f64),
             model: read_cpu_model()?,
         })
     }
@@ -24,7 +25,7 @@ impl std::fmt::Display for Cpu {
             "{} ({}) @ {:.3}GHz",
             self.model,
             self.core_count,
-            self.speed as f64 / 1000_f64
+            self.speed.as_gigahertz()
         )
     }
 }
