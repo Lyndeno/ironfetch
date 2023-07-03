@@ -17,16 +17,16 @@ pub struct Memory {
     //cached: MemBytes,
     //swap_total: MemBytes,
     //swap_free: MemBytes,
-    display_unit: MemUnits,
+    display_unit: Option<MemUnits>,
 }
 
 impl Memory {
-    pub fn new(unit: Option<MemUnits>) -> Result<Self, FetchError> {
+    pub fn new(display_unit: Option<MemUnits>) -> Result<Self, FetchError> {
         let path = "/proc/meminfo";
         Ok(Self {
             total: mem_from_proc(proc_parse(path, "MemTotal")?),
             avail: mem_from_proc(proc_parse(path, "MemAvailable")?),
-            display_unit: unit.unwrap_or(MemUnits::GB),
+            display_unit,
         })
     }
 
@@ -57,8 +57,9 @@ impl Memory {
 
     fn display(&self) -> String {
         match self.display_unit {
-            MemUnits::GB => self.display_gb(),
-            MemUnits::MB => self.display_mb(),
+            Some(MemUnits::GB) => self.display_gb(),
+            Some(MemUnits::MB) => self.display_mb(),
+            None => self.display_gb(),
         }
     }
 }
