@@ -1,20 +1,42 @@
-use crate::{fetcherror::FetchError, fetchitem::FetchItem, proc::proc_parse_try};
+use crate::{fetcherror::FetchError, fetchitem::FetchItem};
 use measurements::frequency::Frequency;
-use sys_info::{cpu_num, cpu_speed};
+use procfs::CpuInfo;
 
 pub struct Cpu {
-    core_count: u32,
-    speed: Frequency,
-    model: String,
+    cpu: CpuInfo,
 }
 
 impl Cpu {
     pub fn new() -> Result<Self, FetchError> {
         Ok(Self {
-            core_count: cpu_num()?,
-            speed: Frequency::from_megahertz(cpu_speed()? as f64),
-            model: read_cpu_model()?,
+            cpu: CpuInfo::new().unwrap(),
         })
+    }
+
+    pub fn core_count(&self) -> usize {
+        self.cpu.num_cores()
+    }
+
+    pub fn model(&self) -> String {
+        self.cpu.model_name(0).unwrap_or("").to_string()
+    }
+
+    pub fn speed(&self) -> Frequency {
+        let mut sum = Frequency::from_hertz(0f64);
+        for core in 0..self.core_count() {
+            sum = sum + self.core_speed(core);
+        }
+        sum / self.core_count() as f64
+    }
+
+    fn core_speed(&self, cpu_num: usize) -> Frequency {
+        Frequency::from_megahertz(
+            self.cpu
+                .get_field(cpu_num, "cpu MHz")
+                .unwrap()
+                .parse::<f64>()
+                .unwrap(),
+        )
     }
 }
 
@@ -23,16 +45,10 @@ impl std::fmt::Display for Cpu {
         write!(
             f,
             "{} ({}) @ {:.3}",
-            self.model, self.core_count, self.speed
+            self.model(),
+            self.core_count(),
+            self.speed()
         )
-    }
-}
-
-fn read_cpu_model() -> Result<String, FetchError> {
-    match proc_parse_try("/proc/cpuinfo", &["model name", "Hardware"]) {
-        Ok(v) => Ok(v),
-        Err(FetchError::Proc) => Ok("N/A".to_string()),
-        Err(e) => Err(e),
     }
 }
 
