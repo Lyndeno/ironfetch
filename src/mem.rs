@@ -54,8 +54,8 @@ impl Memory {
 
     fn display(&self) -> String {
         match self.display_unit {
-            Some(MemUnits::GB) => self.display_gb(),
-            Some(MemUnits::MB) => self.display_mb(),
+            Some(MemUnits::GiB) => self.display_gb(),
+            Some(MemUnits::MiB) => self.display_mb(),
             None => self.display_gb(),
         }
     }
