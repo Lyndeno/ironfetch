@@ -12,6 +12,8 @@ impl Cpu {
     pub fn new() -> Result<Self, FetchError> {
         let cpu = CpuInfo::new().unwrap();
         let core_count = cpu.num_cores();
+
+        // TODO: Implement support for multiple CPU models, technically possible
         let model = cpu.model_name(0).unwrap_or("").to_string();
 
         let mut sum = Frequency::from_hertz(0f64);

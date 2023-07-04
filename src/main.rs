@@ -9,8 +9,8 @@ use crate::cpu::Cpu;
 mod mem;
 use crate::mem::Memory;
 
-mod distro;
-use crate::distro::Distro;
+mod osinfo;
+use crate::osinfo::OsInfo;
 
 mod hostname;
 use crate::hostname::HostName;
@@ -59,7 +59,7 @@ fn main() {
     let args = Args::parse();
     let mut lines: Vec<Fetchline> = Vec::with_capacity(8);
     let lines_result = vec![
-        gen_fl(Distro::new()),
+        gen_fl(OsInfo::new()),
         gen_fl(Shell::new()),
         gen_fl(Kernel::new()),
         gen_fl(Model::new()),
