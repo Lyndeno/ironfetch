@@ -13,7 +13,6 @@ mod distro;
 use crate::distro::Distro;
 
 mod hostname;
-mod proc;
 use crate::hostname::HostName;
 
 mod uptime;

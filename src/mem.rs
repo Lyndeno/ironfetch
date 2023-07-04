@@ -3,7 +3,7 @@ use std::fmt::Write;
 use crate::fetcherror::FetchError;
 use crate::fetchitem::FetchItem;
 use crate::memunit::MemUnits;
-use crate::proc::proc_parse;
+use procfs::Meminfo;
 
 use measurements::data::Data;
 
@@ -22,10 +22,10 @@ pub struct Memory {
 
 impl Memory {
     pub fn new(display_unit: Option<MemUnits>) -> Result<Self, FetchError> {
-        let path = "/proc/meminfo";
+        let meminfo = Meminfo::new().unwrap();
         Ok(Self {
-            total: mem_from_proc(proc_parse(path, "MemTotal")?),
-            avail: mem_from_proc(proc_parse(path, "MemAvailable")?),
+            total: Data::from_octets(meminfo.mem_total as f64),
+            avail: Data::from_octets(meminfo.mem_available.unwrap() as f64),
             display_unit,
         })
     }
@@ -62,10 +62,6 @@ impl Memory {
             None => self.display_gb(),
         }
     }
-}
-
-fn mem_from_proc(line: String) -> Data {
-    Data::from_kibioctets(line.replace("kB", "").trim().parse::<f64>().unwrap())
 }
 
 impl std::fmt::Display for Memory {

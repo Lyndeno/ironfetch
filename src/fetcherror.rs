@@ -8,7 +8,6 @@ pub enum FetchError {
     Io(io::Error),
     Nix(Errno),
     OsStr,
-    Proc,
     Var(VarError),
     String(String),
 }
@@ -20,7 +19,6 @@ impl Display for FetchError {
             FetchError::Io(..) => write!(f, "IO error"),
             FetchError::Nix(..) => write!(f, "Generic *nix error"),
             FetchError::OsStr => write!(f, "OsStr parsing error"),
-            FetchError::Proc => write!(f, "/proc parsing error"),
             FetchError::Var(..) => write!(f, "Error parsing environment variable"),
             FetchError::String(ref s) => write!(f, "Error: {}", *s),
         }
@@ -34,7 +32,6 @@ impl Error for FetchError {
             FetchError::Io(ref e) => Some(e),
             FetchError::Nix(ref e) => Some(e),
             FetchError::OsStr => None,
-            FetchError::Proc => None,
             FetchError::Var(ref e) => Some(e),
             FetchError::String(..) => None,
         }
