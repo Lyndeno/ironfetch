@@ -6,9 +6,6 @@ use crate::memunit::MemUnits;
 use procfs::Meminfo;
 
 use measurements::data::Data;
-
-#[derive(Copy, Clone)]
-pub struct MemBytes(u64);
 pub struct Memory {
     total: Data,
     //free: MemBytes,
