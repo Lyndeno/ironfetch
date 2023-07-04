@@ -29,6 +29,7 @@
             --bash ./target/release/build/ironfetch-*/out/ironfetch.bash \
             --fish ./target/release/build/ironfetch-*/out/ironfetch.fish \
             --zsh ./target/release/build/ironfetch-*/out/_ironfetch
+          installManPage ./target/release/build/ironfetch-*/out/ironfetch.1
         '';
         pname = "ironfetch";
         root = ./.;

@@ -17,3 +17,4 @@ uptime_lib = "*"
 [build-dependencies]
 clap = { version = "*", features = ["derive"] }
 clap_complete = "*"
+clap_mangen = "*"
