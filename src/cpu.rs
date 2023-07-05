@@ -21,7 +21,7 @@ impl Cpu {
             sum = sum
                 + Frequency::from_megahertz(
                     cpu.get_field(cpu_num, "cpu MHz")
-                        .unwrap()
+                        .unwrap_or("0.00") // FIXME: I really do not like this
                         .parse::<f64>()
                         .unwrap(),
                 );
