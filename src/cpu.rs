@@ -5,7 +5,7 @@ use procfs::CpuInfo;
 pub struct Cpu {
     core_count: usize,
     model: String,
-    freq: Frequency,
+    freq: Vec<Frequency>,
 }
 
 impl Cpu {
@@ -16,17 +16,15 @@ impl Cpu {
         // TODO: Implement support for multiple CPU models, technically possible
         let model = cpu.model_name(0).unwrap_or("Unknown Model").to_string();
 
-        let mut sum = Frequency::from_hertz(0f64);
+        let mut freq = Vec::with_capacity(core_count);
         for cpu_num in 0..core_count {
-            sum = sum
-                + Frequency::from_megahertz(
-                    cpu.get_field(cpu_num, "cpu MHz")
-                        .unwrap_or("0.00") // FIXME: I really do not like this
-                        .parse::<f64>()
-                        .unwrap(),
-                );
+            freq.push(Frequency::from_megahertz(
+                cpu.get_field(cpu_num, "cpu MHz")
+                    .unwrap_or("0.00") // FIXME: I really do not like this
+                    .parse::<f64>()
+                    .unwrap(),
+            ));
         }
-        let freq = sum / core_count as f64;
 
         Ok(Self {
             core_count,
@@ -38,7 +36,14 @@ impl Cpu {
 
 impl std::fmt::Display for Cpu {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{} ({}) @ {:.3}", self.model, self.core_count, self.freq)
+        let freq_avg = {
+            let mut sum = Frequency::from_hertz(0_f64);
+            for cpu_num in 0..self.core_count {
+                sum = sum + self.freq[cpu_num];
+            }
+            sum / self.core_count as f64
+        };
+        write!(f, "{} ({}) @ {:.3}", self.model, self.core_count, freq_avg)
     }
 }
 
@@ -48,10 +53,21 @@ impl FetchItem for Cpu {
     }
 
     fn long_content(&self) -> Option<Vec<crate::FetchSection>> {
+        let mut freq_vec: Vec<FetchSection> = Vec::with_capacity(self.core_count);
+        for i in 0..self.core_count {
+            freq_vec.push(FetchSection::new_short(
+                format!("Core {}", i),
+                format!("{:.3}", self.freq[i]),
+            ));
+        }
         Some(vec![
             FetchSection::new_short("Model", self.model.clone()),
             FetchSection::new_short("Cores", format!("{}", self.core_count)),
-            FetchSection::new_short("Frequency", format!("{:.3}", self.freq)),
+            //FetchSection::new_short("Frequency", format!("{:.3}", self.freq)),
+            FetchSection {
+                name: "Frequency".to_string(),
+                content: crate::FetchType::Long(freq_vec),
+            },
         ])
     }
 }
