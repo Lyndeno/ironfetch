@@ -14,11 +14,7 @@ impl Cpu {
         let core_count = cpu.num_cores();
 
         // TODO: Implement support for multiple CPU models, technically possible
-        let model = match cpu.model_name(0) {
-            Some(s) => s,
-            None => cpu.get_field(0, "Hardware").unwrap_or(""),
-        }
-        .to_string();
+        let model = cpu.model_name(0).unwrap_or("Unknown Model").to_string();
 
         let mut sum = Frequency::from_hertz(0f64);
         for cpu_num in 0..core_count {
