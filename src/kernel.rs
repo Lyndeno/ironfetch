@@ -1,7 +1,7 @@
 use nix::sys::utsname::{uname, UtsName};
 use std::ffi::OsStr;
 
-use crate::{fetcherror::FetchError, fetchitem::FetchItem};
+use crate::{fetcherror::FetchError, fetchitem::FetchItem, FetchSection};
 
 type Result<T> = std::result::Result<T, FetchError>;
 
@@ -39,5 +39,13 @@ impl std::fmt::Display for Kernel {
 impl FetchItem for Kernel {
     fn name(&self) -> String {
         String::from("Kernel")
+    }
+
+    fn long_content(&self) -> Option<Vec<crate::FetchSection>> {
+        Some(vec![
+            FetchSection::new_short("Name", self.name.clone()),
+            FetchSection::new_short("Release", self.release.clone()),
+            FetchSection::new_short("Architecture", self.architecture.clone()),
+        ])
     }
 }
