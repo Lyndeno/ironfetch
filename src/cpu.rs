@@ -1,4 +1,4 @@
-use crate::{fetcherror::FetchError, fetchitem::FetchItem};
+use crate::{fetcherror::FetchError, fetchitem::FetchItem, FetchSection};
 use measurements::frequency::Frequency;
 use procfs::CpuInfo;
 
@@ -45,5 +45,13 @@ impl std::fmt::Display for Cpu {
 impl FetchItem for Cpu {
     fn name(&self) -> String {
         String::from("CPU")
+    }
+
+    fn long_content(&self) -> Option<Vec<crate::FetchSection>> {
+        Some(vec![
+            FetchSection::new_short("Model", self.model.clone()),
+            FetchSection::new_short("Cores", format!("{}", self.core_count)),
+            FetchSection::new_short("Frequency", format!("{:.3}", self.freq)),
+        ])
     }
 }

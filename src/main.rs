@@ -37,36 +37,76 @@ mod memunit;
 mod args;
 use crate::args::Args;
 
-/// Simple fetching program
-struct Fetchline {
-    name: String,
-    content: String,
+const INDENT_LENGTH: usize = 4;
+
+pub enum FetchType {
+    Short(String),
+    Long(Vec<FetchSection>),
 }
 
-impl<T> From<T> for Fetchline
-where
-    T: FetchItem,
-{
-    fn from(value: T) -> Self {
+/// Simple fetching program
+pub struct FetchSection {
+    name: String,
+    content: FetchType,
+}
+
+impl FetchSection {
+    pub fn new_short<A: Into<String>, B: Into<String>>(name: A, content: B) -> Self {
+        Self {
+            name: name.into(),
+            content: FetchType::Short(content.into()),
+        }
+    }
+
+    pub fn fmt(&self, indent: usize) {
+        match self.content {
+            FetchType::Short(ref s) => println!("{:>indent$}: {}", self.name, s, indent = indent),
+            FetchType::Long(ref c) => {
+                println!("{:>indent$}:", self.name, indent = indent);
+                for line in c {
+                    line.fmt(indent + INDENT_LENGTH);
+                }
+            }
+        }
+    }
+
+    pub fn get_indent(&self, level: usize) -> usize {
+        let mut indent = self.name.len();
+        match self.content {
+            FetchType::Short(_) => {}
+            FetchType::Long(ref v) => {
+                for line in v {
+                    let length = line.get_indent(level + 1);
+                    indent = if length > indent { length } else { indent };
+                }
+            }
+        };
+        indent.saturating_sub(level * INDENT_LENGTH)
+    }
+
+    fn from<T>(value: T, long: bool) -> Self
+    where
+        T: FetchItem,
+    {
         Self {
             name: value.name(),
-            content: value.content(),
+            content: value.content(long),
         }
     }
 }
 
 fn main() {
     let args = Args::parse();
-    let mut lines: Vec<Fetchline> = Vec::with_capacity(8);
+    let mut lines: Vec<FetchSection> = Vec::with_capacity(8);
     let lines_result = vec![
-        gen_fl(OsInfo::new()),
-        gen_fl(Shell::new()),
-        gen_fl(Kernel::new()),
-        gen_fl(Model::new()),
-        gen_fl(HostName::new()),
-        gen_fl(Uptime::new()),
-        gen_fl(Cpu::new()),
-        gen_fl(Memory::new(args.memory_unit)),
+        gen_fl(OsInfo::new(), args.long),
+        gen_fl(Shell::new(), args.long),
+        gen_fl(Kernel::new(), args.long),
+        gen_fl(Model::new(), args.long),
+        gen_fl(HostName::new(), args.long),
+        gen_fl(Uptime::new(), args.long),
+        gen_fl(Cpu::new(), args.long),
+        gen_fl(Memory::new(args.memory_unit), args.long),
     ];
 
     for line in lines_result {
@@ -82,17 +122,20 @@ fn main() {
 
     let mut indent = 0;
     for line in &lines {
-        let length = line.name.len();
+        let length = line.get_indent(0);
         indent = if length > indent { length } else { indent };
     }
     for line in lines {
-        println!("{:>indent$}: {}", line.name, line.content, indent = indent);
+        line.fmt(indent);
     }
 }
 
-fn gen_fl<T: FetchItem>(item: Result<T, FetchError>) -> Result<Fetchline, FetchError> {
+fn gen_fl<T: FetchItem>(
+    item: Result<T, FetchError>,
+    long: bool,
+) -> Result<FetchSection, FetchError> {
     match item {
-        Ok(f) => Ok(Fetchline::from(f)),
+        Ok(f) => Ok(FetchSection::from(f, long)),
         Err(e) => Err(e),
     }
 }

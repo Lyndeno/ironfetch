@@ -12,4 +12,8 @@ pub struct Args {
     /// Print errors and other extra information
     #[arg(long, short)]
     pub debug: bool,
+
+    /// Show more detailed information
+    #[arg(long, short)]
+    pub long: bool,
 }
