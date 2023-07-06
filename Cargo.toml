@@ -8,10 +8,13 @@ edition = "2021"
 [dependencies]
 clap = { version = "*", features = ["derive"] }
 colored = "*"
+dmidecode = "0.7.5"
 measurements = "*"
 nix = "*"
 os-release = "*"
 procfs = "*"
+smbios = "0.1.7"
+smbios-lib = "0.9.0"
 sys-info = "*"
 uptime_lib = "*"
 

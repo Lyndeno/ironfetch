@@ -1,12 +1,40 @@
 use std::fmt::Write;
 
-use crate::fetcherror::FetchError;
 use crate::fetchitem::FetchItem;
 use crate::memunit::MemUnits;
 use crate::FetchSection;
+use crate::{fetcherror::FetchError, FetchType};
 use procfs::Meminfo;
 
-use measurements::data::Data;
+use smbios::stream;
+use smbioslib::{
+    table_load_from_device, SMBiosData, SMBiosMemoryControllerInformation, SMBiosMemoryDevice,
+};
+
+// This only works when running as root
+struct MemDevice {
+    speed: Frequency,
+    part_number: String,
+    location: String,
+}
+
+impl From<SMBiosMemoryDevice<'_>> for MemDevice {
+    fn from(dev: SMBiosMemoryDevice<'_>) -> Self {
+        Self {
+            speed: match dev.configured_memory_speed() {
+                Some(v) => match v {
+                    smbioslib::MemorySpeed::MTs(s) => Frequency::from_megahertz(s as f64),
+                    _ => Frequency::from_megahertz(0_f64),
+                },
+                _ => Frequency::from_megahertz(0_f64),
+            },
+            location: dev.device_locator().ok().unwrap(),
+            part_number: dev.part_number().ok().unwrap(),
+        }
+    }
+}
+
+use measurements::{data::Data, Frequency};
 pub struct Memory {
     total: Data,
     //free: MemBytes,
@@ -16,15 +44,30 @@ pub struct Memory {
     //swap_total: MemBytes,
     //swap_free: MemBytes,
     display_unit: Option<MemUnits>,
+    devices: Option<Vec<MemDevice>>,
 }
 
 impl Memory {
     pub fn new(display_unit: Option<MemUnits>) -> Result<Self, FetchError> {
         let meminfo = Meminfo::new().unwrap();
+
+        let mem_vec = match table_load_from_device() {
+            Ok(s) => {
+                let smb = s.defined_struct_iter::<SMBiosMemoryDevice>();
+                let mut vec = Vec::new();
+                for dev in smb {
+                    vec.push(MemDevice::from(dev));
+                }
+                Some(vec)
+            }
+            Err(_) => None,
+        };
+
         Ok(Self {
             total: Data::from_octets(meminfo.mem_total as f64),
             avail: Data::from_octets(meminfo.mem_available.unwrap() as f64),
             display_unit,
+            devices: mem_vec,
         })
     }
 
@@ -74,10 +117,30 @@ impl FetchItem for Memory {
     }
 
     fn long_content(&self) -> Option<Vec<crate::FetchSection>> {
-        Some(vec![
+        let mut vec = vec![
             FetchSection::new_short("Total", format!("{:.2}", self.total)),
             FetchSection::new_short("Used", format!("{:.2}", self.used())),
             FetchSection::new_short("Available", format!("{:.2}", self.avail)),
-        ])
+        ];
+        if let Some(ref s) = self.devices {
+            let mut devices = Vec::new();
+            for dev in s {
+                devices.push(FetchSection {
+                    name: dev.location.clone(),
+                    content: FetchType::Long(vec![
+                        FetchSection::new_short(
+                            "Speed",
+                            format!("{} MT/s", dev.speed.as_megahertz()),
+                        ),
+                        FetchSection::new_short("Part #", dev.part_number.clone()),
+                    ]),
+                });
+            }
+            vec.push(FetchSection {
+                name: "Devices".to_string(),
+                content: FetchType::Long(devices),
+            });
+        }
+        Some(vec)
     }
 }
