@@ -25,6 +25,7 @@ mod shell;
 use crate::shell::Shell;
 
 use clap::Parser;
+use colored::Colorize;
 use fetcherror::FetchError;
 use fetchitem::FetchItem;
 
@@ -60,9 +61,14 @@ impl FetchSection {
 
     pub fn fmt(&self, indent: usize) {
         match self.content {
-            FetchType::Short(ref s) => println!("{:>indent$}: {}", self.name, s, indent = indent),
+            FetchType::Short(ref s) => println!(
+                "{:>indent$}: {}",
+                self.name.red().bold(),
+                s,
+                indent = indent
+            ),
             FetchType::Long(ref c) => {
-                println!("{:>indent$}:", self.name, indent = indent);
+                println!("{:>indent$}:", self.name.red().bold(), indent = indent);
                 for line in c {
                     line.fmt(indent + INDENT_LENGTH);
                 }
