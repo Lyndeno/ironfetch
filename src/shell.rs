@@ -1,6 +1,6 @@
 use std::{env, path::PathBuf};
 
-use crate::{fetcherror::FetchError, fetchitem::FetchItem};
+use crate::{fetcherror::FetchError, fetchitem::FetchItem, FetchSection};
 
 pub struct Shell {
     pub path: PathBuf,
@@ -32,5 +32,12 @@ impl std::fmt::Display for Shell {
 impl FetchItem for Shell {
     fn name(&self) -> String {
         String::from("Shell")
+    }
+
+    fn long_content(&self) -> Option<Vec<crate::FetchSection>> {
+        Some(vec![
+            FetchSection::new_short("Name", self.name().unwrap_or("".to_string())),
+            FetchSection::new_short("Path", self.path.to_str().unwrap().to_string()),
+        ])
     }
 }
