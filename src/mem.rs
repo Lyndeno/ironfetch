@@ -3,6 +3,7 @@ use std::fmt::Write;
 use crate::fetcherror::FetchError;
 use crate::fetchitem::FetchItem;
 use crate::memunit::MemUnits;
+use crate::FetchSection;
 use procfs::Meminfo;
 
 use measurements::data::Data;
@@ -70,5 +71,13 @@ impl std::fmt::Display for Memory {
 impl FetchItem for Memory {
     fn name(&self) -> String {
         String::from("Memory")
+    }
+
+    fn long_content(&self) -> Option<Vec<crate::FetchSection>> {
+        Some(vec![
+            FetchSection::new_short("Total", format!("{:.2}", self.total)),
+            FetchSection::new_short("Used", format!("{:.2}", self.used())),
+            FetchSection::new_short("Available", format!("{:.2}", self.avail)),
+        ])
     }
 }
