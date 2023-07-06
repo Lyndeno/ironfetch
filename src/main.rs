@@ -72,7 +72,11 @@ fn main() {
     for line in lines_result {
         match line {
             Ok(fl) => lines.push(fl),
-            Err(e) => println!("Error: {}", e),
+            Err(e) => {
+                if args.debug {
+                    eprintln!("Error: {}", e)
+                }
+            }
         };
     }
 

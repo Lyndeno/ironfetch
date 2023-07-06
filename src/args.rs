@@ -9,7 +9,7 @@ pub struct Args {
     #[arg(long, short, value_enum)]
     pub memory_unit: Option<MemUnits>,
 
-    /// Print error and other extra information
+    /// Print errors and other extra information
     #[arg(long, short)]
-    pub verbose: bool,
+    pub debug: bool,
 }
