@@ -1,9 +1,11 @@
 use crate::{fetcherror::FetchError, fetchitem::FetchItem, FetchSection};
 use measurements::frequency::Frequency;
+use nix::sys::socket::SockaddrLike;
 use procfs::CpuInfo;
 
 pub struct Cpu {
     core_count: usize,
+    physical_core_count: usize,
     model: String,
     freq: Vec<Frequency>,
 }
@@ -26,10 +28,24 @@ impl Cpu {
             ));
         }
 
+        let mut core_id = Vec::new();
+        for cpu_num in 0..core_count {
+            core_id.push(
+                cpu.get_field(cpu_num, "core id")
+                    .unwrap()
+                    .parse::<usize>()
+                    .unwrap(),
+            )
+        }
+        core_id.sort();
+        core_id.dedup();
+        let physical_core_count = core_id.len();
+
         Ok(Self {
             core_count,
             model,
             freq,
+            physical_core_count,
         })
     }
 }
@@ -43,7 +59,11 @@ impl std::fmt::Display for Cpu {
             }
             sum / self.core_count as f64
         };
-        write!(f, "{} ({}) @ {:.3}", self.model, self.core_count, freq_avg)
+        write!(
+            f,
+            "{} ({}/{}) @ {:.3}",
+            self.model, self.core_count, self.physical_core_count, freq_avg
+        )
     }
 }
 
@@ -62,7 +82,8 @@ impl FetchItem for Cpu {
         }
         Some(vec![
             FetchSection::new_short("Model", self.model.clone()),
-            FetchSection::new_short("Cores", format!("{}", self.core_count)),
+            FetchSection::new_short("Logical Cores", format!("{}", self.core_count)),
+            FetchSection::new_short("Physical Cores", format!("{}", self.physical_core_count)),
             //FetchSection::new_short("Frequency", format!("{:.3}", self.freq)),
             FetchSection {
                 name: "Frequency".to_string(),
