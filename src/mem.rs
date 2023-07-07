@@ -8,7 +8,8 @@ use procfs::Meminfo;
 
 use smbios::stream;
 use smbioslib::{
-    table_load_from_device, SMBiosData, SMBiosMemoryControllerInformation, SMBiosMemoryDevice,
+    table_load_from_device, MemorySize, MemorySizeExtended, SMBiosData,
+    SMBiosMemoryControllerInformation, SMBiosMemoryDevice,
 };
 
 // This only works when running as root
@@ -17,6 +18,8 @@ struct MemDevice {
     part_number: String,
     location: String,
     manufacturer: String,
+    size: Data,
+    mem_type: String,
 }
 
 impl From<SMBiosMemoryDevice<'_>> for MemDevice {
@@ -32,6 +35,16 @@ impl From<SMBiosMemoryDevice<'_>> for MemDevice {
             location: dev.device_locator().ok().unwrap(),
             part_number: dev.part_number().ok().unwrap(),
             manufacturer: dev.manufacturer().ok().unwrap(),
+            size: match dev.size().unwrap() {
+                MemorySize::Kilobytes(d) => Data::from_kibioctets(d as f64),
+                MemorySize::Megabytes(d) => Data::from_mebioctets(d as f64),
+                MemorySize::SeeExtendedSize => match dev.extended_size().unwrap() {
+                    MemorySizeExtended::Megabytes(d) => Data::from_mebioctets(d as f64),
+                    _ => Data::from_bits(0_f64),
+                },
+                _ => Data::from_bits(0_f64),
+            },
+            mem_type: format!("{:?}", dev.memory_type().unwrap().value).to_uppercase(), // TODO: This is gross
         }
     }
 }
@@ -131,6 +144,8 @@ impl FetchItem for Memory {
                     name: dev.location.clone(),
                     content: FetchType::Long(vec![
                         FetchSection::new_short("Manufacturer", dev.manufacturer.clone()),
+                        FetchSection::new_short("Type", dev.mem_type.clone()),
+                        FetchSection::new_short("Capacity", format!("{:.2}", dev.size)),
                         FetchSection::new_short(
                             "Speed",
                             format!("{} MT/s", dev.speed.as_megahertz()),
