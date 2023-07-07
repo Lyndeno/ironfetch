@@ -6,11 +6,7 @@ use crate::FetchSection;
 use crate::{fetcherror::FetchError, FetchType};
 use procfs::Meminfo;
 
-use smbios::stream;
-use smbioslib::{
-    table_load_from_device, MemorySize, MemorySizeExtended, SMBiosData,
-    SMBiosMemoryControllerInformation, SMBiosMemoryDevice,
-};
+use smbioslib::{table_load_from_device, MemorySize, MemorySizeExtended, SMBiosMemoryDevice};
 
 // This only works when running as root
 struct MemDevice {

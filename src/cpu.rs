@@ -1,6 +1,5 @@
 use crate::{fetcherror::FetchError, fetchitem::FetchItem, FetchSection};
 use measurements::frequency::Frequency;
-use nix::sys::socket::SockaddrLike;
 use procfs::CpuInfo;
 
 pub struct Cpu {
