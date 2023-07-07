@@ -120,12 +120,7 @@ impl FetchItem for Memory {
                 name: "Devices".to_string(),
                 content: FetchType::Long(devices),
             });
-        } else {
-            vec.push(FetchSection::new_short(
-                "Devices",
-                "Insufficient Permissions",
-            ));
-        }
+        };
         Some(vec)
     }
 }
