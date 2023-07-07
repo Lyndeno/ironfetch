@@ -6,8 +6,8 @@ use crate::kernel::Kernel;
 mod cpu;
 use crate::cpu::Cpu;
 
-mod mem;
-use crate::mem::Memory;
+mod memory;
+use crate::memory::Memory;
 
 mod osinfo;
 use crate::osinfo::OsInfo;
