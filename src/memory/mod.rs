@@ -7,8 +7,6 @@ use crate::{fetcherror::FetchError, FetchType};
 use measurements::Data;
 use procfs::Meminfo;
 
-use smbioslib::{table_load_from_device, SMBiosMemoryDevice};
-
 use self::mem::MemDevice;
 
 mod mem;
@@ -28,23 +26,13 @@ impl Memory {
     pub fn new(display_unit: Option<MemUnits>) -> Result<Self, FetchError> {
         let meminfo = Meminfo::new().unwrap();
 
-        let mem_vec = match table_load_from_device() {
-            Ok(s) => {
-                let smb = s.defined_struct_iter::<SMBiosMemoryDevice>();
-                let mut vec = Vec::new();
-                for dev in smb {
-                    vec.push(MemDevice::from(dev));
-                }
-                Some(vec)
-            }
-            Err(_) => None,
-        };
-
         Ok(Self {
             total: Data::from_octets(meminfo.mem_total as f64),
             avail: Data::from_octets(meminfo.mem_available.unwrap() as f64),
             display_unit,
-            devices: mem_vec,
+            // This will usually error do to permission errors, so just wrap it None instead
+            // as it is not needed for basic use
+            devices: MemDevice::from_smbios_table().unwrap_or(None),
         })
     }
 
@@ -104,16 +92,26 @@ impl FetchItem for Memory {
             for dev in s {
                 devices.push(FetchSection {
                     name: dev.location.clone(),
-                    content: FetchType::Long(vec![
-                        FetchSection::new_short("Manufacturer", dev.manufacturer.clone()),
-                        FetchSection::new_short("Type", dev.mem_type.clone()),
-                        FetchSection::new_short("Capacity", format!("{:.2}", dev.size)),
-                        FetchSection::new_short(
+                    content: {
+                        let mut memvec = Vec::new();
+                        if let Some(ref v) = dev.manufacturer {
+                            memvec.push(FetchSection::new_short("Manufacturer", v.clone()))
+                        }
+                        if let Some(ref v) = dev.part_number {
+                            memvec.push(FetchSection::new_short("Part #", v.clone()))
+                        }
+                        if let Some(ref v) = dev.mem_type {
+                            memvec.push(FetchSection::new_short("Type", v.clone()))
+                        }
+                        if let Some(ref v) = dev.size {
+                            memvec.push(FetchSection::new_short("Capacity", format!("{:.2}", v)))
+                        }
+                        memvec.push(FetchSection::new_short(
                             "Speed",
                             format!("{} MT/s", dev.speed.as_megahertz()),
-                        ),
-                        FetchSection::new_short("Part #", dev.part_number.clone()),
-                    ]),
+                        ));
+                        FetchType::Long(memvec)
+                    },
                 });
             }
             vec.push(FetchSection {
