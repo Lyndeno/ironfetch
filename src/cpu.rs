@@ -74,16 +74,12 @@ impl FetchItem for Cpu {
     fn long_content(&self) -> Option<Vec<crate::FetchSection>> {
         let mut freq_vec: Vec<FetchSection> = Vec::with_capacity(self.core_count);
         for i in 0..self.core_count {
-            freq_vec.push(FetchSection::new_short(
-                format!("Core {}", i),
-                format!("{:.3}", self.freq[i]),
-            ));
+            freq_vec.push((format!("Core {}", i), format!("{:.3}", self.freq[i])).into());
         }
         Some(vec![
-            FetchSection::new_short("Model", self.model.clone()),
-            FetchSection::new_short("Logical Cores", format!("{}", self.core_count)),
-            FetchSection::new_short("Physical Cores", format!("{}", self.physical_core_count)),
-            //FetchSection::new_short("Frequency", format!("{:.3}", self.freq)),
+            ("Model", self.model.clone()).into(),
+            ("Logical Cores", format!("{}", self.core_count)).into(),
+            ("Physical Cores", format!("{}", self.physical_core_count)).into(),
             FetchSection {
                 name: "Frequency".to_string(),
                 content: crate::FetchType::Long(freq_vec),

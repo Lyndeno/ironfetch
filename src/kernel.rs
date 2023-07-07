@@ -43,9 +43,9 @@ impl FetchItem for Kernel {
 
     fn long_content(&self) -> Option<Vec<crate::FetchSection>> {
         Some(vec![
-            FetchSection::new_short("Name", self.name.clone()),
-            FetchSection::new_short("Release", self.release.clone()),
-            FetchSection::new_short("Architecture", self.architecture.clone()),
+            ("Name", self.name.clone()).into(),
+            ("Release", self.release.clone()).into(),
+            ("Architecture", self.architecture.clone()).into(),
         ])
     }
 }

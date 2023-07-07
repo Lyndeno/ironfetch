@@ -82,10 +82,10 @@ impl FetchItem for Memory {
     }
 
     fn long_content(&self) -> Option<Vec<crate::FetchSection>> {
-        let mut vec = vec![
-            FetchSection::new_short("Total", format!("{:.2}", self.total)),
-            FetchSection::new_short("Used", format!("{:.2}", self.used())),
-            FetchSection::new_short("Available", format!("{:.2}", self.avail)),
+        let mut vec: Vec<FetchSection> = vec![
+            ("Total", format!("{:.2}", self.total)).into(),
+            ("Used", format!("{:.2}", self.used())).into(),
+            ("Available", format!("{:.2}", self.avail)).into(),
         ];
         if let Some(ref s) = self.devices {
             let mut devices = Vec::new();
@@ -93,23 +93,20 @@ impl FetchItem for Memory {
                 devices.push(FetchSection {
                     name: dev.location.clone(),
                     content: {
-                        let mut memvec = Vec::new();
+                        let mut memvec: Vec<FetchSection> = Vec::new();
                         if let Some(ref v) = dev.manufacturer {
-                            memvec.push(FetchSection::new_short("Manufacturer", v.clone()))
+                            memvec.push(("Manufacturer", v.clone()).into())
                         }
                         if let Some(ref v) = dev.part_number {
-                            memvec.push(FetchSection::new_short("Part #", v.clone()))
+                            memvec.push(("Part #", v.clone()).into())
                         }
                         if let Some(ref v) = dev.mem_type {
-                            memvec.push(FetchSection::new_short("Type", v.clone()))
+                            memvec.push(("Type", v.clone()).into())
                         }
                         if let Some(ref v) = dev.size {
-                            memvec.push(FetchSection::new_short("Capacity", format!("{:.2}", v)))
+                            memvec.push(("Capacity", format!("{:.2}", v)).into())
                         }
-                        memvec.push(FetchSection::new_short(
-                            "Speed",
-                            format!("{} MT/s", dev.speed.as_megahertz()),
-                        ));
+                        memvec.push(("Speed", format!("{} MT/s", dev.speed.as_megahertz())).into());
                         FetchType::Long(memvec)
                     },
                 });

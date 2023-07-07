@@ -24,6 +24,7 @@ use crate::model::Model;
 mod shell;
 use crate::shell::Shell;
 
+use clap::builder::Str;
 use clap::Parser;
 use colored::Colorize;
 use fetcherror::FetchError;
@@ -52,13 +53,6 @@ pub struct FetchSection {
 }
 
 impl FetchSection {
-    pub fn new_short<A: Into<String>, B: Into<String>>(name: A, content: B) -> Self {
-        Self {
-            name: name.into(),
-            content: FetchType::Short(content.into()),
-        }
-    }
-
     pub fn fmt(&self, indent: usize) {
         match self.content {
             FetchType::Short(ref s) => println!(
@@ -97,6 +91,15 @@ impl FetchSection {
         Self {
             name: value.name(),
             content: value.content(long),
+        }
+    }
+}
+
+impl<A: Into<String>, B: Into<String>> From<(A, B)> for FetchSection {
+    fn from((name, content): (A, B)) -> Self {
+        Self {
+            name: name.into(),
+            content: FetchType::Short(content.into()),
         }
     }
 }

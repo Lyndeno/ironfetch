@@ -44,9 +44,9 @@ impl FetchItem for Model {
 
     fn long_content(&self) -> Option<Vec<crate::FetchSection>> {
         Some(vec![
-            FetchSection::new_short("Vendor", self.board_vendor.clone()),
-            FetchSection::new_short("Product", self.product_name.clone()),
-            FetchSection::new_short("Board", self.board_name.clone()),
+            ("Vendor", self.board_vendor.clone()).into(),
+            ("Product", self.product_name.clone()).into(),
+            ("Board", self.board_name.clone()).into(),
         ])
     }
 }
