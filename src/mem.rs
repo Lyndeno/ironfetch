@@ -16,6 +16,7 @@ struct MemDevice {
     speed: Frequency,
     part_number: String,
     location: String,
+    manufacturer: String,
 }
 
 impl From<SMBiosMemoryDevice<'_>> for MemDevice {
@@ -30,6 +31,7 @@ impl From<SMBiosMemoryDevice<'_>> for MemDevice {
             },
             location: dev.device_locator().ok().unwrap(),
             part_number: dev.part_number().ok().unwrap(),
+            manufacturer: dev.manufacturer().ok().unwrap(),
         }
     }
 }
@@ -128,6 +130,7 @@ impl FetchItem for Memory {
                 devices.push(FetchSection {
                     name: dev.location.clone(),
                     content: FetchType::Long(vec![
+                        FetchSection::new_short("Manufacturer", dev.manufacturer.clone()),
                         FetchSection::new_short(
                             "Speed",
                             format!("{} MT/s", dev.speed.as_megahertz()),
