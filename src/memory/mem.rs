@@ -31,7 +31,8 @@ impl From<SMBiosMemoryDevice<'_>> for MemDevice {
             speed: match dev.configured_memory_speed() {
                 Some(v) => match v {
                     smbioslib::MemorySpeed::MTs(s) => Some(Frequency::from_megahertz(s as f64)),
-                    _ => None,
+                    smbioslib::MemorySpeed::Unknown => None,
+                    smbioslib::MemorySpeed::SeeExtendedSpeed => todo!(),
                 },
                 _ => None,
             },
