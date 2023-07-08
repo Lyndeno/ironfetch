@@ -44,6 +44,7 @@ const INDENT_LENGTH: usize = 4;
 pub enum FetchType {
     Short(String),
     Long(Vec<FetchSection>),
+    None,
 }
 
 /// Simple fetching program
@@ -67,6 +68,7 @@ impl FetchSection {
                     line.fmt(indent + INDENT_LENGTH);
                 }
             }
+            FetchType::None => {}
         }
     }
 
@@ -80,6 +82,7 @@ impl FetchSection {
                     indent = if length > indent { length } else { indent };
                 }
             }
+            FetchType::None => {}
         };
         indent.saturating_sub(level * INDENT_LENGTH)
     }
@@ -101,6 +104,21 @@ impl<A: Into<String>, B: Into<String>> From<(A, B)> for FetchSection {
             name: name.into(),
             content: FetchType::Short(content.into()),
         }
+    }
+}
+
+pub fn opt_fs<A, B>((name, content): (A, Option<B>)) -> FetchSection
+where
+    (A, B): Into<FetchSection>,
+    A: Into<String>,
+    B: Into<String>,
+{
+    match content {
+        Some(v) => (name, v).into(),
+        None => FetchSection {
+            name: name.into(),
+            content: FetchType::None,
+        },
     }
 }
 

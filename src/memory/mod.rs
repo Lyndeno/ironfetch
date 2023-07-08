@@ -2,8 +2,8 @@ use std::fmt::Write;
 
 use crate::fetchitem::FetchItem;
 use crate::memunit::MemUnits;
-use crate::FetchSection;
 use crate::{fetcherror::FetchError, FetchType};
+use crate::{opt_fs, FetchSection};
 use measurements::Data;
 use procfs::Meminfo;
 
@@ -94,19 +94,15 @@ impl FetchItem for Memory {
                     name: dev.location.clone(),
                     content: {
                         let mut memvec: Vec<FetchSection> = Vec::new();
-                        if let Some(ref v) = dev.manufacturer {
-                            memvec.push(("Manufacturer", v.clone()).into())
-                        }
-                        if let Some(ref v) = dev.part_number {
-                            memvec.push(("Part #", v.clone()).into())
-                        }
-                        if let Some(ref v) = dev.mem_type {
-                            memvec.push(("Type", v.clone()).into())
-                        }
+                        memvec.push(opt_fs(("Manufacturer", dev.manufacturer.clone())));
+                        memvec.push(opt_fs(("Part #", dev.part_number.clone())));
+                        memvec.push(opt_fs(("Type", dev.mem_type.clone())));
                         if let Some(ref v) = dev.size {
                             memvec.push(("Capacity", format!("{:.2}", v)).into())
                         }
-                        memvec.push(("Speed", format!("{} MT/s", dev.speed.as_megahertz())).into());
+                        if let Some(ref v) = dev.speed {
+                            memvec.push(("Speed", format!("{} MT/s", v.as_megahertz())).into());
+                        }
                         FetchType::Long(memvec)
                     },
                 });

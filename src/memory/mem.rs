@@ -5,7 +5,7 @@ use smbioslib::{table_load_from_device, MemorySize, MemorySizeExtended, SMBiosMe
 // Type to store basic information about memory devices, such as ramsticks.
 // Minimally tested, it is possible information shows up in here for empty dimm slots as well.
 pub struct MemDevice {
-    pub speed: Frequency,
+    pub speed: Option<Frequency>,
     pub part_number: Option<String>,
     pub location: String,
     pub manufacturer: Option<String>,
@@ -30,10 +30,10 @@ impl From<SMBiosMemoryDevice<'_>> for MemDevice {
         Self {
             speed: match dev.configured_memory_speed() {
                 Some(v) => match v {
-                    smbioslib::MemorySpeed::MTs(s) => Frequency::from_megahertz(s as f64),
-                    _ => Frequency::from_megahertz(0_f64),
+                    smbioslib::MemorySpeed::MTs(s) => Some(Frequency::from_megahertz(s as f64)),
+                    _ => None,
                 },
-                _ => Frequency::from_megahertz(0_f64),
+                _ => None,
             },
             location: dev.device_locator().ok().unwrap(),
             part_number: dev.part_number().ok(),
