@@ -19,15 +19,18 @@ impl MemDevice {
         let smb = smb_vec.defined_struct_iter::<SMBiosMemoryDevice>();
         let mut vec = Vec::new();
         for dev in smb {
-            vec.push(MemDevice::from(dev));
+            if let Ok(d) = MemDevice::try_from(dev) {
+                vec.push(d);
+            }
         }
         Ok(Some(vec))
     }
 }
 
-impl From<SMBiosMemoryDevice<'_>> for MemDevice {
-    fn from(dev: SMBiosMemoryDevice<'_>) -> Self {
-        Self {
+impl TryFrom<SMBiosMemoryDevice<'_>> for MemDevice {
+    type Error = &'static str;
+    fn try_from(dev: SMBiosMemoryDevice<'_>) -> Result<Self, Self::Error> {
+        Ok(Self {
             speed: match dev.configured_memory_speed() {
                 Some(v) => match v {
                     smbioslib::MemorySpeed::MTs(s) => Some(Frequency::from_megahertz(s as f64)),
@@ -36,7 +39,11 @@ impl From<SMBiosMemoryDevice<'_>> for MemDevice {
                 },
                 _ => None,
             },
-            location: dev.device_locator().ok().unwrap(),
+            // This should not error if something is there
+            location: match dev.device_locator().ok() {
+                Some(v) => v,
+                None => return Err("Error getting device locator"),
+            },
             part_number: dev.part_number().ok(),
             manufacturer: dev.manufacturer().ok(),
             size: match dev.size() {
@@ -52,7 +59,7 @@ impl From<SMBiosMemoryDevice<'_>> for MemDevice {
                 Some(v) => Some(format!("{:?}", v.value).to_uppercase()), // TODO: This is gross
                 None => None,
             },
-        }
+        })
     }
 }
 
