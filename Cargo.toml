@@ -16,6 +16,15 @@ smbios-lib = "0.9.0"
 sys-info = "*"
 uptime_lib = "*"
 
+[[bin]]
+name = "ironfetch"
+path = "src/main.rs"
+doc = false
+
+[lib]
+name = "ironfetch"
+path = "src/lib.rs"
+
 [build-dependencies]
 clap = { version = "*", features = ["derive"] }
 clap_complete = "*"

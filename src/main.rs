@@ -1,126 +1,27 @@
-mod kernel;
 use std::vec;
 
-use crate::kernel::Kernel;
+use ironfetch::fetcherror::FetchError;
+use ironfetch::fetchitem::FetchItem;
+use ironfetch::fetchsection::FetchSection;
+use ironfetch::kernel::Kernel;
 
-mod cpu;
-use crate::cpu::Cpu;
+use ironfetch::cpu::Cpu;
 
-mod memory;
-use crate::memory::Memory;
+use ironfetch::memory::Memory;
 
-mod osinfo;
-use crate::osinfo::OsInfo;
+use ironfetch::osinfo::OsInfo;
 
-mod hostname;
-use crate::hostname::HostName;
+use ironfetch::hostname::HostName;
 
-mod uptime;
-use crate::uptime::Uptime;
+use ironfetch::uptime::Uptime;
 
-mod model;
-use crate::model::Model;
+use ironfetch::model::Model;
 
-mod shell;
-use crate::shell::Shell;
+use ironfetch::shell::Shell;
 
-use clap::builder::Str;
 use clap::Parser;
-use colored::Colorize;
-use fetcherror::FetchError;
-use fetchitem::FetchItem;
 
-mod fetchitem;
-
-mod fetcherror;
-
-mod memunit;
-
-mod args;
-use crate::args::Args;
-
-const INDENT_LENGTH: usize = 4;
-
-pub enum FetchType {
-    Short(String),
-    Long(Vec<FetchSection>),
-    None,
-}
-
-/// Simple fetching program
-pub struct FetchSection {
-    name: String,
-    content: FetchType,
-}
-
-impl FetchSection {
-    pub fn fmt(&self, indent: usize) {
-        match self.content {
-            FetchType::Short(ref s) => println!(
-                "{:>indent$}: {}",
-                self.name.red().bold(),
-                s,
-                indent = indent
-            ),
-            FetchType::Long(ref c) => {
-                println!("{:>indent$}:", self.name.red().bold(), indent = indent);
-                for line in c {
-                    line.fmt(indent + INDENT_LENGTH);
-                }
-            }
-            FetchType::None => {}
-        }
-    }
-
-    pub fn get_indent(&self, level: usize) -> usize {
-        let mut indent = self.name.len();
-        match self.content {
-            FetchType::Short(_) => {}
-            FetchType::Long(ref v) => {
-                for line in v {
-                    let length = line.get_indent(level + 1);
-                    indent = if length > indent { length } else { indent };
-                }
-            }
-            FetchType::None => {}
-        };
-        indent.saturating_sub(level * INDENT_LENGTH)
-    }
-
-    fn from<T>(value: T, long: bool) -> Self
-    where
-        T: FetchItem,
-    {
-        Self {
-            name: value.name(),
-            content: value.content(long),
-        }
-    }
-}
-
-impl<A: Into<String>, B: Into<String>> From<(A, B)> for FetchSection {
-    fn from((name, content): (A, B)) -> Self {
-        Self {
-            name: name.into(),
-            content: FetchType::Short(content.into()),
-        }
-    }
-}
-
-pub fn opt_fs<A, B>((name, content): (A, Option<B>)) -> FetchSection
-where
-    (A, B): Into<FetchSection>,
-    A: Into<String>,
-    B: Into<String>,
-{
-    match content {
-        Some(v) => (name, v).into(),
-        None => FetchSection {
-            name: name.into(),
-            content: FetchType::None,
-        },
-    }
-}
+use ironfetch::args::Args;
 
 fn main() {
     let args = Args::parse();

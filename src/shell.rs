@@ -1,6 +1,6 @@
 use std::{env, path::PathBuf};
 
-use crate::{fetcherror::FetchError, fetchitem::FetchItem};
+use crate::{fetcherror::FetchError, fetchitem::FetchItem, fetchsection::FetchSection};
 
 pub struct Shell {
     pub path: PathBuf,
@@ -34,7 +34,7 @@ impl FetchItem for Shell {
         String::from("Shell")
     }
 
-    fn long_content(&self) -> Option<Vec<crate::FetchSection>> {
+    fn long_content(&self) -> Option<Vec<FetchSection>> {
         Some(vec![
             ("Name", self.name().unwrap_or("".to_string())).into(),
             ("Path", self.path.to_str().unwrap().to_string()).into(),

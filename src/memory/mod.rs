@@ -2,8 +2,8 @@ use std::fmt::Write;
 
 use crate::fetchitem::FetchItem;
 use crate::memunit::MemUnits;
-use crate::{fetcherror::FetchError, FetchType};
-use crate::{opt_fs, FetchSection};
+use crate::{fetcherror::FetchError, fetchsection::FetchType};
+use crate::{fetchsection::opt_fs, fetchsection::FetchSection};
 use measurements::Data;
 use procfs::Meminfo;
 
@@ -81,7 +81,7 @@ impl FetchItem for Memory {
         String::from("Memory")
     }
 
-    fn long_content(&self) -> Option<Vec<crate::FetchSection>> {
+    fn long_content(&self) -> Option<Vec<FetchSection>> {
         let mut vec: Vec<FetchSection> = vec![
             ("Total", format!("{:.2}", self.total)).into(),
             ("Used", format!("{:.2}", self.used())).into(),

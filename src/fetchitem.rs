@@ -1,6 +1,6 @@
 use std::fmt;
 
-use crate::{FetchSection, FetchType};
+use crate::fetchsection::{FetchSection, FetchType};
 
 pub trait FetchItem: fmt::Display {
     fn name(&self) -> String;

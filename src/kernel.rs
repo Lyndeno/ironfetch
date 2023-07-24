@@ -1,7 +1,7 @@
 use nix::sys::utsname::{uname, UtsName};
 use std::ffi::OsStr;
 
-use crate::{fetcherror::FetchError, fetchitem::FetchItem, FetchSection};
+use crate::{fetcherror::FetchError, fetchitem::FetchItem, fetchsection::FetchSection};
 
 type Result<T> = std::result::Result<T, FetchError>;
 
@@ -41,7 +41,7 @@ impl FetchItem for Kernel {
         String::from("Kernel")
     }
 
-    fn long_content(&self) -> Option<Vec<crate::FetchSection>> {
+    fn long_content(&self) -> Option<Vec<FetchSection>> {
         Some(vec![
             ("Name", self.name.clone()).into(),
             ("Release", self.release.clone()).into(),

@@ -1,4 +1,4 @@
-use crate::{fetcherror::FetchError, fetchitem::FetchItem, FetchSection};
+use crate::{fetcherror::FetchError, fetchitem::FetchItem, fetchsection::FetchSection};
 use measurements::frequency::Frequency;
 use procfs::CpuInfo;
 
@@ -71,7 +71,7 @@ impl FetchItem for Cpu {
         String::from("CPU")
     }
 
-    fn long_content(&self) -> Option<Vec<crate::FetchSection>> {
+    fn long_content(&self) -> Option<Vec<FetchSection>> {
         let mut freq_vec: Vec<FetchSection> = Vec::with_capacity(self.core_count);
         for i in 0..self.core_count {
             freq_vec.push((format!("Core {}", i), format!("{:.3}", self.freq[i])).into());
@@ -82,7 +82,7 @@ impl FetchItem for Cpu {
             ("Physical Cores", format!("{}", self.physical_core_count)).into(),
             FetchSection {
                 name: "Frequency".to_string(),
-                content: crate::FetchType::Long(freq_vec),
+                content: crate::fetchsection::FetchType::Long(freq_vec),
             },
         ])
     }
