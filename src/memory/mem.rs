@@ -9,6 +9,7 @@ use smbioslib::{
 
 // Type to store basic information about memory devices, such as ramsticks.
 // Minimally tested, it is possible information shows up in here for empty dimm slots as well.
+#[derive(Clone)]
 pub struct MemDevice {
     pub speed: Option<Frequency>,
     pub part_number: Option<String>,
@@ -71,7 +72,8 @@ impl TryFrom<SMBiosMemoryDevice<'_>> for MemDevice {
                 Some(v) => v,
                 None => return Err("Error getting device locator"),
             },
-            part_number: dev.part_number().ok(),
+            // This String has trailing whitespace
+            part_number: dev.part_number().ok().map(|s| s.trim().to_string()),
             manufacturer: dev.manufacturer().ok(),
             size: match dev.size() {
                 Some(MemorySize::Kilobytes(d)) => Some(Data::from_kibioctets(d as f64)),
@@ -93,3 +95,42 @@ impl TryFrom<SMBiosMemoryDevice<'_>> for MemDevice {
 use measurements::{data::Data, Frequency};
 
 use crate::fetcherror::FetchError;
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    fn get_first_mem_device() -> MemDevice {
+        let mem = MemDevice::from_smbios_dump(Path::new("./dmi.bin"));
+        mem.unwrap().unwrap()[0].clone()
+    }
+
+    #[test]
+    fn test_manufactuer() {
+        let dev = get_first_mem_device();
+        assert_eq!(dev.manufacturer, Some(String::from("8C260000802C")));
+    }
+
+    #[test]
+    fn test_part() {
+        let dev = get_first_mem_device();
+        assert_eq!(dev.part_number, Some(String::from("TIMETEC-SD4-2666")));
+    }
+
+    #[test]
+    fn test_type() {
+        let dev = get_first_mem_device();
+        assert_eq!(dev.mem_type, Some(String::from("DDR4")));
+    }
+
+    #[test]
+    fn test_capacity() {
+        let dev = get_first_mem_device();
+        assert_eq!(dev.size, Some(Data::from_gibioctets(32.00)));
+    }
+
+    #[test]
+    fn test_freq() {
+        let dev = get_first_mem_device();
+        assert_eq!(dev.speed, Some(Frequency::from_megahertz(2667.00)));
+    }
+}
