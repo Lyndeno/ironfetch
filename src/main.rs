@@ -1,3 +1,4 @@
+use std::path::Path;
 use std::vec;
 
 use ironfetch::fetcherror::FetchError;
@@ -9,6 +10,7 @@ use ironfetch::cpu::Cpu;
 
 use ironfetch::memory::Memory;
 
+use ironfetch::memory::mem::SMBiosSource;
 use ironfetch::osinfo::OsInfo;
 
 use ironfetch::hostname::HostName;
@@ -26,6 +28,10 @@ use ironfetch::args::Args;
 fn main() {
     let args = Args::parse();
     let mut lines: Vec<FetchSection> = Vec::with_capacity(8);
+    let smbios_source = match args.smbios_path {
+        Some(ref p) => SMBiosSource::File(Path::new(p)),
+        None => SMBiosSource::Local,
+    };
     let lines_result = vec![
         gen_fl(OsInfo::new(), args.long),
         gen_fl(Shell::new(), args.long),
@@ -34,7 +40,7 @@ fn main() {
         gen_fl(HostName::new(), args.long),
         gen_fl(Uptime::new(), args.long),
         gen_fl(Cpu::new(), args.long),
-        gen_fl(Memory::new(args.memory_unit), args.long),
+        gen_fl(Memory::new(args.memory_unit, smbios_source), args.long),
     ];
 
     for line in lines_result {

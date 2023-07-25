@@ -16,4 +16,7 @@ pub struct Args {
     /// Show more detailed information
     #[arg(long, short)]
     pub long: bool,
+
+    #[arg(long, short, value_enum)]
+    pub smbios_path: Option<String>,
 }

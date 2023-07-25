@@ -7,9 +7,9 @@ use crate::{fetchsection::opt_fs, fetchsection::FetchSection};
 use measurements::Data;
 use procfs::Meminfo;
 
-use self::mem::MemDevice;
+use self::mem::{MemDevice, SMBiosSource};
 
-mod mem;
+pub mod mem;
 pub struct Memory {
     total: Data,
     //free: MemBytes,
@@ -23,7 +23,10 @@ pub struct Memory {
 }
 
 impl Memory {
-    pub fn new(display_unit: Option<MemUnits>) -> Result<Self, FetchError> {
+    pub fn new(
+        display_unit: Option<MemUnits>,
+        smbios_source: SMBiosSource,
+    ) -> Result<Self, FetchError> {
         let meminfo = Meminfo::new().unwrap();
 
         Ok(Self {
@@ -32,7 +35,7 @@ impl Memory {
             display_unit,
             // This will usually error do to permission errors, so just wrap it None instead
             // as it is not needed for basic use
-            devices: MemDevice::from_smbios_table().unwrap_or(None),
+            devices: MemDevice::from_source(smbios_source).unwrap_or(None),
         })
     }
 

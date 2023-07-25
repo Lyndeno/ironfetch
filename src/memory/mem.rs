@@ -1,4 +1,9 @@
-use smbioslib::{table_load_from_device, MemorySize, MemorySizeExtended, SMBiosMemoryDevice};
+use std::path::Path;
+
+use smbioslib::{
+    load_smbios_data_from_file, table_load_from_device, MemorySize, MemorySizeExtended, SMBiosData,
+    SMBiosMemoryDevice,
+};
 
 // This only works when running as root
 
@@ -13,10 +18,30 @@ pub struct MemDevice {
     pub mem_type: Option<String>,
 }
 
+pub enum SMBiosSource<'a> {
+    Local,
+    File(&'a Path),
+}
+
 impl MemDevice {
-    pub fn from_smbios_table() -> Result<Option<Vec<Self>>, FetchError> {
-        let smb_vec = table_load_from_device()?;
-        let smb = smb_vec.defined_struct_iter::<SMBiosMemoryDevice>();
+    pub fn from_source(source: SMBiosSource) -> Result<Option<Vec<Self>>, FetchError> {
+        match source {
+            SMBiosSource::Local => Self::from_smbios_local_device(),
+            SMBiosSource::File(path) => Self::from_smbios_dump(path),
+        }
+    }
+    fn from_smbios_local_device() -> Result<Option<Vec<Self>>, FetchError> {
+        let data = table_load_from_device()?;
+        Self::from_smbios_data(data)
+    }
+
+    fn from_smbios_dump(path: &Path) -> Result<Option<Vec<Self>>, FetchError> {
+        let data = load_smbios_data_from_file(path)?;
+        Self::from_smbios_data(data)
+    }
+
+    fn from_smbios_data(data: SMBiosData) -> Result<Option<Vec<Self>>, FetchError> {
+        let smb = data.defined_struct_iter::<SMBiosMemoryDevice>();
         let mut vec = Vec::new();
         for dev in smb {
             if let Ok(d) = MemDevice::try_from(dev) {
