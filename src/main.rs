@@ -10,8 +10,8 @@ use ironfetch::cpu::Cpu;
 
 use ironfetch::memory::Memory;
 
-use ironfetch::memory::mem::SMBiosSource;
 use ironfetch::osinfo::OsInfo;
+use simplesmbios::mem::SMBiosSource;
 
 use ironfetch::hostname::HostName;
 

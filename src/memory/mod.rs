@@ -7,9 +7,8 @@ use crate::{fetchsection::opt_fs, fetchsection::FetchSection};
 use measurements::Data;
 use procfs::Meminfo;
 
-use self::mem::{MemDevice, SMBiosSource};
+use simplesmbios::mem::{MemDevice, SMBiosSource};
 
-pub mod mem;
 pub struct Memory {
     total: Data,
     //free: MemBytes,

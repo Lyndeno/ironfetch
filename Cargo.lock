@@ -348,6 +348,7 @@ dependencies = [
  "nix",
  "os-release",
  "procfs",
+ "simplesmbios",
  "smbios-lib",
  "sys-info",
  "uptime_lib",
@@ -605,6 +606,15 @@ dependencies = [
  "itoa",
  "ryu",
  "serde",
+]
+
+[[package]]
+name = "simplesmbios"
+version = "0.1.0"
+source = "git+https://github.com/Lyndeno/simplesmbios-rust#f39ab7b701af121fc7b1e2bd10fcdec2b76e4b75"
+dependencies = [
+ "measurements",
+ "smbios-lib",
 ]
 
 [[package]]
