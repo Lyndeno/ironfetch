@@ -21,6 +21,7 @@ pub struct MemDevice {
 pub enum SMBiosSource<'a> {
     Local,
     File(&'a Path),
+    Data(SMBiosData),
 }
 
 impl MemDevice {
@@ -28,6 +29,7 @@ impl MemDevice {
         match source {
             SMBiosSource::Local => Self::from_smbios_local_device(),
             SMBiosSource::File(path) => Self::from_smbios_dump(path),
+            SMBiosSource::Data(data) => Self::from_smbios_data(data),
         }
     }
     fn from_smbios_local_device() -> Result<Option<Vec<Self>>, FetchError> {
