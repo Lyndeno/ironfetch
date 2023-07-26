@@ -11,7 +11,6 @@ use ironfetch::cpu::Cpu;
 use ironfetch::memory::Memory;
 
 use ironfetch::osinfo::OsInfo;
-use simplesmbios::mem::SMBiosSource;
 
 use ironfetch::hostname::HostName;
 
@@ -24,13 +23,18 @@ use ironfetch::shell::Shell;
 use clap::Parser;
 
 use ironfetch::args::Args;
+use simplesmbios::smbios::SMBios;
 
 fn main() {
     let args = Args::parse();
     let mut lines: Vec<FetchSection> = Vec::with_capacity(8);
-    let smbios_source = match args.smbios_path {
-        Some(ref p) => SMBiosSource::File(Path::new(p)),
-        None => SMBiosSource::Local,
+    let smbios_result = match args.smbios_path {
+        Some(ref p) => SMBios::new_from_file(Path::new(p)),
+        None => SMBios::new_from_device(),
+    };
+    let smbios_opt = match smbios_result {
+        Ok(ref s) => Some(s),
+        Err(_) => None,
     };
     let lines_result = vec![
         gen_fl(OsInfo::new(), args.long),
@@ -40,7 +44,7 @@ fn main() {
         gen_fl(HostName::new(), args.long),
         gen_fl(Uptime::new(), args.long),
         gen_fl(Cpu::new(), args.long),
-        gen_fl(Memory::new(args.memory_unit, smbios_source), args.long),
+        gen_fl(Memory::new(args.memory_unit, smbios_opt), args.long),
     ];
 
     for line in lines_result {

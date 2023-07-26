@@ -611,7 +611,7 @@ dependencies = [
 [[package]]
 name = "simplesmbios"
 version = "0.1.0"
-source = "git+https://github.com/Lyndeno/simplesmbios-rust#f39ab7b701af121fc7b1e2bd10fcdec2b76e4b75"
+source = "git+https://github.com/Lyndeno/simplesmbios-rust#ed471b1e71a6e65cbc17bb30b80996114d1e7319"
 dependencies = [
  "measurements",
  "smbios-lib",

@@ -7,9 +7,10 @@ use crate::{fetchsection::opt_fs, fetchsection::FetchSection};
 use measurements::Data;
 use procfs::Meminfo;
 
-use simplesmbios::mem::{MemDevice, SMBiosSource};
+use simplesmbios::mem::MemDevice;
+use simplesmbios::smbios::SMBios;
 
-pub struct Memory {
+pub struct Memory<'a> {
     total: Data,
     //free: MemBytes,
     avail: Data,
@@ -18,13 +19,13 @@ pub struct Memory {
     //swap_total: MemBytes,
     //swap_free: MemBytes,
     display_unit: Option<MemUnits>,
-    devices: Option<Vec<MemDevice>>,
+    devices: Option<Vec<MemDevice<'a>>>,
 }
 
-impl Memory {
+impl<'a> Memory<'a> {
     pub fn new(
         display_unit: Option<MemUnits>,
-        smbios_source: SMBiosSource,
+        smbios: Option<&'a SMBios>,
     ) -> Result<Self, FetchError> {
         let meminfo = Meminfo::new().unwrap();
 
@@ -34,7 +35,10 @@ impl Memory {
             display_unit,
             // This will usually error do to permission errors, so just wrap it None instead
             // as it is not needed for basic use
-            devices: MemDevice::from_source(smbios_source).unwrap_or(None),
+            devices: match smbios {
+                Some(s) => MemDevice::from_smbios(s).unwrap_or(None),
+                None => None,
+            },
         })
     }
 
@@ -72,13 +76,13 @@ impl Memory {
     }
 }
 
-impl std::fmt::Display for Memory {
+impl std::fmt::Display for Memory<'_> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}", self.display())
     }
 }
 
-impl FetchItem for Memory {
+impl FetchItem for Memory<'_> {
     fn name(&self) -> String {
         String::from("Memory")
     }
@@ -93,16 +97,16 @@ impl FetchItem for Memory {
             let mut devices = Vec::new();
             for dev in s {
                 devices.push(FetchSection {
-                    name: dev.location.clone(),
+                    name: dev.location().unwrap(),
                     content: {
                         let mut memvec: Vec<FetchSection> = Vec::new();
-                        memvec.push(opt_fs(("Manufacturer", dev.manufacturer.clone())));
-                        memvec.push(opt_fs(("Part #", dev.part_number.clone())));
-                        memvec.push(opt_fs(("Type", dev.mem_type.clone())));
-                        if let Some(ref v) = dev.size {
+                        memvec.push(opt_fs(("Manufacturer", dev.manufacturer())));
+                        memvec.push(opt_fs(("Part #", dev.part_number())));
+                        memvec.push(opt_fs(("Type", dev.mem_type())));
+                        if let Some(ref v) = dev.size() {
                             memvec.push(("Capacity", format!("{:.2}", v)).into())
                         }
-                        if let Some(ref v) = dev.speed {
+                        if let Some(ref v) = dev.speed() {
                             memvec.push(("Speed", format!("{} MT/s", v.as_megahertz())).into());
                         }
                         FetchType::Long(memvec)
