@@ -5,7 +5,6 @@ use crate::memunit::MemUnits;
 use crate::{fetcherror::FetchError, fetchsection::FetchType};
 use crate::{fetchsection::opt_fs, fetchsection::FetchSection};
 use measurements::Data;
-use procfs::Meminfo;
 
 use simplesmbios::mem::MemDevice;
 use simplesmbios::smbios::SMBios;
@@ -41,11 +40,11 @@ impl<'a> Memory<'a> {
     }
 
     pub fn total(&self) -> Data {
-        Data::from_octets(self.meminfo.total as f64)
+        Data::from_kibioctets(self.meminfo.total as f64)
     }
 
     pub fn available(&self) -> Data {
-        Data::from_octets(self.meminfo.avail as f64)
+        Data::from_kibioctets(self.meminfo.avail as f64)
     }
 
     pub fn display_gb(&self) -> String {
