@@ -31,11 +31,9 @@ fn main() {
     let smbios_result = match args.smbios_path {
         Some(ref p) => SMBios::new_from_file(Path::new(p)),
         None => SMBios::new_from_device(),
-    };
-    let smbios_opt = match smbios_result {
-        Ok(ref s) => Some(s),
-        Err(_) => None,
-    };
+    }
+    .ok();
+    let smbios_ref = smbios_result.as_ref();
     let lines_result = vec![
         gen_fl(OsInfo::new(), args.long),
         gen_fl(Shell::new(), args.long),
@@ -44,7 +42,7 @@ fn main() {
         gen_fl(HostName::new(), args.long),
         gen_fl(Uptime::new(), args.long),
         gen_fl(Cpu::new(), args.long),
-        gen_fl(Memory::new(args.memory_unit, smbios_opt), args.long),
+        gen_fl(Memory::new(args.memory_unit, smbios_ref), args.long),
     ];
 
     for line in lines_result {
