@@ -9,16 +9,11 @@ use procfs::Meminfo;
 
 use simplesmbios::mem::MemDevice;
 use simplesmbios::smbios::SMBios;
+use sys_info::MemInfo;
 
 pub struct Memory<'a> {
-    total: Data,
-    //free: MemBytes,
-    avail: Data,
-    //buffers: MemBytes,
-    //cached: MemBytes,
-    //swap_total: MemBytes,
-    //swap_free: MemBytes,
     display_unit: Option<MemUnits>,
+    meminfo: MemInfo,
     devices: Option<Vec<MemDevice<'a>>>,
 }
 
@@ -27,12 +22,11 @@ impl<'a> Memory<'a> {
         display_unit: Option<MemUnits>,
         smbios: Option<&'a SMBios>,
     ) -> Result<Self, FetchError> {
-        let meminfo = Meminfo::new().unwrap();
+        let meminfo = sys_info::mem_info().unwrap();
 
         Ok(Self {
-            total: Data::from_octets(meminfo.mem_total as f64),
-            avail: Data::from_octets(meminfo.mem_available.unwrap() as f64),
             display_unit,
+            meminfo,
             // This will usually error do to permission errors, so just wrap it None instead
             // as it is not needed for basic use
             devices: match smbios {
@@ -43,20 +37,28 @@ impl<'a> Memory<'a> {
     }
 
     pub fn used(&self) -> Data {
-        self.total - self.avail
+        self.total() - self.available()
+    }
+
+    pub fn total(&self) -> Data {
+        Data::from_octets(self.meminfo.total as f64)
+    }
+
+    pub fn available(&self) -> Data {
+        Data::from_octets(self.meminfo.avail as f64)
     }
 
     pub fn display_gb(&self) -> String {
         self.display_unit(
             self.used().as_gibioctets(),
-            self.total.as_gibioctets(),
+            self.total().as_gibioctets(),
             "GiB",
         )
     }
     pub fn display_mb(&self) -> String {
         self.display_unit(
             self.used().as_mebioctets(),
-            self.total.as_mebioctets(),
+            self.total().as_mebioctets(),
             "MiB",
         )
     }
@@ -89,9 +91,9 @@ impl FetchItem for Memory<'_> {
 
     fn long_content(&self) -> Option<Vec<FetchSection>> {
         let mut vec: Vec<FetchSection> = vec![
-            ("Total", format!("{:.2}", self.total)).into(),
+            ("Total", format!("{:.2}", self.total())).into(),
             ("Used", format!("{:.2}", self.used())).into(),
-            ("Available", format!("{:.2}", self.avail)).into(),
+            ("Available", format!("{:.2}", self.available())).into(),
         ];
         if let Some(ref s) = self.devices {
             let mut devices = Vec::new();
