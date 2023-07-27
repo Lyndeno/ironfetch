@@ -96,11 +96,12 @@ impl FetchItem for Memory<'_> {
         ];
         if let Some(ref s) = self.devices {
             let mut devices = Vec::new();
-            for dev in s {
+            for (index, dev) in s.iter().enumerate() {
                 devices.push(FetchSection {
-                    name: dev.location().unwrap(),
+                    name: format!("Device {}", index),
                     content: {
-                        let mut memvec: Vec<FetchSection> = Vec::new();
+                        let mut memvec: Vec<FetchSection> = Vec::with_capacity(6);
+                        memvec.push(opt_fs(("Location", dev.location())));
                         memvec.push(opt_fs(("Manufacturer", dev.manufacturer())));
                         memvec.push(opt_fs(("Part #", dev.part_number())));
                         memvec.push(opt_fs(("Type", dev.mem_type())));
