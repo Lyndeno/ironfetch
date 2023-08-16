@@ -1,4 +1,8 @@
-use crate::{fetcherror::FetchError, fetchitem::FetchItem, fetchsection::FetchSection};
+use crate::{
+    fetcherror::FetchError,
+    fetchitem::FetchItem,
+    fetchsection::{opt_fs, FetchSection},
+};
 use measurements::frequency::Frequency;
 use procfs::CpuInfo;
 
@@ -35,20 +39,19 @@ impl Cpu {
         sum / self.logical_core_count() as f64
     }
 
-    pub fn physical_core_count(&self) -> usize {
+    pub fn physical_core_count(&self) -> Option<usize> {
         let mut core_id = Vec::new();
         for cpu_num in 0..self.logical_core_count() {
             core_id.push(
                 self.cpu
-                    .get_field(cpu_num, "core id")
-                    .unwrap()
+                    .get_field(cpu_num, "core id")?
                     .parse::<usize>()
                     .unwrap(),
             )
         }
         core_id.sort();
         core_id.dedup();
-        core_id.len()
+        Some(core_id.len())
     }
 
     pub fn model(&self) -> String {
@@ -62,12 +65,15 @@ impl Cpu {
 
 impl std::fmt::Display for Cpu {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let core_string = match self.physical_core_count() {
+            Some(v) => format!("({}/{})", self.logical_core_count(), v),
+            None => format!("({})", self.logical_core_count()),
+        };
         write!(
             f,
-            "{} ({}/{}) @ {:.3}",
+            "{} {} @ {:.3}",
             self.model(),
-            self.logical_core_count(),
-            self.physical_core_count(),
+            core_string,
             self.frequency_avg()
         )
     }
@@ -86,7 +92,10 @@ impl FetchItem for Cpu {
         Some(vec![
             ("Model", self.model()).into(),
             ("Logical Cores", format!("{}", self.logical_core_count())).into(),
-            ("Physical Cores", format!("{}", self.physical_core_count())).into(),
+            opt_fs((
+                "Physical Cores",
+                self.physical_core_count().map(|x| x.to_string()),
+            )),
             FetchSection {
                 name: "Frequency".to_string(),
                 content: crate::fetchsection::FetchType::Long(freq_vec),
