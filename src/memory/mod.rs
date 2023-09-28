@@ -105,6 +105,10 @@ impl FetchItem for Memory<'_> {
                         memvec.push(opt_fs(("Manufacturer", dev.manufacturer())));
                         memvec.push(opt_fs(("Part #", dev.part_number())));
                         memvec.push(opt_fs(("Type", dev.mem_type().map(|v| v.to_string()))));
+                        memvec.push(opt_fs((
+                            "Form Factor",
+                            dev.form_factor().map(|v| v.to_string()),
+                        )));
                         if let Some(ref v) = dev.size() {
                             memvec.push(("Capacity", format!("{:.2}", v)).into())
                         }
