@@ -9,7 +9,7 @@ edition = "2021"
 clap = { version = "*", features = ["derive"] }
 colored = "*"
 measurements = "*"
-nix = "*"
+nix = { version="*", features = ["feature"]}
 os-release = "*"
 procfs = "*"
 smbios-lib = "0.9.0"
