@@ -1,6 +1,6 @@
 [package]
 name = "ironfetch"
-version = "0.0.1"
+version = "0.1.0"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
@@ -12,7 +12,7 @@ measurements = "*"
 nix = { version="*", features = ["feature"]}
 os-release = "*"
 procfs = "*"
-smbios-lib = "0.9.0"
+smbios-lib = "*"
 sys-info = "*"
 uptime_lib = "*"
 simplesmbios = { git = "https://github.com/Lyndeno/simplesmbios-rust" }
