@@ -1,8 +1,80 @@
+use std::fmt::Display;
+use std::io::Write;
+
 use colored::Colorize;
 
-use crate::fetchitem::FetchItem;
+use crate::{fetcherror::FetchError, fetchitem::FetchItem};
 
 const INDENT_LENGTH: usize = 4;
+
+pub struct FetchArray(Vec<FetchSection>);
+
+impl Default for FetchArray {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
+impl FetchArray {
+    pub fn new() -> Self {
+        FetchArray(Vec::new())
+    }
+
+    pub fn with_capacity(capacity: usize) -> Self {
+        FetchArray(Vec::with_capacity(capacity))
+    }
+
+    pub fn push(&mut self, value: FetchSection) {
+        self.0.push(value)
+    }
+
+    // Discard Err and push ok
+    pub fn push_ok(&mut self, value: Result<FetchSection, FetchError>) {
+        if let Ok(v) = value {
+            self.push(v)
+        }
+    }
+
+    pub fn push_fetchitem<T: FetchItem>(&mut self, item: T, long: bool) {
+        self.push(FetchSection::from(item, long))
+    }
+
+    pub fn push_fetchitem_ok<T: FetchItem>(
+        &mut self,
+        item: Result<T, FetchError>,
+        long: bool,
+        verbose: bool,
+    ) {
+        match item {
+            Ok(v) => self.push_fetchitem(v, long),
+            Err(e) => {
+                if verbose {
+                    eprint!("{}", e)
+                }
+            }
+        }
+    }
+}
+
+impl Display for FetchArray {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let mut indent = 0;
+        for line in &self.0 {
+            let length = line.get_indent(0);
+            indent = if length > indent { length } else { indent };
+        }
+        let mut buf = Vec::new();
+        for line in &self.0 {
+            write!(
+                buf,
+                "{}",
+                String::from_utf8(line.fmt(indent)).unwrap_or_default()
+            )
+            .unwrap();
+        }
+        write!(f, "{}", String::from_utf8(buf).unwrap_or_default())
+    }
+}
 pub enum FetchType {
     Short(String),
     Long(Vec<FetchSection>),
@@ -31,22 +103,32 @@ pub struct FetchSection {
 }
 
 impl FetchSection {
-    pub fn fmt(&self, indent: usize) {
+    pub fn fmt(&self, indent: usize) -> Vec<u8> {
+        let mut buf = Vec::new();
         match self.content {
-            FetchType::Short(ref s) => println!(
+            FetchType::Short(ref s) => writeln!(
+                &mut buf,
                 "{:>indent$}: {}",
                 self.name.red().bold(),
                 s,
                 indent = indent
-            ),
+            )
+            .unwrap(),
             FetchType::Long(ref c) => {
-                println!("{:>indent$}:", self.name.red().bold(), indent = indent);
+                writeln!(
+                    &mut buf,
+                    "{:>indent$}:",
+                    self.name.red().bold(),
+                    indent = indent
+                )
+                .unwrap();
                 for line in c {
-                    line.fmt(indent + INDENT_LENGTH);
+                    buf.append(&mut line.fmt(indent + INDENT_LENGTH));
                 }
             }
             FetchType::None => {}
         }
+        buf
     }
 
     pub fn get_indent(&self, level: usize) -> usize {

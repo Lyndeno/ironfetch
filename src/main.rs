@@ -1,9 +1,6 @@
 use std::path::Path;
-use std::vec;
 
-use ironfetch::fetcherror::FetchError;
-use ironfetch::fetchitem::FetchItem;
-use ironfetch::fetchsection::FetchSection;
+use ironfetch::fetchsection::FetchArray;
 use ironfetch::kernel::Kernel;
 
 use ironfetch::cpu::Cpu;
@@ -27,51 +24,27 @@ use simplesmbios::smbios::SMBios;
 
 fn main() {
     let args = Args::parse();
-    let mut lines: Vec<FetchSection> = Vec::with_capacity(8);
     let smbios_result = match args.smbios_path {
         Some(ref p) => SMBios::new_from_file(Path::new(p)),
         None => SMBios::new_from_device(),
     }
     .ok();
+
+    let mut array = FetchArray::default();
     let smbios_ref = smbios_result.as_ref();
-    let lines_result = vec![
-        gen_fl(OsInfo::new(), args.long),
-        gen_fl(Shell::new(), args.long),
-        gen_fl(Kernel::new(), args.long),
-        gen_fl(Model::new(), args.long),
-        gen_fl(HostName::new(), args.long),
-        gen_fl(Uptime::new(), args.long),
-        gen_fl(Cpu::new(), args.long),
-        gen_fl(Memory::new(args.memory_unit, smbios_ref), args.long),
-    ];
 
-    for line in lines_result {
-        match line {
-            Ok(fl) => lines.push(fl),
-            Err(e) => {
-                if args.debug {
-                    eprintln!("Error: {}", e)
-                }
-            }
-        };
-    }
+    array.push_fetchitem_ok(OsInfo::new(), args.long, args.debug);
+    array.push_fetchitem_ok(Shell::new(), args.long, args.debug);
+    array.push_fetchitem_ok(Kernel::new(), args.long, args.debug);
+    array.push_fetchitem_ok(Model::new(), args.long, args.debug);
+    array.push_fetchitem_ok(HostName::new(), args.long, args.debug);
+    array.push_fetchitem_ok(Uptime::new(), args.long, args.debug);
+    array.push_fetchitem_ok(Cpu::new(), args.long, args.debug);
+    array.push_fetchitem_ok(
+        Memory::new(args.memory_unit, smbios_ref),
+        args.long,
+        args.debug,
+    );
 
-    let mut indent = 0;
-    for line in &lines {
-        let length = line.get_indent(0);
-        indent = if length > indent { length } else { indent };
-    }
-    for line in lines {
-        line.fmt(indent);
-    }
-}
-
-fn gen_fl<T: FetchItem>(
-    item: Result<T, FetchError>,
-    long: bool,
-) -> Result<FetchSection, FetchError> {
-    match item {
-        Ok(f) => Ok(FetchSection::from(f, long)),
-        Err(e) => Err(e),
-    }
+    println!("{}", array);
 }
