@@ -1,11 +1,13 @@
 use os_release::OsRelease;
 
-use crate::{fetcherror::FetchError, fetchitem::FetchItem};
+use crate::{fetcherror::FetchError, fetchitem::FetchItem, fetchsection::FetchSection};
 
 pub struct OsInfo {
     name: String,
     build_id: String,
     codename: String,
+    home: String,
+    bug: String,
 }
 
 impl OsInfo {
@@ -18,6 +20,8 @@ impl OsInfo {
                 None => os.version_id.clone(),
             },
             codename: os.version_codename,
+            home: os.home_url,
+            bug: os.bug_report_url,
         })
     }
 }
@@ -31,5 +35,15 @@ impl std::fmt::Display for OsInfo {
 impl FetchItem for OsInfo {
     fn name(&self) -> String {
         String::from("OS")
+    }
+
+    fn long_content(&self) -> Option<Vec<FetchSection>> {
+        Some(vec![
+            ("Name", self.name.clone()).into(),
+            ("ID", self.build_id.clone()).into(),
+            ("Codename", self.codename.clone()).into(),
+            ("Home URL", self.home.clone()).into(),
+            ("Bug Report URL", self.bug.clone()).into(),
+        ])
     }
 }
