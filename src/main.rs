@@ -46,5 +46,5 @@ fn main() {
         args.debug,
     );
 
-    println!("{}", array);
+    print!("{}", array);
 }

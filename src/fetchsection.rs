@@ -1,5 +1,4 @@
 use std::fmt::Display;
-use std::io::Write;
 
 use colored::Colorize;
 
@@ -63,16 +62,10 @@ impl Display for FetchArray {
             let length = line.get_indent(0);
             indent = if length > indent { length } else { indent };
         }
-        let mut buf = Vec::new();
         for line in &self.0 {
-            write!(
-                buf,
-                "{}",
-                String::from_utf8(line.fmt(indent)).unwrap_or_default()
-            )
-            .unwrap();
+            line.fmt(indent, f)?;
         }
-        write!(f, "{}", String::from_utf8(buf).unwrap_or_default())
+        Ok(())
     }
 }
 pub enum FetchType {
@@ -103,32 +96,24 @@ pub struct FetchSection {
 }
 
 impl FetchSection {
-    pub fn fmt(&self, indent: usize) -> Vec<u8> {
-        let mut buf = Vec::new();
+    pub fn fmt(&self, indent: usize, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self.content {
             FetchType::Short(ref s) => writeln!(
-                &mut buf,
+                f,
                 "{:>indent$}: {}",
                 self.name.red().bold(),
                 s,
                 indent = indent
-            )
-            .unwrap(),
+            )?,
             FetchType::Long(ref c) => {
-                writeln!(
-                    &mut buf,
-                    "{:>indent$}:",
-                    self.name.red().bold(),
-                    indent = indent
-                )
-                .unwrap();
+                writeln!(f, "{:>indent$}:", self.name.red().bold(), indent = indent)?;
                 for line in c {
-                    buf.append(&mut line.fmt(indent + INDENT_LENGTH));
+                    line.fmt(indent + INDENT_LENGTH, f)?;
                 }
             }
             FetchType::None => {}
         }
-        buf
+        Ok(())
     }
 
     pub fn get_indent(&self, level: usize) -> usize {
