@@ -1,6 +1,6 @@
 use os_release::OsRelease;
 
-use crate::{fetcherror::FetchError, fetchitem::FetchItem, fetchsection::FetchSection};
+use crate::fetcherror::FetchError;
 
 pub struct OsInfo(OsRelease);
 
@@ -26,21 +26,5 @@ impl std::fmt::Display for OsInfo {
             self.build_id(),
             self.0.version_codename,
         )
-    }
-}
-
-impl FetchItem for OsInfo {
-    fn name(&self) -> String {
-        String::from("OS")
-    }
-
-    fn long_content(&self) -> Option<Vec<FetchSection>> {
-        Some(vec![
-            ("Name", self.0.name.clone()).into(),
-            ("ID", self.build_id()).into(),
-            ("Codename", self.0.version_codename.clone()).into(),
-            ("Home URL", self.0.home_url.clone()).into(),
-            ("Bug Report URL", self.0.bug_report_url.clone()).into(),
-        ])
     }
 }

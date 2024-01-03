@@ -1,6 +1,6 @@
 use sys_info::hostname;
 
-use crate::{fetcherror::FetchError, fetchitem::FetchItem};
+use crate::fetcherror::FetchError;
 pub struct HostName(pub String);
 
 impl HostName {
@@ -12,11 +12,5 @@ impl HostName {
 impl std::fmt::Display for HostName {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}", self.0)
-    }
-}
-
-impl FetchItem for HostName {
-    fn name(&self) -> String {
-        String::from("Hostname")
     }
 }

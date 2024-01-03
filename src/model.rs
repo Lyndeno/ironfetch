@@ -3,7 +3,7 @@ use std::{
     io::{BufRead, BufReader},
 };
 
-use crate::{fetcherror::FetchError, fetchitem::FetchItem, fetchsection::FetchSection};
+use crate::fetcherror::FetchError;
 pub struct Model {
     product_name: String,
     board_vendor: String,
@@ -34,19 +34,5 @@ impl std::fmt::Display for Model {
             "{} {} {}",
             self.board_vendor, self.product_name, self.board_name
         )
-    }
-}
-
-impl FetchItem for Model {
-    fn name(&self) -> String {
-        String::from("Model")
-    }
-
-    fn long_content(&self) -> Option<Vec<FetchSection>> {
-        Some(vec![
-            ("Vendor", self.board_vendor.clone()).into(),
-            ("Product", self.product_name.clone()).into(),
-            ("Board", self.board_name.clone()).into(),
-        ])
     }
 }

@@ -1,7 +1,6 @@
 pub mod args;
 pub mod cpu;
 pub mod fetcherror;
-pub mod fetchitem;
 pub mod fetchsection;
 pub mod hostname;
 pub mod kernel;
