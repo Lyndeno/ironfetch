@@ -1,3 +1,4 @@
+use std::collections::HashSet;
 use std::fmt::Write;
 
 use crate::fetcherror::FetchError;
@@ -71,7 +72,13 @@ impl<'a> Memory<'a> {
                 }
             }
         }
-        memtype.iter().map(|x| x.to_string()).collect()
+
+        let mut string_vec: Vec<String> = memtype.iter().map(|x| x.to_string()).collect();
+
+        let set: HashSet<_> = string_vec.drain(..).collect();
+        string_vec.extend(set);
+
+        string_vec
     }
 
     fn display_unit(&self, used: f64, total: f64, unit: &str) -> String {
