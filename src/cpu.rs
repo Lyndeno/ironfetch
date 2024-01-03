@@ -1,5 +1,6 @@
 use crate::fetcherror::FetchError;
 use measurements::frequency::Frequency;
+use procfs::prelude::*;
 use procfs::CpuInfo;
 
 pub struct Cpu {
@@ -8,7 +9,7 @@ pub struct Cpu {
 
 impl Cpu {
     pub fn new() -> Result<Self, FetchError> {
-        let cpu = CpuInfo::new().unwrap();
+        let cpu = CpuInfo::current().unwrap();
 
         Ok(Self { cpu })
     }

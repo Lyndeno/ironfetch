@@ -9,7 +9,7 @@ pub enum FetchError {
     Nix(Errno),
     OsStr,
     Var(VarError),
-    String(String),
+    UpTime,
 }
 
 impl Display for FetchError {
@@ -20,7 +20,7 @@ impl Display for FetchError {
             FetchError::Nix(..) => write!(f, "Generic *nix error"),
             FetchError::OsStr => write!(f, "OsStr parsing error"),
             FetchError::Var(..) => write!(f, "Error parsing environment variable"),
-            FetchError::String(ref s) => write!(f, "Error: {}", *s),
+            FetchError::UpTime => write!(f, "Error getting Uptime"),
         }
     }
 }
@@ -33,7 +33,7 @@ impl Error for FetchError {
             FetchError::Nix(ref e) => Some(e),
             FetchError::OsStr => None,
             FetchError::Var(ref e) => Some(e),
-            FetchError::String(..) => None,
+            FetchError::UpTime => None,
         }
     }
 }
@@ -62,8 +62,8 @@ impl From<VarError> for FetchError {
     }
 }
 
-impl From<String> for FetchError {
-    fn from(err: String) -> Self {
-        Self::String(err)
+impl From<uptime_lib::Error> for FetchError {
+    fn from(_err: uptime_lib::Error) -> Self {
+        Self::UpTime
     }
 }
