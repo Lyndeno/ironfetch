@@ -1,7 +1,6 @@
 use std::fmt::Write;
 
 use crate::fetcherror::FetchError;
-use crate::fetchitem::FetchItem;
 use crate::memunit::MemUnits;
 use measurements::Data;
 
@@ -110,11 +109,5 @@ impl<'a> Memory<'a> {
 impl std::fmt::Display for Memory<'_> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}", self.display())
-    }
-}
-
-impl FetchItem for Memory<'_> {
-    fn name(&self) -> String {
-        String::from("Memory")
     }
 }

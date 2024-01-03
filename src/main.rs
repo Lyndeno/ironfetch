@@ -34,35 +34,35 @@ fn main() {
     let smbios_ref = smbios_result.as_ref();
 
     if let Ok(r) = OsInfo::new() {
-        array.push_fetchitem(r)
+        array.push(("OS", r))
     }
 
     if let Ok(r) = Shell::new() {
-        array.push_fetchitem(r)
+        array.push(("Shell", r))
     }
 
     if let Ok(r) = Kernel::new() {
-        array.push_fetchitem(r)
+        array.push(("Kernel", r))
     }
 
     if let Ok(r) = Model::new() {
-        array.push_fetchitem(r)
+        array.push(("Model", r))
     }
 
     if let Ok(r) = HostName::new() {
-        array.push_fetchitem(r)
+        array.push(("Hostname", r))
     }
 
     if let Ok(r) = Uptime::new() {
-        array.push_fetchitem(r)
+        array.push(("Uptime", r))
     }
 
     if let Ok(r) = Cpu::new() {
-        array.push_fetchitem(r)
+        array.push(("CPU", r))
     }
 
     if let Ok(r) = Memory::new(args.memory_unit, smbios_ref) {
-        array.push_fetchitem(r)
+        array.push(("Memory", r))
     }
 
     print!("{}", array);

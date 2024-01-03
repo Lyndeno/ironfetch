@@ -2,8 +2,6 @@ use std::fmt::Display;
 
 use colored::Colorize;
 
-use crate::{fetcherror::FetchError, fetchitem::FetchItem};
-
 const INDENT_LENGTH: usize = 4;
 
 pub struct FetchArray(Vec<FetchSection>);
@@ -19,34 +17,8 @@ impl FetchArray {
         FetchArray(Vec::new())
     }
 
-    pub fn with_capacity(capacity: usize) -> Self {
-        FetchArray(Vec::with_capacity(capacity))
-    }
-
-    pub fn push(&mut self, value: FetchSection) {
-        self.0.push(value)
-    }
-
-    // Discard Err and push ok
-    pub fn push_ok(&mut self, value: Result<FetchSection, FetchError>) {
-        if let Ok(v) = value {
-            self.push(v)
-        }
-    }
-
-    pub fn push_fetchitem<T: FetchItem>(&mut self, item: T) {
-        self.push(FetchSection::from(item))
-    }
-
-    pub fn push_fetchitem_ok<T: FetchItem>(&mut self, item: Result<T, FetchError>, verbose: bool) {
-        match item {
-            Ok(v) => self.push_fetchitem(v),
-            Err(e) => {
-                if verbose {
-                    eprint!("{}", e)
-                }
-            }
-        }
+    pub fn push<T: Into<FetchSection>>(&mut self, value: T) {
+        self.0.push(value.into())
     }
 }
 
@@ -86,23 +58,13 @@ impl FetchSection {
         let indent = self.name.len();
         indent.saturating_sub(level * INDENT_LENGTH)
     }
-
-    pub fn from<T>(value: T) -> Self
-    where
-        T: FetchItem,
-    {
-        Self {
-            name: value.name(),
-            content: value.content(),
-        }
-    }
 }
 
-impl<A: Into<String>, B: Into<String>> From<(A, B)> for FetchSection {
+impl<A: Display, B: Display> From<(A, B)> for FetchSection {
     fn from((name, content): (A, B)) -> Self {
         Self {
-            name: name.into(),
-            content: content.into(),
+            name: name.to_string(),
+            content: content.to_string(),
         }
     }
 }

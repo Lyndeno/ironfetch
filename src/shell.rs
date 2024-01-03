@@ -1,6 +1,6 @@
 use std::{env, path::PathBuf};
 
-use crate::{fetcherror::FetchError, fetchitem::FetchItem};
+use crate::fetcherror::FetchError;
 
 pub struct Shell {
     pub path: PathBuf,
@@ -26,11 +26,5 @@ impl Shell {
 impl std::fmt::Display for Shell {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}", self.name().unwrap_or(String::from("")))
-    }
-}
-
-impl FetchItem for Shell {
-    fn name(&self) -> String {
-        String::from("Shell")
     }
 }

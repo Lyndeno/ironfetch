@@ -1,4 +1,4 @@
-use crate::{fetcherror::FetchError, fetchitem::FetchItem};
+use crate::fetcherror::FetchError;
 use measurements::frequency::Frequency;
 use procfs::CpuInfo;
 
@@ -72,11 +72,5 @@ impl std::fmt::Display for Cpu {
             core_string,
             self.frequency_avg()
         )
-    }
-}
-
-impl FetchItem for Cpu {
-    fn name(&self) -> String {
-        String::from("CPU")
     }
 }
