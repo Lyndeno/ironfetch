@@ -33,11 +33,4 @@ impl FetchItem for Shell {
     fn name(&self) -> String {
         String::from("Shell")
     }
-
-    fn long_content(&self) -> Option<Vec<FetchSection>> {
-        Some(vec![
-            ("Name", self.name().unwrap_or("".to_string())).into(),
-            ("Path", self.path.to_str().unwrap().to_string()).into(),
-        ])
-    }
 }

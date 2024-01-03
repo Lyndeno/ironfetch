@@ -40,12 +40,4 @@ impl FetchItem for Kernel {
     fn name(&self) -> String {
         String::from("Kernel")
     }
-
-    fn long_content(&self) -> Option<Vec<FetchSection>> {
-        Some(vec![
-            ("Name", self.name.clone()).into(),
-            ("Release", self.release.clone()).into(),
-            ("Architecture", self.architecture.clone()).into(),
-        ])
-    }
 }

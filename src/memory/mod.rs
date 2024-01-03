@@ -1,9 +1,9 @@
+use std::collections::HashSet;
 use std::fmt::Write;
 
+use crate::fetcherror::FetchError;
 use crate::fetchitem::FetchItem;
 use crate::memunit::MemUnits;
-use crate::{fetcherror::FetchError, fetchsection::FetchType};
-use crate::{fetchsection::opt_fs, fetchsection::FetchSection};
 use measurements::Data;
 
 use simplesmbios::mem::MemDevice;
@@ -62,9 +62,40 @@ impl<'a> Memory<'a> {
         )
     }
 
+    fn get_type(&self) -> Vec<String> {
+        let mut memtype = Vec::new();
+        if let Some(v) = &self.devices {
+            let mut iter = v.iter();
+
+            for dev in iter {
+                if let Some(x) = dev.mem_type() {
+                    memtype.push(x);
+                }
+            }
+        }
+        memtype.iter().map(|x| x.to_string()).collect()
+    }
+
     fn display_unit(&self, used: f64, total: f64, unit: &str) -> String {
+        let types = self.get_type();
+        let mut typestring = String::new();
+
+        let mut typeiter = types.iter();
+
+        if let Some(x) = typeiter.next() {
+            typestring.push_str(x);
+            for y in typeiter {
+                typestring.push_str(", ");
+                typestring.push_str(y);
+            }
+        }
         let mut s = String::new();
-        write!(s, "{:.2}{} / {:.2}{}", used, unit, total, unit).unwrap();
+        write!(
+            s,
+            "{:.2}{} / {:.2}{} {}",
+            used, unit, total, unit, typestring
+        )
+        .unwrap();
         s
     }
 
@@ -86,44 +117,5 @@ impl std::fmt::Display for Memory<'_> {
 impl FetchItem for Memory<'_> {
     fn name(&self) -> String {
         String::from("Memory")
-    }
-
-    fn long_content(&self) -> Option<Vec<FetchSection>> {
-        let mut vec: Vec<FetchSection> = vec![
-            ("Total", format!("{:.2}", self.total())).into(),
-            ("Used", format!("{:.2}", self.used())).into(),
-            ("Available", format!("{:.2}", self.available())).into(),
-        ];
-        if let Some(ref s) = self.devices {
-            let mut devices = Vec::new();
-            for (index, dev) in s.iter().enumerate() {
-                devices.push(FetchSection {
-                    name: format!("Device {}", index),
-                    content: {
-                        let mut memvec: Vec<FetchSection> = Vec::with_capacity(6);
-                        memvec.push(opt_fs(("Location", dev.location())));
-                        memvec.push(opt_fs(("Manufacturer", dev.manufacturer())));
-                        memvec.push(opt_fs(("Part #", dev.part_number())));
-                        memvec.push(opt_fs(("Type", dev.mem_type().map(|v| v.to_string()))));
-                        memvec.push(opt_fs((
-                            "Form Factor",
-                            dev.form_factor().map(|v| v.to_string()),
-                        )));
-                        if let Some(ref v) = dev.size() {
-                            memvec.push(("Capacity", format!("{:.2}", v)).into())
-                        }
-                        if let Some(ref v) = dev.speed() {
-                            memvec.push(("Speed", format!("{} MT/s", v.as_megahertz())).into());
-                        }
-                        FetchType::Long(memvec)
-                    },
-                });
-            }
-            vec.push(FetchSection {
-                name: "Devices".to_string(),
-                content: FetchType::Long(devices),
-            });
-        };
-        Some(vec)
     }
 }

@@ -35,7 +35,7 @@ impl FetchArray {
     }
 
     pub fn push_fetchitem<T: FetchItem>(&mut self, item: T, long: bool) {
-        self.push(FetchSection::from(item, long))
+        self.push(FetchSection::from(item))
     }
 
     pub fn push_fetchitem_ok<T: FetchItem>(
@@ -68,76 +68,37 @@ impl Display for FetchArray {
         Ok(())
     }
 }
-pub enum FetchType {
-    Short(String),
-    Long(Vec<FetchSection>),
-    None,
-}
-
-pub fn opt_fs<A, B>((name, content): (A, Option<B>)) -> FetchSection
-where
-    (A, B): Into<FetchSection>,
-    A: Into<String>,
-    B: Into<String>,
-{
-    match content {
-        Some(v) => (name, v).into(),
-        None => FetchSection {
-            name: name.into(),
-            content: FetchType::None,
-        },
-    }
-}
 
 /// Simple fetching program
 pub struct FetchSection {
     pub name: String,
-    pub content: FetchType,
+    pub content: String,
 }
 
 impl FetchSection {
     pub fn fmt(&self, indent: usize, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match self.content {
-            FetchType::Short(ref s) => writeln!(
-                f,
-                "{:>indent$}: {}",
-                self.name.red().bold(),
-                s,
-                indent = indent
-            )?,
-            FetchType::Long(ref c) => {
-                writeln!(f, "{:>indent$}:", self.name.red().bold(), indent = indent)?;
-                for line in c {
-                    line.fmt(indent + INDENT_LENGTH, f)?;
-                }
-            }
-            FetchType::None => {}
-        }
+        writeln!(
+            f,
+            "{:>indent$}: {}",
+            self.name.red().bold(),
+            self.content,
+            indent = indent
+        )?;
         Ok(())
     }
 
     pub fn get_indent(&self, level: usize) -> usize {
         let mut indent = self.name.len();
-        match self.content {
-            FetchType::Short(_) => {}
-            FetchType::Long(ref v) => {
-                for line in v {
-                    let length = line.get_indent(level + 1);
-                    indent = if length > indent { length } else { indent };
-                }
-            }
-            FetchType::None => {}
-        };
         indent.saturating_sub(level * INDENT_LENGTH)
     }
 
-    pub fn from<T>(value: T, long: bool) -> Self
+    pub fn from<T>(value: T) -> Self
     where
         T: FetchItem,
     {
         Self {
             name: value.name(),
-            content: value.content(long),
+            content: value.content(),
         }
     }
 }
@@ -146,7 +107,7 @@ impl<A: Into<String>, B: Into<String>> From<(A, B)> for FetchSection {
     fn from((name, content): (A, B)) -> Self {
         Self {
             name: name.into(),
-            content: FetchType::Short(content.into()),
+            content: content.into(),
         }
     }
 }

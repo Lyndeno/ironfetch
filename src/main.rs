@@ -33,18 +33,37 @@ fn main() {
     let mut array = FetchArray::default();
     let smbios_ref = smbios_result.as_ref();
 
-    array.push_fetchitem_ok(OsInfo::new(), args.long, args.debug);
-    array.push_fetchitem_ok(Shell::new(), args.long, args.debug);
-    array.push_fetchitem_ok(Kernel::new(), args.long, args.debug);
-    array.push_fetchitem_ok(Model::new(), args.long, args.debug);
-    array.push_fetchitem_ok(HostName::new(), args.long, args.debug);
-    array.push_fetchitem_ok(Uptime::new(), args.long, args.debug);
-    array.push_fetchitem_ok(Cpu::new(), args.long, args.debug);
-    array.push_fetchitem_ok(
-        Memory::new(args.memory_unit, smbios_ref),
-        args.long,
-        args.debug,
-    );
+    if let Ok(r) = OsInfo::new() {
+        array.push_fetchitem(r, args.long)
+    }
+
+    if let Ok(r) = Shell::new() {
+        array.push_fetchitem(r, args.long)
+    }
+
+    if let Ok(r) = Kernel::new() {
+        array.push_fetchitem(r, args.long)
+    }
+
+    if let Ok(r) = Model::new() {
+        array.push_fetchitem(r, args.long)
+    }
+
+    if let Ok(r) = HostName::new() {
+        array.push_fetchitem(r, args.long)
+    }
+
+    if let Ok(r) = Uptime::new() {
+        array.push_fetchitem(r, args.long)
+    }
+
+    if let Ok(r) = Cpu::new() {
+        array.push_fetchitem(r, args.long)
+    }
+
+    if let Ok(r) = Memory::new(args.memory_unit, smbios_ref) {
+        array.push_fetchitem(r, args.long)
+    }
 
     print!("{}", array);
 }

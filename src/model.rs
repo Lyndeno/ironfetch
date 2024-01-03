@@ -41,12 +41,4 @@ impl FetchItem for Model {
     fn name(&self) -> String {
         String::from("Model")
     }
-
-    fn long_content(&self) -> Option<Vec<FetchSection>> {
-        Some(vec![
-            ("Vendor", self.board_vendor.clone()).into(),
-            ("Product", self.product_name.clone()).into(),
-            ("Board", self.board_name.clone()).into(),
-        ])
-    }
 }
