@@ -1,7 +1,7 @@
 use nix::sys::utsname::{uname, UtsName};
 use std::ffi::OsStr;
 
-use crate::{fetcherror::FetchError, fetchitem::FetchItem, fetchsection::FetchSection};
+use crate::{fetcherror::FetchError, fetchitem::FetchItem};
 
 type Result<T> = std::result::Result<T, FetchError>;
 

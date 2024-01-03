@@ -34,18 +34,13 @@ impl FetchArray {
         }
     }
 
-    pub fn push_fetchitem<T: FetchItem>(&mut self, item: T, long: bool) {
+    pub fn push_fetchitem<T: FetchItem>(&mut self, item: T) {
         self.push(FetchSection::from(item))
     }
 
-    pub fn push_fetchitem_ok<T: FetchItem>(
-        &mut self,
-        item: Result<T, FetchError>,
-        long: bool,
-        verbose: bool,
-    ) {
+    pub fn push_fetchitem_ok<T: FetchItem>(&mut self, item: Result<T, FetchError>, verbose: bool) {
         match item {
-            Ok(v) => self.push_fetchitem(v, long),
+            Ok(v) => self.push_fetchitem(v),
             Err(e) => {
                 if verbose {
                     eprint!("{}", e)
@@ -88,7 +83,7 @@ impl FetchSection {
     }
 
     pub fn get_indent(&self, level: usize) -> usize {
-        let mut indent = self.name.len();
+        let indent = self.name.len();
         indent.saturating_sub(level * INDENT_LENGTH)
     }
 

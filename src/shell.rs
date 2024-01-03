@@ -1,6 +1,6 @@
 use std::{env, path::PathBuf};
 
-use crate::{fetcherror::FetchError, fetchitem::FetchItem, fetchsection::FetchSection};
+use crate::{fetcherror::FetchError, fetchitem::FetchItem};
 
 pub struct Shell {
     pub path: PathBuf,

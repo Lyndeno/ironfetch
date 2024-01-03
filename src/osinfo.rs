@@ -1,6 +1,6 @@
 use os_release::OsRelease;
 
-use crate::{fetcherror::FetchError, fetchitem::FetchItem, fetchsection::FetchSection};
+use crate::{fetcherror::FetchError, fetchitem::FetchItem};
 
 pub struct OsInfo(OsRelease);
 

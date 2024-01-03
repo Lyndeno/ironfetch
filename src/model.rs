@@ -3,7 +3,7 @@ use std::{
     io::{BufRead, BufReader},
 };
 
-use crate::{fetcherror::FetchError, fetchitem::FetchItem, fetchsection::FetchSection};
+use crate::{fetcherror::FetchError, fetchitem::FetchItem};
 pub struct Model {
     product_name: String,
     board_vendor: String,

@@ -1,4 +1,3 @@
-use std::collections::HashSet;
 use std::fmt::Write;
 
 use crate::fetcherror::FetchError;
@@ -65,7 +64,7 @@ impl<'a> Memory<'a> {
     fn get_type(&self) -> Vec<String> {
         let mut memtype = Vec::new();
         if let Some(v) = &self.devices {
-            let mut iter = v.iter();
+            let iter = v.iter();
 
             for dev in iter {
                 if let Some(x) = dev.mem_type() {
