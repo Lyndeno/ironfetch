@@ -65,33 +65,33 @@ fn main() {
         array.push(("Memory", r))
     }
 
-    print!("{}", array);
-    std::io::stdout()
-        .write_all(&colourblocks(array.get_indent() + SEPARATOR.len()))
-        .unwrap();
+    println!(
+        "{}\n{}",
+        array,
+        colourblocks(array.get_indent() + SEPARATOR.len())
+    );
 }
 
-const COLOUR_RESET: &[u8] = b"\x1b[0m";
-use std::io::Write;
+const COLOUR_RESET: &str = "\x1b[0m";
+//use std::io::Write;
+use std::fmt::Write;
 
-fn colourblocks(indent: usize) -> Vec<u8> {
-    let mut blocks = Vec::<u8>::new();
-    blocks.append(&mut spaces(indent));
+fn colourblocks(indent: usize) -> String {
+    let mut blocks = String::new();
+    blocks.push_str(&spaces(indent));
     for i in 0..16u8 {
         if i == 8 {
-            blocks.extend_from_slice(COLOUR_RESET);
-            blocks.push(b'\n');
-            blocks.append(&mut spaces(indent));
+            blocks.push_str(COLOUR_RESET);
+            blocks.push('\n');
+            blocks.push_str(&spaces(indent));
         }
-        let mut buf = Vec::<u8>::new();
-        write!(&mut buf, "\x1b[38;5;{}m\x1b[48;5;{}m   ", i, i).unwrap();
-        blocks.append(&mut buf);
+        write!(&mut blocks, "\x1b[38;5;{}m\x1b[48;5;{}m   ", i, i)
+            .expect("Could not write colourblocks for some reason");
     }
-    blocks.extend_from_slice(COLOUR_RESET);
-    blocks.push(b'\n');
+    blocks.push_str(COLOUR_RESET);
     blocks
 }
 
-fn spaces(count: usize) -> Vec<u8> {
-    vec![b' '; count]
+fn spaces(count: usize) -> String {
+    vec![' '; count].iter().collect()
 }

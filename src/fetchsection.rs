@@ -34,8 +34,12 @@ impl FetchArray {
 impl Display for FetchArray {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let indent = self.get_indent();
-        for line in &self.0 {
+        let mut iter = self.0.iter().peekable();
+        while let Some(line) = iter.next() {
             line.fmt(indent, f)?;
+            if iter.peek().is_some() {
+                writeln!(f)?;
+            }
         }
         Ok(())
     }
@@ -49,7 +53,7 @@ pub struct FetchSection {
 
 impl FetchSection {
     pub fn fmt(&self, indent: usize, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        writeln!(
+        write!(
             f,
             "{:>indent$}{}{}",
             self.name.red().bold(),
