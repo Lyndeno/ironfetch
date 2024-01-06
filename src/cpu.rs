@@ -53,10 +53,13 @@ impl Cpu {
 
     pub fn model(&self) -> String {
         // TODO: Implement support for multiple CPU models, technically possible
-        self.cpu
+        let string = self
+            .cpu
             .model_name(0)
             .unwrap_or("Unknown Model")
-            .to_string()
+            .to_string();
+        let strings: Vec<&str> = string.split('@').collect();
+        strings[0].trim().to_owned()
     }
 }
 
