@@ -3,7 +3,7 @@ use std::fmt::Write;
 
 use crate::fetcherror::FetchError;
 use crate::memunit::MemUnits;
-use measurements::{Data, Frequency};
+use measurements::{Data, Frequency, Measurement};
 
 use simplesmbios::mem::MemDevice;
 use simplesmbios::smbios::SMBios;
@@ -92,26 +92,8 @@ impl<'a> Memory<'a> {
     }
 
     fn display_unit(&self, used: f64, total: f64, unit: &str) -> String {
-        let types = self.get_type();
-        let mut typestring = String::new();
-
-        let mut typeiter = types.iter();
-
-        if let Some(x) = typeiter.next() {
-            typestring.push_str(x);
-            for y in typeiter {
-                typestring.push_str(", ");
-                typestring.push_str(y);
-            }
-        }
-
-        let speeds = self.get_speed();
-        let count = speeds.len();
-        let mut sum = Frequency::from_hertz(0_f64);
-        for freq in speeds {
-            sum = sum + freq;
-        }
-        let avg_freq = sum / count as f64;
+        let typestring = print_strings(self.get_type());
+        let avg_freq = avg_frequency(self.get_speed());
 
         let mut s = String::new();
         write!(
@@ -121,7 +103,7 @@ impl<'a> Memory<'a> {
         )
         .unwrap();
 
-        if count > 0 {
+        if avg_freq > Frequency::from_base_units(0_f64) {
             write!(s, " @ {} MHz", avg_freq.as_megahertz()).unwrap();
         }
         s
@@ -140,4 +122,32 @@ impl std::fmt::Display for Memory<'_> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}", self.display())
     }
+}
+
+fn print_strings(strings: Vec<String>) -> String {
+    let mut list = String::new();
+
+    let mut typeiter = strings.iter();
+
+    if let Some(x) = typeiter.next() {
+        list.push_str(x);
+        for y in typeiter {
+            list.push_str(", ");
+            list.push_str(y);
+        }
+    }
+    list
+}
+
+fn sum_frequency(f: Vec<Frequency>) -> Frequency {
+    let mut sum = Frequency::from_hertz(0_f64);
+    for freq in f {
+        sum = sum + freq;
+    }
+    sum
+}
+
+fn avg_frequency(f: Vec<Frequency>) -> Frequency {
+    let count = f.len();
+    sum_frequency(f) / count as f64
 }
