@@ -15,4 +15,12 @@ pub struct Args {
 
     #[arg(long, short, value_enum)]
     pub smbios_path: Option<String>,
+
+    /// Number of colours to show
+    #[arg(long, default_value = "16")]
+    pub colours: usize,
+
+    /// Number of colour lines to show
+    #[arg(long, default_value = "8")]
+    pub colour_length: usize,
 }
