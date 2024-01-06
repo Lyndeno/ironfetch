@@ -2,7 +2,7 @@ use std::fmt::Display;
 
 use colored::Colorize;
 
-const INDENT_LENGTH: usize = 4;
+pub const SEPARATOR: &[u8] = b": ";
 
 pub struct FetchArray(Vec<FetchSection>);
 
@@ -20,15 +20,20 @@ impl FetchArray {
     pub fn push<T: Into<FetchSection>>(&mut self, value: T) {
         self.0.push(value.into())
     }
+
+    pub fn get_indent(&self) -> usize {
+        let mut indent = 0;
+        for line in &self.0 {
+            let length = line.get_indent();
+            indent = if length > indent { length } else { indent };
+        }
+        indent
+    }
 }
 
 impl Display for FetchArray {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        let mut indent = 0;
-        for line in &self.0 {
-            let length = line.get_indent(0);
-            indent = if length > indent { length } else { indent };
-        }
+        let indent = self.get_indent();
         for line in &self.0 {
             line.fmt(indent, f)?;
         }
@@ -46,17 +51,17 @@ impl FetchSection {
     pub fn fmt(&self, indent: usize, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         writeln!(
             f,
-            "{:>indent$}: {}",
+            "{:>indent$}{}{}",
             self.name.red().bold(),
+            std::str::from_utf8(SEPARATOR).unwrap(),
             self.content,
             indent = indent
         )?;
         Ok(())
     }
 
-    pub fn get_indent(&self, level: usize) -> usize {
-        let indent = self.name.len();
-        indent.saturating_sub(level * INDENT_LENGTH)
+    pub fn get_indent(&self) -> usize {
+        self.name.len()
     }
 }
 

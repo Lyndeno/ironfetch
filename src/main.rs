@@ -1,7 +1,6 @@
 use std::path::Path;
 
-use colored::Colorize;
-use ironfetch::fetchsection::FetchArray;
+use ironfetch::fetchsection::{FetchArray, SEPARATOR};
 use ironfetch::kernel::Kernel;
 
 use ironfetch::cpu::Cpu;
@@ -67,18 +66,22 @@ fn main() {
     }
 
     print!("{}", array);
-    std::io::stdout().write_all(&colourblocks()).unwrap();
+    std::io::stdout()
+        .write_all(&colourblocks(array.get_indent() + SEPARATOR.len()))
+        .unwrap();
 }
 
-const COLOUR_RESET: &[u8; 4] = b"\x1b[0m";
+const COLOUR_RESET: &[u8] = b"\x1b[0m";
 use std::io::Write;
 
-fn colourblocks() -> Vec<u8> {
+fn colourblocks(indent: usize) -> Vec<u8> {
     let mut blocks = Vec::<u8>::new();
+    blocks.append(&mut spaces(indent));
     for i in 0..16u8 {
         if i == 8 {
             blocks.extend_from_slice(COLOUR_RESET);
             blocks.push(b'\n');
+            blocks.append(&mut spaces(indent));
         }
         let mut buf = Vec::<u8>::new();
         write!(&mut buf, "\x1b[38;5;{}m\x1b[48;5;{}m   ", i, i).unwrap();
@@ -87,4 +90,8 @@ fn colourblocks() -> Vec<u8> {
     blocks.extend_from_slice(COLOUR_RESET);
     blocks.push(b'\n');
     blocks
+}
+
+fn spaces(count: usize) -> Vec<u8> {
+    vec![b' '; count]
 }
