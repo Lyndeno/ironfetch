@@ -1,5 +1,6 @@
 use std::path::Path;
 
+use colored::Colorize;
 use ironfetch::fetchsection::FetchArray;
 use ironfetch::kernel::Kernel;
 
@@ -66,4 +67,24 @@ fn main() {
     }
 
     print!("{}", array);
+    std::io::stdout().write_all(&colourblocks()).unwrap();
+}
+
+const COLOUR_RESET: &[u8; 4] = b"\x1b[0m";
+use std::io::Write;
+
+fn colourblocks() -> Vec<u8> {
+    let mut blocks = Vec::<u8>::new();
+    for i in 0..16u8 {
+        if i == 8 {
+            blocks.extend_from_slice(COLOUR_RESET);
+            blocks.push(b'\n');
+        }
+        let mut buf = Vec::<u8>::new();
+        write!(&mut buf, "\x1b[38;5;{}m\x1b[48;5;{}m   ", i, i).unwrap();
+        blocks.append(&mut buf);
+    }
+    blocks.extend_from_slice(COLOUR_RESET);
+    blocks.push(b'\n');
+    blocks
 }
