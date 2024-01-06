@@ -69,6 +69,6 @@ fn main() {
     println!(
         "{}\n{}",
         array,
-        colourblocks(array.get_indent() + SEPARATOR.len())
+        colourblocks(array.get_indent() + SEPARATOR.len(), 16, 8)
     );
 }
