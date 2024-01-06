@@ -309,7 +309,6 @@ dependencies = [
  "os-release",
  "procfs",
  "simplesmbios",
- "smbios-lib",
  "sys-info",
  "uptime_lib",
 ]

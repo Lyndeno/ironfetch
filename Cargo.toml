@@ -12,7 +12,6 @@ measurements = "*"
 nix = { version="*", features = ["feature"]}
 os-release = "*"
 procfs = "*"
-smbios-lib = "*"
 sys-info = "*"
 uptime_lib = "*"
 simplesmbios = { git = "https://github.com/Lyndeno/simplesmbios-rust" }
