@@ -3,7 +3,7 @@ use std::fmt::Write;
 
 use crate::fetcherror::FetchError;
 use crate::memunit::MemUnits;
-use measurements::Data;
+use measurements::{Data, Frequency};
 
 use simplesmbios::mem::MemDevice;
 use simplesmbios::smbios::SMBios;
@@ -81,6 +81,18 @@ impl<'a> Memory<'a> {
         string_vec
     }
 
+    fn get_speed(&self) -> Vec<Frequency> {
+        let mut speeds = Vec::new();
+        if let Some(v) = &self.devices {
+            for dev in v {
+                if let Some(x) = dev.speed() {
+                    speeds.push(x)
+                }
+            }
+        }
+        speeds
+    }
+
     fn display_unit(&self, used: f64, total: f64, unit: &str) -> String {
         let types = self.get_type();
         let mut typestring = String::new();
@@ -94,6 +106,15 @@ impl<'a> Memory<'a> {
                 typestring.push_str(y);
             }
         }
+
+        let speeds = self.get_speed();
+        let count = speeds.len();
+        let mut sum = Frequency::from_hertz(0_f64);
+        for freq in speeds {
+            sum = sum + freq;
+        }
+        let avg_freq = sum / count as f64;
+
         let mut s = String::new();
         write!(
             s,
@@ -101,6 +122,10 @@ impl<'a> Memory<'a> {
             used, unit, total, unit, typestring
         )
         .unwrap();
+
+        if count > 0 {
+            write!(s, " @ {} MHz", avg_freq.as_megahertz()).unwrap();
+        }
         s
     }
 
