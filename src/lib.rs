@@ -1,4 +1,5 @@
 pub mod args;
+pub mod colourblocks;
 pub mod cpu;
 pub mod fetcherror;
 pub mod fetchsection;
