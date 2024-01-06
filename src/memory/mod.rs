@@ -64,9 +64,7 @@ impl<'a> Memory<'a> {
     fn get_type(&self) -> Vec<String> {
         let mut memtype = Vec::new();
         if let Some(v) = &self.devices {
-            let iter = v.iter();
-
-            for dev in iter {
+            for dev in v {
                 if let Some(x) = dev.mem_type() {
                     memtype.push(x);
                 }
