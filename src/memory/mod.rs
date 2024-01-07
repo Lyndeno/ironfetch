@@ -79,6 +79,24 @@ impl<'a> Memory<'a> {
         string_vec
     }
 
+    fn get_formfactor(&self) -> Vec<String> {
+        let mut memff = Vec::new();
+        if let Some(v) = &self.devices {
+            for dev in v {
+                if let Some(x) = dev.form_factor() {
+                    memff.push(x);
+                }
+            }
+        }
+
+        let mut string_vec: Vec<String> = memff.iter().map(|x| x.to_string()).collect();
+
+        let set: HashSet<_> = string_vec.drain(..).collect();
+        string_vec.extend(set);
+
+        string_vec
+    }
+
     fn get_speed(&self) -> Vec<Frequency> {
         let mut speeds = Vec::new();
         if let Some(v) = &self.devices {
@@ -94,12 +112,13 @@ impl<'a> Memory<'a> {
     fn display_unit(&self, used: f64, total: f64, unit: &str) -> String {
         let typestring = print_strings(self.get_type());
         let avg_freq = avg_frequency(self.get_speed());
+        let formfactors = print_strings(self.get_formfactor());
 
         let mut s = String::new();
         write!(
             s,
-            "{:.2}{} / {:.2}{} {}",
-            used, unit, total, unit, typestring
+            "{:.2}{} / {:.2}{} {} ({})",
+            used, unit, total, unit, typestring, formfactors
         )
         .unwrap();
 
