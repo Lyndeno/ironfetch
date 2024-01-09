@@ -2,7 +2,7 @@ use std::fmt::Display;
 
 use colored::Colorize;
 
-pub const SEPARATOR: &[u8] = b": ";
+pub const SEPARATOR: &str = ": ";
 
 pub struct FetchArray(Vec<FetchSection>);
 
@@ -18,7 +18,7 @@ impl FetchArray {
     }
 
     pub fn push<T: Into<FetchSection>>(&mut self, value: T) {
-        self.0.push(value.into())
+        self.0.push(value.into());
     }
 
     pub fn get_indent(&self) -> usize {
@@ -52,12 +52,17 @@ pub struct FetchSection {
 }
 
 impl FetchSection {
+    /// Write the section to provided formatter
+    ///
+    /// # Errors
+    ///
+    /// Propogates writing errors
     pub fn fmt(&self, indent: usize, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(
             f,
             "{:>indent$}{}{}",
             self.name.red().bold(),
-            std::str::from_utf8(SEPARATOR).unwrap(),
+            SEPARATOR,
             self.content,
             indent = indent
         )?;

@@ -8,8 +8,13 @@ pub struct Cpu {
 }
 
 impl Cpu {
+    /// Get current CPU information
+    ///
+    /// # Errors
+    ///
+    /// Returns and error if the cpu info cannot be obtained.
     pub fn new() -> Result<Self, FetchError> {
-        let cpu = CpuInfo::current().unwrap();
+        let cpu = CpuInfo::current()?;
 
         Ok(Self { cpu })
     }
@@ -24,14 +29,15 @@ impl Cpu {
                 .get_field(cpu_num, "cpu MHz")
                 .unwrap_or("0.00") // FIXME: I really do not like this
                 .parse::<f64>()
-                .unwrap(),
+                .unwrap_or(0.00),
         )
     }
 
+    #[allow(clippy::cast_precision_loss)]
     pub fn frequency_avg(&self) -> Frequency {
         let mut sum = Frequency::from_hertz(0_f64);
         for cpu_num in 0..self.logical_core_count() {
-            sum = sum + self.frequency(cpu_num)
+            sum = sum + self.frequency(cpu_num);
         }
         sum / self.logical_core_count() as f64
     }
@@ -39,12 +45,12 @@ impl Cpu {
     pub fn physical_core_count(&self) -> Option<usize> {
         let mut core_id = Vec::new();
         for cpu_num in 0..self.logical_core_count() {
-            core_id.push(
-                self.cpu
-                    .get_field(cpu_num, "core id")?
-                    .parse::<usize>()
-                    .unwrap(),
-            )
+            let id = self.cpu.get_field(cpu_num, "core id")?.parse::<usize>();
+            if let Ok(v) = id {
+                core_id.push(v);
+            } else {
+                return None;
+            }
         }
         core_id.sort();
         core_id.dedup();
@@ -65,9 +71,10 @@ impl Cpu {
 
 impl std::fmt::Display for Cpu {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        let core_string = match self.physical_core_count() {
-            Some(v) => format!("({}/{})", self.logical_core_count(), v),
-            None => format!("({})", self.logical_core_count()),
+        let core_string = if let Some(v) = self.physical_core_count() {
+            format!("({}/{})", self.logical_core_count(), v)
+        } else {
+            format!("({})", self.logical_core_count())
         };
         write!(
             f,

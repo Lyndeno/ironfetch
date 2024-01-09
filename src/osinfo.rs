@@ -5,6 +5,11 @@ use crate::fetcherror::FetchError;
 pub struct OsInfo(OsRelease);
 
 impl OsInfo {
+    /// Returns os-release information
+    ///
+    /// # Errors
+    ///
+    /// Returns errors if os-release cannot be parsed
     pub fn new() -> Result<Self, FetchError> {
         Ok(Self(OsRelease::new()?))
     }

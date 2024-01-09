@@ -16,11 +16,16 @@ pub struct Memory<'a> {
 }
 
 impl<'a> Memory<'a> {
+    /// Return a new memory object.
+    /// # Errors
+    ///
+    /// Will return an error if the memory stats cannot be parsed.
+    /// Does not error on failure to obtain smbios information
     pub fn new(
         display_unit: Option<MemUnits>,
         smbios: Option<&'a SMBios>,
     ) -> Result<Self, FetchError> {
-        let meminfo = sys_info::mem_info().unwrap();
+        let meminfo = sys_info::mem_info()?;
 
         Ok(Self {
             display_unit,
@@ -38,10 +43,12 @@ impl<'a> Memory<'a> {
         self.total() - self.available()
     }
 
+    #[allow(clippy::cast_precision_loss)]
     pub fn total(&self) -> Data {
         Data::from_kibioctets(self.meminfo.total as f64)
     }
 
+    #[allow(clippy::cast_precision_loss)]
     pub fn available(&self) -> Data {
         Data::from_kibioctets(self.meminfo.avail as f64)
     }
@@ -71,7 +78,10 @@ impl<'a> Memory<'a> {
             }
         }
 
-        let mut string_vec: Vec<String> = memtype.iter().map(|x| x.to_string()).collect();
+        let mut string_vec: Vec<String> = memtype
+            .iter()
+            .map(std::string::ToString::to_string)
+            .collect();
 
         let set: HashSet<_> = string_vec.drain(..).collect();
         string_vec.extend(set);
@@ -89,7 +99,8 @@ impl<'a> Memory<'a> {
             }
         }
 
-        let mut string_vec: Vec<String> = memff.iter().map(|x| x.to_string()).collect();
+        let mut string_vec: Vec<String> =
+            memff.iter().map(std::string::ToString::to_string).collect();
 
         let set: HashSet<_> = string_vec.drain(..).collect();
         string_vec.extend(set);
@@ -102,7 +113,7 @@ impl<'a> Memory<'a> {
         if let Some(v) = &self.devices {
             for dev in v {
                 if let Some(x) = dev.speed() {
-                    speeds.push(x)
+                    speeds.push(x);
                 }
             }
         }
@@ -117,8 +128,7 @@ impl<'a> Memory<'a> {
         let mut s = String::new();
         write!(
             s,
-            "{:.2}{} / {:.2}{} {} ({})",
-            used, unit, total, unit, typestring, formfactors
+            "{used:.2}{unit} / {total:.2}{unit} {typestring} ({formfactors})"
         )
         .unwrap();
 
@@ -130,9 +140,8 @@ impl<'a> Memory<'a> {
 
     fn display(&self) -> String {
         match self.display_unit {
-            Some(MemUnits::GiB) => self.display_gb(),
+            None | Some(MemUnits::GiB) => self.display_gb(),
             Some(MemUnits::MiB) => self.display_mb(),
-            None => self.display_gb(),
         }
     }
 }
@@ -146,13 +155,13 @@ impl std::fmt::Display for Memory<'_> {
 fn print_strings(strings: Vec<String>) -> String {
     let mut list = String::new();
 
-    let mut typeiter = strings.iter();
+    let mut typeiter = strings.into_iter();
 
     if let Some(x) = typeiter.next() {
-        list.push_str(x);
+        list.push_str(&x);
         for y in typeiter {
             list.push_str(", ");
-            list.push_str(y);
+            list.push_str(&y);
         }
     }
     list
@@ -166,6 +175,7 @@ fn sum_frequency(f: Vec<Frequency>) -> Frequency {
     sum
 }
 
+#[allow(clippy::cast_precision_loss)]
 fn avg_frequency(f: Vec<Frequency>) -> Frequency {
     let count = f.len();
     sum_frequency(f) / count as f64

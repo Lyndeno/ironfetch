@@ -12,6 +12,11 @@ pub struct Kernel {
 }
 
 impl Kernel {
+    /// Return kernel information
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if there is any problem getting kernel information or parsing the strings
     pub fn new() -> Result<Self> {
         let info: UtsName = uname()?;
         Ok(Self {

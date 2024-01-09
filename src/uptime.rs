@@ -8,6 +8,11 @@ const SECONDS_DAY: u64 = SECONDS_HOUR * 24;
 pub struct Uptime(pub Duration);
 
 impl Uptime {
+    /// Get uptime
+    ///
+    /// # Errors
+    ///
+    /// Returns error if uptime cannot be read
     pub fn new() -> Result<Self, FetchError> {
         Ok(Self(uptime_lib::get()?))
     }
@@ -37,13 +42,13 @@ impl std::fmt::Display for Uptime {
                 s.push(' ');
                 s.push_str(unit.1 .0);
                 if unit.1 .1 != 1 {
-                    s.push('s')
+                    s.push('s');
                 };
                 if unit.0 < len - 1 {
-                    s.push_str(", ")
+                    s.push_str(", ");
                 };
             }
         }
-        write!(f, "{}", s)
+        write!(f, "{s}")
     }
 }

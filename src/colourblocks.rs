@@ -11,7 +11,7 @@ pub fn colourblocks(indent: usize, colours: usize, line_length: usize) -> String
             blocks.push('\n');
             append_spaces(&mut blocks, indent);
         }
-        write!(&mut blocks, "\x1b[38;5;{}m\x1b[48;5;{}m   ", i, i)
+        write!(&mut blocks, "\x1b[38;5;{i}m\x1b[48;5;{i}m   ")
             .expect("Could not write colourblocks for some reason");
     }
     blocks.push_str(COLOUR_RESET);

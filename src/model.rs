@@ -11,6 +11,11 @@ pub struct Model {
 }
 
 impl Model {
+    /// Get system model information
+    ///
+    /// # Errors
+    ///
+    /// Returns io errors if information cannot be read
     pub fn new() -> Result<Self, FetchError> {
         Ok(Self {
             product_name: read_product_info("/sys/devices/virtual/dmi/id/product_name")?,
