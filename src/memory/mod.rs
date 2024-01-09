@@ -1,5 +1,4 @@
 use std::collections::HashSet;
-use std::fmt::Write;
 
 use crate::fetcherror::FetchError;
 use crate::memunit::MemUnits;
@@ -126,14 +125,19 @@ impl<'a> Memory<'a> {
         let formfactors = print_strings(self.get_formfactor());
 
         let mut s = String::new();
-        write!(
-            s,
-            "{used:.2}{unit} / {total:.2}{unit} {typestring} ({formfactors})"
-        )
-        .unwrap();
+        s.push_str(&format!("{used:.2}{unit} / {total:.2}{unit}"));
+
+        if let Some(v) = typestring {
+            s.push(' ');
+            s.push_str(&v);
+        }
+
+        if let Some(v) = formfactors {
+            s.push_str(&format!(" ({v})"));
+        }
 
         if avg_freq > Frequency::from_base_units(0_f64) {
-            write!(s, " @ {} MHz", avg_freq.as_megahertz()).unwrap();
+            s.push_str(&format!(" @ {} MHz", avg_freq.as_megahertz()));
         }
         s
     }
@@ -152,19 +156,23 @@ impl std::fmt::Display for Memory<'_> {
     }
 }
 
-fn print_strings(strings: Vec<String>) -> String {
-    let mut list = String::new();
+fn print_strings(strings: Vec<String>) -> Option<String> {
+    if strings.is_empty() {
+        None
+    } else {
+        let mut list = String::new();
 
-    let mut typeiter = strings.into_iter();
+        let mut typeiter = strings.into_iter();
 
-    if let Some(x) = typeiter.next() {
-        list.push_str(&x);
-        for y in typeiter {
-            list.push_str(", ");
-            list.push_str(&y);
+        if let Some(x) = typeiter.next() {
+            list.push_str(&x);
+            for y in typeiter {
+                list.push_str(", ");
+                list.push_str(&y);
+            }
         }
+        Some(list)
     }
-    list
 }
 
 fn sum_frequency(f: Vec<Frequency>) -> Frequency {

@@ -33,5 +33,5 @@ clap_mangen = "*"
 [lints.clippy]
 pedantic = {level="warn", priority = 0}
 must_use_candidate = "allow"
-unwrap_used = "warn"
+unwrap_used = {level="warn", priority = 2}
 stable_sort_primitive = {level="allow", priority = 1}
