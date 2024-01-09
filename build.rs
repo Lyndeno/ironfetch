@@ -25,7 +25,7 @@ fn main() -> Result<(), Error> {
     }
 
     let man = clap_mangen::Man::new(cmd);
-    let mut man_buf: Vec<u8> = Default::default();
+    let mut man_buf = Vec::<u8>::default();
     man.render(&mut man_buf)?;
 
     std::fs::write(out_path.join("ironfetch.1"), man_buf)?;
