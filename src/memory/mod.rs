@@ -188,3 +188,35 @@ fn avg_frequency(f: Vec<Frequency>) -> Frequency {
     let count = f.len();
     sum_frequency(f) / count as f64
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::path::Path;
+
+    fn get_smbios() -> SMBios {
+        let path = Path::new("./dmi.bin");
+        SMBios::new_from_file(path).unwrap()
+    }
+    #[test]
+    fn test_display() {
+        let smbios = get_smbios();
+        let mem = Memory {
+            devices: MemDevice::from_smbios(&smbios).unwrap_or(None),
+            display_unit: None,
+            meminfo: MemInfo {
+                total: 0,
+                free: 0,
+                avail: 0,
+                buffers: 0,
+                cached: 0,
+                swap_total: 0,
+                swap_free: 0,
+            },
+        };
+
+        let display = mem.to_string();
+        let desired = "0.00GiB / 0.00GiB DDR4 (SODIMM) @ 2667 MHz";
+        assert_eq!(&display, desired);
+    }
+}
