@@ -196,7 +196,7 @@ mod tests {
 
     fn get_smbios() -> SMBios {
         let path = Path::new("./dmi.bin");
-        SMBios::new_from_file(path).unwrap()
+        SMBios::new_from_file(path).expect("SMBios Parsing failed")
     }
     #[test]
     fn test_display() {
