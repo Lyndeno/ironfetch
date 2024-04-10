@@ -20,6 +20,13 @@ impl OsInfo {
             None => self.0.version_id.clone(),
         }
     }
+
+    pub fn color(&self) -> Option<String> {
+        self.0
+            .extra
+            .get("ANSI_COLOR")
+            .map(|x| x.trim_matches('"').to_owned())
+    }
 }
 
 impl std::fmt::Display for OsInfo {

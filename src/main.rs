@@ -35,6 +35,7 @@ fn main() {
     let smbios_ref = smbios_result.as_ref();
 
     if let Ok(r) = OsInfo::new() {
+        array.set_colour(r.color());
         array.push(("OS", r));
     }
 

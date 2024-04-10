@@ -1,10 +1,13 @@
 use std::fmt::Display;
 
-use colored::Colorize;
+use std::fmt::Write;
 
 pub const SEPARATOR: &str = ": ";
 
-pub struct FetchArray(Vec<FetchSection>);
+pub struct FetchArray {
+    sections: Vec<FetchSection>,
+    colour: Option<String>,
+}
 
 impl Default for FetchArray {
     fn default() -> Self {
@@ -14,16 +17,23 @@ impl Default for FetchArray {
 
 impl FetchArray {
     pub fn new() -> Self {
-        FetchArray(Vec::new())
+        FetchArray {
+            sections: Vec::new(),
+            colour: None,
+        }
+    }
+
+    pub fn set_colour(&mut self, colour: Option<String>) {
+        self.colour = colour;
     }
 
     pub fn push<T: Into<FetchSection>>(&mut self, value: T) {
-        self.0.push(value.into());
+        self.sections.push(value.into());
     }
 
     pub fn get_indent(&self) -> usize {
         let mut indent = 0;
-        for line in &self.0 {
+        for line in &self.sections {
             let length = line.get_indent();
             indent = if length > indent { length } else { indent };
         }
@@ -34,9 +44,9 @@ impl FetchArray {
 impl Display for FetchArray {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let indent = self.get_indent();
-        let mut iter = self.0.iter().peekable();
+        let mut iter = self.sections.iter().peekable();
         while let Some(line) = iter.next() {
-            line.fmt(indent, f)?;
+            line.fmt(indent, f, self.colour.clone())?;
             if iter.peek().is_some() {
                 writeln!(f)?;
             }
@@ -57,15 +67,22 @@ impl FetchSection {
     /// # Errors
     ///
     /// Propogates writing errors
-    pub fn fmt(&self, indent: usize, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(
-            f,
-            "{:>indent$}{}{}",
-            self.name.red().bold(),
-            SEPARATOR,
-            self.content,
-            indent = indent
-        )?;
+    pub fn fmt(
+        &self,
+        indent: usize,
+        f: &mut std::fmt::Formatter<'_>,
+        colour: Option<String>,
+    ) -> std::fmt::Result {
+        let name_text = format!("{:>indent$}", self.name);
+        let name_coloured = match colour {
+            Some(s) => {
+                let mut t = String::new();
+                write!(t, "\x1b[{s}m{name_text}\x1b[0m")?;
+                t
+            }
+            None => self.name.clone(),
+        };
+        write!(f, "{}{}{}", name_coloured, SEPARATOR, self.content,)?;
         Ok(())
     }
 

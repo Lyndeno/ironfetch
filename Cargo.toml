@@ -7,7 +7,6 @@ edition = "2021"
 
 [dependencies]
 clap = { version = "*", features = ["derive"] }
-colored = "*"
 measurements = "*"
 nix = { version="*", features = ["feature"]}
 os-release = "*"
