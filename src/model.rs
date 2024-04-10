@@ -5,7 +5,7 @@ use std::{
 
 use crate::fetcherror::FetchError;
 pub struct Model {
-    product_name: String,
+    product_name: Option<String>,
     board_vendor: String,
     board_name: String,
 }
@@ -18,7 +18,12 @@ impl Model {
     /// Returns io errors if information cannot be read
     pub fn new() -> Result<Self, FetchError> {
         Ok(Self {
-            product_name: read_product_info("/sys/devices/virtual/dmi/id/product_name")?,
+            product_name: match read_product_info("/sys/devices/virtual/dmi/id/product_name")?
+                .as_str()
+            {
+                "System Product Name" => None,
+                s => Some(s.to_owned()),
+            },
             board_vendor: read_product_info("/sys/devices/virtual/dmi/id/board_vendor")?,
             board_name: read_product_info("/sys/devices/virtual/dmi/id/board_name")?,
         })
@@ -34,10 +39,14 @@ fn read_product_info(path: &str) -> Result<String, std::io::Error> {
 
 impl std::fmt::Display for Model {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(
-            f,
-            "{} {} {}",
-            self.board_vendor, self.product_name, self.board_name
-        )
+        let mut text = String::new();
+        text.push_str(&self.board_vendor);
+        if let Some(v) = &self.product_name {
+            text.push(' ');
+            text.push_str(v);
+        }
+        text.push(' ');
+        text.push_str(&self.board_name);
+        write!(f, "{text}")
     }
 }
