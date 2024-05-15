@@ -9,5 +9,6 @@ pub mod memory;
 pub mod memunit;
 pub mod model;
 pub mod osinfo;
+pub mod platform;
 pub mod shell;
 pub mod uptime;

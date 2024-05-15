@@ -18,6 +18,8 @@ use ironfetch::model::Model;
 
 use ironfetch::shell::Shell;
 
+use ironfetch::platform::Profile;
+
 use clap::Parser;
 
 use ironfetch::args::Args;
@@ -65,6 +67,10 @@ fn main() {
 
     if let Ok(r) = Memory::new(args.memory_unit, smbios_ref) {
         array.push(("Memory", r));
+    }
+
+    if let Ok(r) = Profile::new() {
+        array.push(("Profile", r));
     }
 
     println!(
