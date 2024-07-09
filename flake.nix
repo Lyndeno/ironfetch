@@ -60,6 +60,7 @@
             rustfmt
             clippy
             cargo-deny
+            cargo-about
           ];
           RUST_SRC_PATH = "${pkgs.rust.packages.stable.rustPlatform.rustLibSrc}";
           shellHook = ''
