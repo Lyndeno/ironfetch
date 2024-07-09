@@ -54,7 +54,13 @@
         };
       in
         pkgs.mkShell {
-          nativeBuildInputs = with pkgs; [rustc cargo rustfmt clippy];
+          nativeBuildInputs = with pkgs; [
+            rustc
+            cargo
+            rustfmt
+            clippy
+            cargo-deny
+          ];
           RUST_SRC_PATH = "${pkgs.rust.packages.stable.rustPlatform.rustLibSrc}";
           shellHook = ''
             ${pre-commit-format.shellHook}
