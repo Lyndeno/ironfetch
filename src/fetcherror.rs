@@ -1,4 +1,4 @@
-use std::{env::VarError, io};
+use std::{env::VarError, io, num::ParseIntError};
 
 use nix::errno::Errno;
 use procfs::ProcError;
@@ -20,4 +20,6 @@ pub enum FetchError {
     UpTime(#[from] uptime_lib::Error),
     #[error("Error parsing /proc")]
     Proc(#[from] ProcError),
+    #[error("Error parsing Int to String")]
+    ParseInt(#[from] ParseIntError),
 }

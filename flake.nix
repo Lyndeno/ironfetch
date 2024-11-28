@@ -23,7 +23,7 @@
       naersk-lib = naersk.lib."${system}";
     in rec {
       packages.ironfetch = naersk-lib.buildPackage {
-        nativeBuildInputs = [pkgs.installShellFiles];
+        nativeBuildInputs = [pkgs.installShellFiles pkgs.pkg-config pkgs.udev];
         postInstall = ''
           installShellCompletion --cmd ironfetch \
             --bash ./target/release/build/ironfetch-*/out/ironfetch.bash \
@@ -62,6 +62,8 @@
             cargo-deny
             cargo-about
             termshot
+            pkg-config
+            udev
           ];
           RUST_SRC_PATH = "${pkgs.rust.packages.stable.rustPlatform.rustLibSrc}";
           shellHook = ''

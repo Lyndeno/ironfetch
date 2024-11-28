@@ -1,5 +1,3 @@
-use std::path::Path;
-
 use ironfetch::colourblocks::colourblocks;
 use ironfetch::fetchsection::{FetchArray, SEPARATOR};
 use ironfetch::kernel::Kernel;
@@ -23,18 +21,11 @@ use ironfetch::platform::Profile;
 use clap::Parser;
 
 use ironfetch::args::Args;
-use simplesmbios::smbios::SMBios;
 
 fn main() {
     let args = Args::parse();
-    let smbios_result = match args.smbios_path {
-        Some(ref p) => SMBios::new_from_file(Path::new(p)),
-        None => SMBios::new_from_device(),
-    }
-    .ok();
 
     let mut array = FetchArray::default();
-    let smbios_ref = smbios_result.as_ref();
 
     if let Ok(r) = OsInfo::new() {
         array.set_colour(r.color());
@@ -65,7 +56,7 @@ fn main() {
         array.push(("CPU", r));
     }
 
-    if let Ok(r) = Memory::new(args.memory_unit, smbios_ref) {
+    if let Ok(r) = Memory::new(args.memory_unit) {
         array.push(("Memory", r));
     }
 

@@ -1,40 +1,111 @@
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
+
+use std::path::Path;
+use udev::{Device, Entry};
 
 use crate::fetcherror::FetchError;
 use crate::memunit::MemUnits;
-use measurements::{Data, Frequency, Measurement};
+use measurements::Data;
 
-use simplesmbios::mem::MemDevice;
-use simplesmbios::smbios::SMBios;
+use std::str::FromStr;
+
 use sys_info::MemInfo;
 
-pub struct Memory<'a> {
+pub struct Memory {
     display_unit: Option<MemUnits>,
     meminfo: MemInfo,
-    devices: Option<Vec<MemDevice<'a>>>,
+    devices: Option<Vec<MemDevice>>,
 }
 
-impl<'a> Memory<'a> {
+#[derive(Debug)]
+pub struct MemDevice {
+    properties: HashMap<String, String>,
+}
+
+impl MemDevice {
+    pub fn new(index: usize) -> Result<Self, FetchError> {
+        let udev = Device::from_syspath(Path::new("/sys/devices/virtual/dmi/id"))?;
+        let props = udev.properties();
+        let props_vec: Vec<Entry<'_>> = props.collect();
+
+        let mut propmap = HashMap::new();
+
+        for prop in props_vec.iter() {
+            if let Some(clean_name) = prop
+                .name()
+                .to_string_lossy()
+                .to_string()
+                .strip_prefix(&format!("MEMORY_DEVICE_{}_", index))
+            {
+                propmap.insert(
+                    clean_name.to_string(),
+                    prop.value().to_string_lossy().into_owned(),
+                );
+            }
+        }
+
+        Ok(MemDevice {
+            properties: propmap,
+        })
+    }
+    pub fn frequency(&self) -> Option<usize> {
+        self.pull_value("CONFIGURED_SPEED_MTS")
+    }
+
+    pub fn manufactuer(&self) -> Option<String> {
+        self.pull_value("MANUFACTURER")
+    }
+
+    pub fn form_factor(&self) -> Option<String> {
+        self.pull_value("FORM_FACTOR")
+    }
+
+    pub fn get_type(&self) -> Option<String> {
+        self.pull_value("TYPE")
+    }
+
+    fn pull_value<T: FromStr>(&self, name: &str) -> Option<T> {
+        if let Some(v) = self.properties.get(name) {
+            return str::parse::<T>(v).ok();
+        }
+        None
+    }
+}
+
+impl Memory {
     /// Return a new memory object.
     /// # Errors
     ///
     /// Will return an error if the memory stats cannot be parsed.
     /// Does not error on failure to obtain smbios information
-    pub fn new(
-        display_unit: Option<MemUnits>,
-        smbios: Option<&'a SMBios>,
-    ) -> Result<Self, FetchError> {
+    pub fn new(display_unit: Option<MemUnits>) -> Result<Self, FetchError> {
         let meminfo = sys_info::mem_info()?;
+
+        let udev = Device::from_syspath(Path::new("/sys/devices/virtual/dmi/id"))?;
+        let mut props = udev.properties();
+
+        let count_entry = props
+            .find(|x| {
+                x.name()
+                    .to_string_lossy()
+                    .contains("MEMORY_ARRAY_NUM_DEVICE")
+            })
+            .ok_or(FetchError::OsStr)?;
+
+        let count = str::parse::<usize>(&count_entry.value().to_string_lossy())?;
+
+        let mut devs = Vec::with_capacity(count);
+
+        for i in 0..count {
+            devs.push(MemDevice::new(i)?);
+        }
 
         Ok(Self {
             display_unit,
             meminfo,
             // This will usually error do to permission errors, so just wrap it None instead
             // as it is not needed for basic use
-            devices: match smbios {
-                Some(s) => MemDevice::from_smbios(s).unwrap_or(None),
-                None => None,
-            },
+            devices: Some(devs),
         })
     }
 
@@ -71,7 +142,7 @@ impl<'a> Memory<'a> {
         let mut memtype = Vec::new();
         if let Some(v) = &self.devices {
             for dev in v {
-                if let Some(x) = dev.mem_type() {
+                if let Some(x) = dev.get_type() {
                     memtype.push(x);
                 }
             }
@@ -107,11 +178,11 @@ impl<'a> Memory<'a> {
         string_vec
     }
 
-    fn get_speed(&self) -> Vec<Frequency> {
+    fn get_speed(&self) -> Vec<usize> {
         let mut speeds = Vec::new();
         if let Some(v) = &self.devices {
             for dev in v {
-                if let Some(x) = dev.speed() {
+                if let Some(x) = dev.frequency() {
                     speeds.push(x);
                 }
             }
@@ -136,8 +207,8 @@ impl<'a> Memory<'a> {
             s.push_str(&format!(" ({v})"));
         }
 
-        if avg_freq > Frequency::from_base_units(0_f64) {
-            s.push_str(&format!(" @ {} MHz", avg_freq.as_megahertz()));
+        if avg_freq > 0 {
+            s.push_str(&format!(" @ {} MHz", avg_freq));
         }
         s
     }
@@ -150,7 +221,7 @@ impl<'a> Memory<'a> {
     }
 }
 
-impl std::fmt::Display for Memory<'_> {
+impl std::fmt::Display for Memory {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}", self.display())
     }
@@ -175,8 +246,8 @@ fn print_strings(strings: Vec<String>) -> Option<String> {
     }
 }
 
-fn sum_frequency(f: Vec<Frequency>) -> Frequency {
-    let mut sum = Frequency::from_hertz(0_f64);
+fn sum_frequency(f: Vec<usize>) -> usize {
+    let mut sum = 0;
     for freq in f {
         sum = sum + freq;
     }
@@ -184,25 +255,69 @@ fn sum_frequency(f: Vec<Frequency>) -> Frequency {
 }
 
 #[allow(clippy::cast_precision_loss)]
-fn avg_frequency(f: Vec<Frequency>) -> Frequency {
+fn avg_frequency(f: Vec<usize>) -> usize {
     let count = f.len();
-    sum_frequency(f) / count as f64
+    sum_frequency(f) / count
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::path::Path;
 
-    fn get_smbios() -> SMBios {
-        let path = Path::new("./dmi.bin");
-        SMBios::new_from_file(path).expect("SMBios Parsing failed")
-    }
     #[test]
     fn test_display() {
-        let smbios = get_smbios();
+        let device1 = MemDevice {
+            properties: HashMap::from(
+                [
+                    ("FORM_FACTOR", "SODIMM"),
+                    ("TYPE_DETAIL", "Synchronous Unbuffered (Unregistered)"),
+                    ("TYPE", "DDR4"),
+                    ("PART_NUMBER", "TIMETEC-SD4-2666"),
+                    ("ASSET_TAG", "00221200"),
+                    ("CONFIGURED_VOLTAGE", "1"),
+                    ("CONFIGURED_SPEED_MTS", "2667"),
+                    ("BANK_LOCATOR", "BANK 0"),
+                    ("RANK", "2"),
+                    ("DATA_WIDTH", "64"),
+                    ("SIZE", "34359738368"),
+                    ("MINIMUM_VOLTAGE", "1"),
+                    ("SPEED_MTS", "2667"),
+                    ("LOCATOR", "DIMM A"),
+                    ("TOTAL_WIDTH", "64"),
+                    ("MAXIMUM_VOLTAGE", "1"),
+                    ("SERIAL_NUMBER", "00000000"),
+                    ("MANUFACTURER", "8C260000802C"),
+                ]
+                .map(|x| (x.0.to_string(), x.1.to_string())),
+            ),
+        };
+        let device2 = MemDevice {
+            properties: HashMap::from(
+                [
+                    ("MANUFACTURER", "8C260000802C"),
+                    ("TYPE", "DDR4"),
+                    ("BANK_LOCATOR", "BANK 2"),
+                    ("CONFIGURED_VOLTAGE", "1"),
+                    ("RANK", "2"),
+                    ("FORM_FACTOR", "SODIMM"),
+                    ("LOCATOR", "DIMM B"),
+                    ("MAXIMUM_VOLTAGE", "1"),
+                    ("TYPE_DETAIL", "Synchronous Unbuffered (Unregistered)"),
+                    ("MINIMUM_VOLTAGE", "1"),
+                    ("CONFIGURED_SPEED_MTS", "2667"),
+                    ("SIZE", "34359738368"),
+                    ("DATA_WIDTH", "64"),
+                    ("SPEED_MTS", "2667"),
+                    ("ASSET_TAG", "00221200"),
+                    ("TOTAL_WIDTH", "64"),
+                    ("PART_NUMBER", "TIMETEC-SD4-2666"),
+                    ("SERIAL_NUMBER", "00000000"),
+                ]
+                .map(|x| (x.0.to_string(), x.1.to_string())),
+            ),
+        };
         let mem = Memory {
-            devices: MemDevice::from_smbios(&smbios).unwrap_or(None),
+            devices: Some(vec![device1, device2]),
             display_unit: None,
             meminfo: MemInfo {
                 total: 0,
