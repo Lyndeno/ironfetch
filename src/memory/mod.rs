@@ -257,7 +257,11 @@ fn sum_frequency(f: Vec<usize>) -> usize {
 #[allow(clippy::cast_precision_loss)]
 fn avg_frequency(f: Vec<usize>) -> usize {
     let count = f.len();
-    sum_frequency(f) / count
+    if count > 0 {
+        sum_frequency(f) / count
+    } else {
+        0
+    }
 }
 
 #[cfg(test)]
