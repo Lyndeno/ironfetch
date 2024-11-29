@@ -6,6 +6,7 @@ use std::{
 use crate::fetcherror::FetchError;
 pub struct Profile {
     current: String,
+    choices: String,
 }
 
 impl Profile {
@@ -17,6 +18,7 @@ impl Profile {
     pub fn new() -> Result<Self, FetchError> {
         Ok(Self {
             current: read_product_info("/sys/firmware/acpi/platform_profile")?,
+            choices: read_product_info("/sys/firmware/acpi/platform_profile_choices")?,
         })
     }
 }
@@ -30,6 +32,9 @@ fn read_product_info(path: &str) -> Result<String, std::io::Error> {
 
 impl std::fmt::Display for Profile {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}", self.current)
+        let s = self
+            .choices
+            .replace(&self.current, &("[".to_owned() + &self.current + "]"));
+        write!(f, "{}", s)
     }
 }
