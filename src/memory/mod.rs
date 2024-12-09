@@ -113,6 +113,10 @@ impl Memory {
         self.total() - self.available()
     }
 
+    pub fn swap_used(&self) -> Data {
+        self.swap_total() - self.swap_free()
+    }
+
     #[allow(clippy::cast_precision_loss)]
     pub fn total(&self) -> Data {
         Data::from_kibioctets(self.meminfo.total as f64)
@@ -121,6 +125,16 @@ impl Memory {
     #[allow(clippy::cast_precision_loss)]
     pub fn available(&self) -> Data {
         Data::from_kibioctets(self.meminfo.avail as f64)
+    }
+
+    #[allow(clippy::cast_precision_loss)]
+    pub fn swap_total(&self) -> Data {
+        Data::from_kibioctets(self.meminfo.swap_total as f64)
+    }
+
+    #[allow(clippy::cast_precision_loss)]
+    pub fn swap_free(&self) -> Data {
+        Data::from_kibioctets(self.meminfo.swap_free as f64)
     }
 
     pub fn display_gb(&self) -> String {
@@ -134,6 +148,21 @@ impl Memory {
         self.display_unit(
             self.used().as_mebioctets(),
             self.total().as_mebioctets(),
+            "MiB",
+        )
+    }
+
+    pub fn display_swap_gb(&self) -> String {
+        self.display_swap_unit(
+            self.swap_used().as_gibioctets(),
+            self.swap_total().as_gibioctets(),
+            "GiB",
+        )
+    }
+    pub fn display_swap_mb(&self) -> String {
+        self.display_swap_unit(
+            self.swap_used().as_mebioctets(),
+            self.swap_total().as_mebioctets(),
             "MiB",
         )
     }
@@ -211,6 +240,17 @@ impl Memory {
             s.push_str(&format!(" @ {} MHz", avg_freq));
         }
         s
+    }
+
+    fn display_swap_unit(&self, used: f64, total: f64, unit: &str) -> String {
+        format!("{used:.2}{unit} / {total:.2}{unit}")
+    }
+
+    pub fn display_swap(&self) -> String {
+        match self.display_unit {
+            None | Some(MemUnits::GiB) => self.display_swap_gb(),
+            Some(MemUnits::MiB) => self.display_swap_mb(),
+        }
     }
 
     fn display(&self) -> String {

@@ -57,7 +57,8 @@ fn main() {
     }
 
     if let Ok(r) = Memory::new(args.memory_unit) {
-        array.push(("Memory", r));
+        array.push(("Memory", &r));
+        array.push(("Swap", r.display_swap()));
     }
 
     if let Ok(r) = Profile::new() {
