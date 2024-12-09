@@ -14,8 +14,8 @@ os-release = "*"
 procfs = "*"
 sys-info = "*"
 uptime_lib = "*"
-thiserror = "1.0.60"
-udev = "0.8.0"
+thiserror = "*"
+udev = "*"
 
 [[bin]]
 name = "ironfetch"
