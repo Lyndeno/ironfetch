@@ -15,7 +15,7 @@ impl OsInfo {
     }
 
     fn build_id(&self) -> String {
-        match self.0.extra.get("BUILD ID") {
+        match self.0.extra.get("BUILD_ID") {
             Some(id) => id.replace('\"', ""),
             None => self.0.version_id.clone(),
         }
