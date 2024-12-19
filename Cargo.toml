@@ -16,6 +16,8 @@ sys-info = "*"
 uptime_lib = "*"
 thiserror = "*"
 udev = "*"
+futures = "*"
+udisks2 = "*"
 
 [[bin]]
 name = "ironfetch"

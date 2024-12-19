@@ -22,4 +22,6 @@ pub enum FetchError {
     Proc(#[from] ProcError),
     #[error("Error parsing Int to String")]
     ParseInt(#[from] ParseIntError),
+    #[error("Error talking to udisks2")]
+    Udisk(#[from] udisks2::Error),
 }
