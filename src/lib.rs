@@ -1,6 +1,7 @@
 pub mod args;
 pub mod colourblocks;
 pub mod cpu;
+pub mod disk;
 pub mod fetcherror;
 pub mod fetchsection;
 pub mod hostname;

@@ -18,6 +18,8 @@ use ironfetch::shell::Shell;
 
 use ironfetch::platform::Profile;
 
+use ironfetch::disk::Disk;
+
 use clap::Parser;
 
 use ironfetch::args::Args;
@@ -63,6 +65,10 @@ fn main() {
 
     if let Ok(r) = Profile::new() {
         array.push(("Profile", r));
+    }
+
+    if let Ok(r) = Disk::new() {
+        array.push(("Disk", r));
     }
 
     println!(
