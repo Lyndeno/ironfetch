@@ -26,6 +26,7 @@ use futures::executor;
 use clap::Parser;
 
 use ironfetch::args::Args;
+use measurements::Data;
 
 async fn test() {
     let client = udisks2::Client::new().await.unwrap();
@@ -60,7 +61,12 @@ async fn test() {
             }
         }
     }
-    dbg!(hm);
+    //dbg!(&hm);
+    let sum: u64 = hm.iter().map(|x| x.1).sum();
+    dbg!(&sum);
+    let total = Data::from_octets(sum as f64);
+    dbg!(total);
+    println!("{:.1} TB", total.as_teraoctets());
 }
 
 fn main() {
