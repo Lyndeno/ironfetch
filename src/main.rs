@@ -35,27 +35,32 @@ async fn test() {
     let mut v = Vec::new();
     for obj in objects {
         println!("{:?}", obj);
-        let object = client.object(obj.as_str());
-        if let Ok(o) = object {
-            let block = o.block().await;
-            if let Ok(b) = block {
-                let drive = client.drive_for_block(&b).await;
-                if let Ok(d) = drive {
-                    v.push(d);
-                }
-            }
-        }
+        v.push(obj.to_string());
     }
 
     println!("{:?}", v);
     //let set: HashSet<_> = v.drain(..).collect();
     //v.extend(set.into_iter());
-    for drive in v {
-        println!(
-            "Size: {}",
-            client.size_for_display(drive.size().await.unwrap(), true, true)
-        );
+    let mut hm = HashMap::new();
+    for drivestr in v {
+        let object = client.object(drivestr.clone());
+        if let Ok(o) = object {
+            let block = o.block().await;
+            if let Ok(b) = block {
+                let drive = client.drive_for_block(&b).await;
+                if let Ok(d) = drive {
+                    println!(
+                        "{} {}: Size: {}",
+                        drivestr,
+                        d.id().await.unwrap(),
+                        client.size_for_display(d.size().await.unwrap(), true, true)
+                    );
+                    hm.insert(d.id().await.unwrap(), d.size().await.unwrap());
+                }
+            }
+        }
     }
+    dbg!(hm);
 }
 
 fn main() {
