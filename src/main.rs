@@ -1,3 +1,6 @@
+use std::collections::HashMap;
+use std::collections::HashSet;
+
 use ironfetch::colourblocks::colourblocks;
 use ironfetch::fetchsection::{FetchArray, SEPARATOR};
 use ironfetch::kernel::Kernel;
@@ -18,14 +21,49 @@ use ironfetch::shell::Shell;
 
 use ironfetch::platform::Profile;
 
+use futures::executor;
+
 use clap::Parser;
 
 use ironfetch::args::Args;
+
+async fn test() {
+    let client = udisks2::Client::new().await.unwrap();
+    let manager = client.manager();
+    let objects = manager.get_block_devices(HashMap::new()).await.unwrap();
+
+    let mut v = Vec::new();
+    for obj in objects {
+        println!("{:?}", obj);
+        let object = client.object(obj.as_str());
+        if let Ok(o) = object {
+            let block = o.block().await;
+            if let Ok(b) = block {
+                let drive = client.drive_for_block(&b).await;
+                if let Ok(d) = drive {
+                    v.push(d);
+                }
+            }
+        }
+    }
+
+    println!("{:?}", v);
+    //let set: HashSet<_> = v.drain(..).collect();
+    //v.extend(set.into_iter());
+    for drive in v {
+        println!(
+            "Size: {}",
+            client.size_for_display(drive.size().await.unwrap(), true, true)
+        );
+    }
+}
 
 fn main() {
     let args = Args::parse();
 
     let mut array = FetchArray::default();
+
+    executor::block_on(test());
 
     if let Ok(r) = OsInfo::new() {
         array.set_colour(r.color());
