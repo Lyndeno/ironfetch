@@ -19,4 +19,5 @@ exceptions = [
     # list
     #{ allow = ["Zlib"], crate = "adler32" },
 		{ allow = ["Unicode-3.0"], crate = "unicode-ident" },
+		{ allow = ["LGPL-2.1"], crate = "udisks2" },
 ]
