@@ -23,6 +23,10 @@ pub struct MemDevice {
 }
 
 impl MemDevice {
+    /// Returns new `MemDevice`
+    ///
+    /// # Errors
+    /// Returns error if getting memory information fails
     pub fn new(index: usize) -> Result<Self, FetchError> {
         let udev = Device::from_syspath(Path::new("/sys/devices/virtual/dmi/id"))?;
         let props = udev.properties();
@@ -30,12 +34,12 @@ impl MemDevice {
 
         let mut propmap = HashMap::new();
 
-        for prop in props_vec.iter() {
+        for prop in &props_vec {
             if let Some(clean_name) = prop
                 .name()
                 .to_string_lossy()
                 .to_string()
-                .strip_prefix(&format!("MEMORY_DEVICE_{}_", index))
+                .strip_prefix(&format!("MEMORY_DEVICE_{index}_"))
             {
                 propmap.insert(
                     clean_name.to_string(),
@@ -153,14 +157,14 @@ impl Memory {
     }
 
     pub fn display_swap_gb(&self) -> String {
-        self.display_swap_unit(
+        display_mem_unit(
             self.swap_used().as_gibioctets(),
             self.swap_total().as_gibioctets(),
             "GiB",
         )
     }
     pub fn display_swap_mb(&self) -> String {
-        self.display_swap_unit(
+        display_mem_unit(
             self.swap_used().as_mebioctets(),
             self.swap_total().as_mebioctets(),
             "MiB",
@@ -225,7 +229,7 @@ impl Memory {
         let formfactors = print_strings(self.get_formfactor());
 
         let mut s = String::new();
-        s.push_str(&format!("{used:.2}{unit} / {total:.2}{unit}"));
+        s.push_str(&display_mem_unit(used, total, unit));
 
         if let Some(v) = typestring {
             s.push(' ');
@@ -237,13 +241,9 @@ impl Memory {
         }
 
         if avg_freq > 0 {
-            s.push_str(&format!(" @ {} MHz", avg_freq));
+            s.push_str(&format!(" @ {avg_freq} MHz"));
         }
         s
-    }
-
-    fn display_swap_unit(&self, used: f64, total: f64, unit: &str) -> String {
-        format!("{used:.2}{unit} / {total:.2}{unit}")
     }
 
     pub fn display_swap(&self) -> String {
@@ -259,6 +259,10 @@ impl Memory {
             Some(MemUnits::MiB) => self.display_mb(),
         }
     }
+}
+
+fn display_mem_unit(used: f64, total: f64, unit: &str) -> String {
+    format!("{used:.2}{unit} / {total:.2}{unit}")
 }
 
 impl std::fmt::Display for Memory {
@@ -289,7 +293,7 @@ fn print_strings(strings: Vec<String>) -> Option<String> {
 fn sum_frequency(f: Vec<usize>) -> usize {
     let mut sum = 0;
     for freq in f {
-        sum = sum + freq;
+        sum += freq;
     }
     sum
 }

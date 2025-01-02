@@ -35,6 +35,6 @@ impl std::fmt::Display for Profile {
         let s = self
             .choices
             .replace(&self.current, &("[".to_owned() + &self.current + "]"));
-        write!(f, "{}", s)
+        write!(f, "{s}")
     }
 }

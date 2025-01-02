@@ -7,6 +7,10 @@ pub struct Disk {
 }
 
 impl Disk {
+    /// Returns disk capacity
+    ///
+    /// # Errors
+    /// Returns an error if there is an issue retrieving disk capacity
     pub fn new() -> Result<Self, FetchError> {
         Ok(Self {
             capacity: futures::executor::block_on(get_capacity())?,
@@ -14,6 +18,11 @@ impl Disk {
     }
 }
 
+/// Gets disk capacity from all drives on system
+///
+/// # Errors
+/// Returns an error if there is a problem communicating with udisks
+#[allow(clippy::cast_precision_loss)]
 pub async fn get_capacity() -> Result<Data, FetchError> {
     let client = udisks2::Client::new().await?;
     let manager = client.manager();
@@ -35,8 +44,6 @@ pub async fn get_capacity() -> Result<Data, FetchError> {
             }
         }
     }
-    //let sum: u64 = hm.iter().map(|x| x.1).sum();
-    //let total = Data::from_octets(sum as f64);
     Ok(Data::from_octets(hm.into_iter().map(|x| x.1 as f64).sum()))
 }
 
