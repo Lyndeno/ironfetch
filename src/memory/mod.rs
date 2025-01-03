@@ -40,9 +40,9 @@ impl From<MemInfo> for MemStats {
 
 #[derive(Serialize, Deserialize)]
 pub struct Memory {
-    display_unit: Option<MemUnits>,
-    meminfo: MemStats,
-    devices: Option<Vec<MemDevice>>,
+    pub display_unit: Option<MemUnits>,
+    pub meminfo: MemStats,
+    pub devices: Option<Vec<MemDevice>>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -338,62 +338,20 @@ fn avg_frequency(f: Vec<usize>) -> usize {
 
 #[cfg(test)]
 mod tests {
+    use crate::machine::Machine;
+
     use super::*;
 
     #[test]
+    #[allow(clippy::unwrap_used)]
     fn test_display() {
-        let device1 = MemDevice {
-            properties: HashMap::from(
-                [
-                    ("FORM_FACTOR", "SODIMM"),
-                    ("TYPE_DETAIL", "Synchronous Unbuffered (Unregistered)"),
-                    ("TYPE", "DDR4"),
-                    ("PART_NUMBER", "TIMETEC-SD4-2666"),
-                    ("ASSET_TAG", "00221200"),
-                    ("CONFIGURED_VOLTAGE", "1"),
-                    ("CONFIGURED_SPEED_MTS", "2667"),
-                    ("BANK_LOCATOR", "BANK 0"),
-                    ("RANK", "2"),
-                    ("DATA_WIDTH", "64"),
-                    ("SIZE", "34359738368"),
-                    ("MINIMUM_VOLTAGE", "1"),
-                    ("SPEED_MTS", "2667"),
-                    ("LOCATOR", "DIMM A"),
-                    ("TOTAL_WIDTH", "64"),
-                    ("MAXIMUM_VOLTAGE", "1"),
-                    ("SERIAL_NUMBER", "00000000"),
-                    ("MANUFACTURER", "8C260000802C"),
-                ]
-                .map(|x| (x.0.to_string(), x.1.to_string())),
-            ),
-        };
-        let device2 = MemDevice {
-            properties: HashMap::from(
-                [
-                    ("MANUFACTURER", "8C260000802C"),
-                    ("TYPE", "DDR4"),
-                    ("BANK_LOCATOR", "BANK 2"),
-                    ("CONFIGURED_VOLTAGE", "1"),
-                    ("RANK", "2"),
-                    ("FORM_FACTOR", "SODIMM"),
-                    ("LOCATOR", "DIMM B"),
-                    ("MAXIMUM_VOLTAGE", "1"),
-                    ("TYPE_DETAIL", "Synchronous Unbuffered (Unregistered)"),
-                    ("MINIMUM_VOLTAGE", "1"),
-                    ("CONFIGURED_SPEED_MTS", "2667"),
-                    ("SIZE", "34359738368"),
-                    ("DATA_WIDTH", "64"),
-                    ("SPEED_MTS", "2667"),
-                    ("ASSET_TAG", "00221200"),
-                    ("TOTAL_WIDTH", "64"),
-                    ("PART_NUMBER", "TIMETEC-SD4-2666"),
-                    ("SERIAL_NUMBER", "00000000"),
-                ]
-                .map(|x| (x.0.to_string(), x.1.to_string())),
-            ),
-        };
+        let devices = Machine::from_file("./machine.json".into())
+            .unwrap()
+            .memory
+            .unwrap()
+            .devices;
         let mem = Memory {
-            devices: Some(vec![device1, device2]),
+            devices,
             display_unit: None,
             meminfo: MemStats {
                 total: 0,
@@ -407,7 +365,7 @@ mod tests {
         };
 
         let display = mem.to_string();
-        let desired = "0.00GiB / 0.00GiB DDR4 (SODIMM) @ 2667 MHz";
+        let desired = "0.00GiB / 0.00GiB DDR4 (DIMM) @ 3600 MHz";
         assert_eq!(&display, desired);
     }
 }

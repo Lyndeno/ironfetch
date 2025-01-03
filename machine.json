@@ -1,0 +1,409 @@
+{
+  "kernel": {
+    "release": "6.6.67",
+    "architecture": "x86_64",
+    "name": "Linux"
+  },
+  "cpu": {
+    "cpu": {
+      "fields": {
+        "cpu cores": "16",
+        "bogomips": "6799.55",
+        "siblings": "32",
+        "cpu family": "25",
+        "model name": "AMD Ryzen 9 5950X 16-Core Processor",
+        "vendor_id": "AuthenticAMD",
+        "cpuid level": "16",
+        "fpu": "yes",
+        "TLB size": "2560 4K pages",
+        "address sizes": "48 bits physical, 48 bits virtual",
+        "power management": "ts ttp tm hwpstate cpb eff_freq_ro [13] [14]",
+        "fpu_exception": "yes",
+        "physical id": "0",
+        "cache size": "512 KB",
+        "cache_alignment": "64",
+        "model": "33",
+        "clflush size": "64",
+        "bugs": "sysret_ss_attrs spectre_v1 spectre_v2 spec_store_bypass srso ibpb_no_ret",
+        "stepping": "2",
+        "microcode": "0xa201210",
+        "wp": "yes",
+        "flags": "fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl nonstop_tsc cpuid extd_apicid aperfmperf rapl pni pclmulqdq monitor ssse3 fma cx16 sse4_1 sse4_2 x2apic movbe popcnt aes xsave avx f16c rdrand lahf_lm cmp_legacy svm extapic cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw ibs skinit wdt tce topoext perfctr_core perfctr_nb bpext perfctr_llc mwaitx cpb cat_l3 cdp_l3 hw_pstate ssbd mba ibrs ibpb stibp vmmcall fsgsbase bmi1 avx2 smep bmi2 erms invpcid cqm rdt_a rdseed adx smap clflushopt clwb sha_ni xsaveopt xsavec xgetbv1 xsaves cqm_llc cqm_occup_llc cqm_mbm_total cqm_mbm_local user_shstk clzero irperf xsaveerptr rdpru wbnoinvd arat npt lbrv svm_lock nrip_save tsc_scale vmcb_clean flushbyasid decodeassists pausefilter pfthreshold avic v_vmsave_vmload vgif v_spec_ctrl umip pku ospke vaes vpclmulqdq rdpid overflow_recov succor smca fsrm debug_swap"
+      },
+      "cpus": [
+        {
+          "processor": "0",
+          "cpu MHz": "3592.253",
+          "apicid": "0",
+          "core id": "0",
+          "initial apicid": "0"
+        },
+        {
+          "apicid": "2",
+          "core id": "1",
+          "cpu MHz": "3559.280",
+          "processor": "1",
+          "initial apicid": "2"
+        },
+        {
+          "initial apicid": "4",
+          "core id": "2",
+          "cpu MHz": "550.000",
+          "processor": "2",
+          "apicid": "4"
+        },
+        {
+          "apicid": "6",
+          "cpu MHz": "550.000",
+          "core id": "3",
+          "initial apicid": "6",
+          "processor": "3"
+        },
+        {
+          "cpu MHz": "550.000",
+          "apicid": "8",
+          "processor": "4",
+          "initial apicid": "8",
+          "core id": "4"
+        },
+        {
+          "apicid": "10",
+          "core id": "5",
+          "initial apicid": "10",
+          "cpu MHz": "550.000",
+          "processor": "5"
+        },
+        {
+          "cpu MHz": "550.000",
+          "initial apicid": "12",
+          "apicid": "12",
+          "processor": "6",
+          "core id": "6"
+        },
+        {
+          "cpu MHz": "550.000",
+          "apicid": "14",
+          "processor": "7",
+          "core id": "7",
+          "initial apicid": "14"
+        },
+        {
+          "apicid": "16",
+          "processor": "8",
+          "cpu MHz": "3652.106",
+          "core id": "8",
+          "initial apicid": "16"
+        },
+        {
+          "initial apicid": "18",
+          "processor": "9",
+          "cpu MHz": "550.000",
+          "core id": "9",
+          "apicid": "18"
+        },
+        {
+          "processor": "10",
+          "cpu MHz": "3633.761",
+          "apicid": "20",
+          "core id": "10",
+          "initial apicid": "20"
+        },
+        {
+          "core id": "11",
+          "apicid": "22",
+          "initial apicid": "22",
+          "cpu MHz": "550.000",
+          "processor": "11"
+        },
+        {
+          "processor": "12",
+          "initial apicid": "24",
+          "apicid": "24",
+          "cpu MHz": "550.000",
+          "core id": "12"
+        },
+        {
+          "cpu MHz": "550.000",
+          "apicid": "26",
+          "initial apicid": "26",
+          "core id": "13",
+          "processor": "13"
+        },
+        {
+          "core id": "14",
+          "processor": "14",
+          "initial apicid": "28",
+          "apicid": "28",
+          "cpu MHz": "4610.847"
+        },
+        {
+          "core id": "15",
+          "cpu MHz": "3605.280",
+          "processor": "15",
+          "initial apicid": "30",
+          "apicid": "30"
+        },
+        {
+          "processor": "16",
+          "cpu MHz": "550.000",
+          "core id": "0",
+          "apicid": "1",
+          "initial apicid": "1"
+        },
+        {
+          "initial apicid": "3",
+          "core id": "1",
+          "apicid": "3",
+          "processor": "17",
+          "cpu MHz": "550.000"
+        },
+        {
+          "cpu MHz": "550.000",
+          "processor": "18",
+          "apicid": "5",
+          "core id": "2",
+          "initial apicid": "5"
+        },
+        {
+          "processor": "19",
+          "core id": "3",
+          "cpu MHz": "550.000",
+          "apicid": "7",
+          "initial apicid": "7"
+        },
+        {
+          "processor": "20",
+          "cpu MHz": "3749.533",
+          "initial apicid": "9",
+          "apicid": "9",
+          "core id": "4"
+        },
+        {
+          "apicid": "11",
+          "core id": "5",
+          "initial apicid": "11",
+          "processor": "21",
+          "cpu MHz": "3599.605"
+        },
+        {
+          "apicid": "13",
+          "initial apicid": "13",
+          "core id": "6",
+          "cpu MHz": "550.000",
+          "processor": "22"
+        },
+        {
+          "processor": "23",
+          "apicid": "15",
+          "cpu MHz": "550.000",
+          "initial apicid": "15",
+          "core id": "7"
+        },
+        {
+          "processor": "24",
+          "core id": "8",
+          "apicid": "17",
+          "initial apicid": "17",
+          "cpu MHz": "550.000"
+        },
+        {
+          "processor": "25",
+          "core id": "9",
+          "apicid": "19",
+          "cpu MHz": "550.000",
+          "initial apicid": "19"
+        },
+        {
+          "apicid": "21",
+          "core id": "10",
+          "processor": "26",
+          "cpu MHz": "550.000",
+          "initial apicid": "21"
+        },
+        {
+          "processor": "27",
+          "cpu MHz": "550.000",
+          "core id": "11",
+          "initial apicid": "23",
+          "apicid": "23"
+        },
+        {
+          "processor": "28",
+          "initial apicid": "25",
+          "cpu MHz": "550.000",
+          "apicid": "25",
+          "core id": "12"
+        },
+        {
+          "cpu MHz": "550.000",
+          "core id": "13",
+          "processor": "29",
+          "initial apicid": "27",
+          "apicid": "27"
+        },
+        {
+          "core id": "14",
+          "cpu MHz": "550.000",
+          "apicid": "29",
+          "initial apicid": "29",
+          "processor": "30"
+        },
+        {
+          "apicid": "31",
+          "processor": "31",
+          "cpu MHz": "3612.416",
+          "initial apicid": "31",
+          "core id": "15"
+        }
+      ]
+    }
+  },
+  "memory": {
+    "display_unit": null,
+    "meminfo": {
+      "total": 131806504,
+      "free": 117924872,
+      "avail": 122701644,
+      "buffers": 5612,
+      "cached": 5607420,
+      "swap_total": 65903100,
+      "swap_free": 65903100
+    },
+    "devices": [
+      {
+        "properties": {
+          "TYPE": "DDR4",
+          "DATA_WIDTH": "64",
+          "VOLATILE_SIZE": "34359738368",
+          "TYPE_DETAIL": "Synchronous Unbuffered (Unregistered)",
+          "FORM_FACTOR": "DIMM",
+          "ASSET_TAG": "Not Specified",
+          "RANK": "2",
+          "LOCATOR": "DIMM_A1",
+          "MANUFACTURER": "G Skill Intl",
+          "MAXIMUM_VOLTAGE": "1",
+          "MEMORY_OPERATING_MODE_CAPABILITY": "Volatile memory",
+          "SERIAL_NUMBER": "00000000",
+          "MINIMUM_VOLTAGE": "1",
+          "CONFIGURED_SPEED_MTS": "3600",
+          "FIRMWARE_VERSION": "Unknown",
+          "BANK_LOCATOR": "BANK 0",
+          "MODULE_MANUFACTURER_ID": "Bank 5, Hex 0xCD",
+          "CONFIGURED_VOLTAGE": "1",
+          "MEMORY_TECHNOLOGY": "DRAM",
+          "SIZE": "34359738368",
+          "SPEED_MTS": "3600",
+          "TOTAL_WIDTH": "64",
+          "PART_NUMBER": "F4-3600C18-32GVK"
+        }
+      },
+      {
+        "properties": {
+          "MEMORY_OPERATING_MODE_CAPABILITY": "Volatile memory",
+          "DATA_WIDTH": "64",
+          "BANK_LOCATOR": "BANK 1",
+          "LOCATOR": "DIMM_A2",
+          "MAXIMUM_VOLTAGE": "1",
+          "VOLATILE_SIZE": "34359738368",
+          "RANK": "2",
+          "CONFIGURED_VOLTAGE": "1",
+          "PART_NUMBER": "F4-3600C18-32GVK",
+          "TYPE_DETAIL": "Synchronous Unbuffered (Unregistered)",
+          "SERIAL_NUMBER": "00000000",
+          "FORM_FACTOR": "DIMM",
+          "TOTAL_WIDTH": "64",
+          "SPEED_MTS": "3600",
+          "MODULE_MANUFACTURER_ID": "Bank 5, Hex 0xCD",
+          "MINIMUM_VOLTAGE": "1",
+          "ASSET_TAG": "Not Specified",
+          "SIZE": "34359738368",
+          "FIRMWARE_VERSION": "Unknown",
+          "MANUFACTURER": "G Skill Intl",
+          "TYPE": "DDR4",
+          "MEMORY_TECHNOLOGY": "DRAM",
+          "CONFIGURED_SPEED_MTS": "3600"
+        }
+      },
+      {
+        "properties": {
+          "BANK_LOCATOR": "BANK 2",
+          "TYPE_DETAIL": "Synchronous Unbuffered (Unregistered)",
+          "MAXIMUM_VOLTAGE": "1",
+          "FORM_FACTOR": "DIMM",
+          "TOTAL_WIDTH": "64",
+          "MODULE_MANUFACTURER_ID": "Bank 5, Hex 0xCD",
+          "MINIMUM_VOLTAGE": "1",
+          "DATA_WIDTH": "64",
+          "ASSET_TAG": "Not Specified",
+          "FIRMWARE_VERSION": "Unknown",
+          "LOCATOR": "DIMM_B1",
+          "MEMORY_OPERATING_MODE_CAPABILITY": "Volatile memory",
+          "RANK": "2",
+          "CONFIGURED_VOLTAGE": "1",
+          "TYPE": "DDR4",
+          "PART_NUMBER": "F4-3600C18-32GVK",
+          "CONFIGURED_SPEED_MTS": "3600",
+          "MANUFACTURER": "G Skill Intl",
+          "SERIAL_NUMBER": "00000000",
+          "SIZE": "34359738368",
+          "SPEED_MTS": "3600",
+          "VOLATILE_SIZE": "34359738368",
+          "MEMORY_TECHNOLOGY": "DRAM"
+        }
+      },
+      {
+        "properties": {
+          "ASSET_TAG": "Not Specified",
+          "SERIAL_NUMBER": "00000000",
+          "CONFIGURED_SPEED_MTS": "3600",
+          "MINIMUM_VOLTAGE": "1",
+          "CONFIGURED_VOLTAGE": "1",
+          "FIRMWARE_VERSION": "Unknown",
+          "LOCATOR": "DIMM_B2",
+          "TYPE": "DDR4",
+          "SIZE": "34359738368",
+          "VOLATILE_SIZE": "34359738368",
+          "MAXIMUM_VOLTAGE": "1",
+          "PART_NUMBER": "F4-3600C18-32GVK",
+          "TOTAL_WIDTH": "64",
+          "MODULE_MANUFACTURER_ID": "Bank 5, Hex 0xCD",
+          "DATA_WIDTH": "64",
+          "SPEED_MTS": "3600",
+          "RANK": "2",
+          "TYPE_DETAIL": "Synchronous Unbuffered (Unregistered)",
+          "MEMORY_TECHNOLOGY": "DRAM",
+          "BANK_LOCATOR": "BANK 3",
+          "FORM_FACTOR": "DIMM",
+          "MANUFACTURER": "G Skill Intl",
+          "MEMORY_OPERATING_MODE_CAPABILITY": "Volatile memory"
+        }
+      }
+    ]
+  },
+  "os": {
+    "name": "NixOS",
+    "build_id": "24.11.20241227.d49da4c",
+    "color": "1;34",
+    "version_codename": "vicuna"
+  },
+  "hostname": "morpheus",
+  "uptime": {
+    "secs": 6313,
+    "nanos": 0
+  },
+  "model": {
+    "product_name": null,
+    "board_vendor": "ASUSTeK COMPUTER INC.",
+    "board_name": "PRIME X570-PRO"
+  },
+  "shell": {
+    "path": "/run/current-system/sw/bin/fish",
+    "version": ""
+  },
+  "platform": null,
+  "disk": {
+    "capacity": {
+      "octets": 38019517046784.0
+    }
+  }
+}
