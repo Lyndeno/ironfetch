@@ -3,6 +3,9 @@ use measurements::frequency::Frequency;
 use procfs::prelude::*;
 use procfs::CpuInfo;
 
+use serde::{Deserialize, Serialize};
+
+#[derive(Serialize, Deserialize)]
 pub struct Cpu {
     cpu: CpuInfo,
 }

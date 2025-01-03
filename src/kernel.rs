@@ -2,9 +2,11 @@ use nix::sys::utsname::{uname, UtsName};
 use std::ffi::OsStr;
 
 use crate::fetcherror::FetchError;
+use serde::{Deserialize, Serialize};
 
 type Result<T> = std::result::Result<T, FetchError>;
 
+#[derive(Serialize, Deserialize)]
 pub struct Kernel {
     release: String,
     architecture: String,

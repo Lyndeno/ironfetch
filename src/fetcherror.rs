@@ -24,4 +24,6 @@ pub enum FetchError {
     ParseInt(#[from] ParseIntError),
     #[error("Error talking to udisks2")]
     Udisk(#[from] udisks2::Error),
+    #[error("Error with serialization")]
+    Serde(#[from] serde_json::Error),
 }

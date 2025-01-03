@@ -11,13 +11,41 @@ use std::str::FromStr;
 
 use sys_info::MemInfo;
 
+use serde::{Deserialize, Serialize};
+
+#[derive(Serialize, Deserialize)]
+pub struct MemStats {
+    total: u64,
+    free: u64,
+    avail: u64,
+    buffers: u64,
+    cached: u64,
+    swap_total: u64,
+    swap_free: u64,
+}
+
+impl From<MemInfo> for MemStats {
+    fn from(value: MemInfo) -> Self {
+        Self {
+            total: value.total,
+            free: value.free,
+            avail: value.avail,
+            buffers: value.buffers,
+            cached: value.cached,
+            swap_total: value.swap_total,
+            swap_free: value.swap_free,
+        }
+    }
+}
+
+#[derive(Serialize, Deserialize)]
 pub struct Memory {
     display_unit: Option<MemUnits>,
-    meminfo: MemInfo,
+    meminfo: MemStats,
     devices: Option<Vec<MemDevice>>,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct MemDevice {
     properties: HashMap<String, String>,
 }
@@ -83,7 +111,7 @@ impl Memory {
     /// Will return an error if the memory stats cannot be parsed.
     /// Does not error on failure to obtain smbios information
     pub fn new(display_unit: Option<MemUnits>) -> Result<Self, FetchError> {
-        let meminfo = sys_info::mem_info()?;
+        let meminfo = MemStats::from(sys_info::mem_info()?);
 
         let udev = Device::from_syspath(Path::new("/sys/devices/virtual/dmi/id"))?;
         let mut props = udev.properties();
@@ -367,7 +395,7 @@ mod tests {
         let mem = Memory {
             devices: Some(vec![device1, device2]),
             display_unit: None,
-            meminfo: MemInfo {
+            meminfo: MemStats {
                 total: 0,
                 free: 0,
                 avail: 0,

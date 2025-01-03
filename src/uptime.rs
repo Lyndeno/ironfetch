@@ -1,10 +1,13 @@
 use std::time::Duration;
 
 use crate::fetcherror::FetchError;
+use serde::{Deserialize, Serialize};
 
 const SECONDS_MIN: u64 = 60;
 const SECONDS_HOUR: u64 = SECONDS_MIN * 60;
 const SECONDS_DAY: u64 = SECONDS_HOUR * 24;
+
+#[derive(Serialize, Deserialize)]
 pub struct Uptime(pub Duration);
 
 impl Uptime {

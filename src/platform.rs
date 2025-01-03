@@ -4,6 +4,9 @@ use std::{
 };
 
 use crate::fetcherror::FetchError;
+use serde::{Deserialize, Serialize};
+
+#[derive(Serialize, Deserialize)]
 pub struct Profile {
     current: String,
     choices: String,

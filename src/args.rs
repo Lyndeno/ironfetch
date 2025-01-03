@@ -1,3 +1,5 @@
+use std::path::PathBuf;
+
 use crate::memunit::MemUnits;
 use clap::Parser;
 
@@ -16,4 +18,12 @@ pub struct Args {
     /// Number of colour lines to show
     #[arg(long, default_value = "8")]
     pub colour_length: usize,
+
+    /// Import machine state
+    #[arg(short, long)]
+    pub input: Option<PathBuf>,
+
+    /// Export machine state
+    #[arg(short, long)]
+    pub output: Option<PathBuf>,
 }

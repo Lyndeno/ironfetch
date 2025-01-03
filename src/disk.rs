@@ -1,7 +1,9 @@
 use crate::fetcherror::FetchError;
 use measurements::Data;
+use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
+#[derive(Serialize, Deserialize)]
 pub struct Disk {
     pub capacity: Data,
 }

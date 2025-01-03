@@ -8,21 +8,24 @@ license = "MIT"
 
 [dependencies]
 clap = { version = "*", features = ["derive"] }
-measurements = "*"
+measurements = { version = "*", features = ["serde"] }
 nix = { version="*", features = ["feature"]}
 os-release = "*"
-procfs = "*"
+procfs = { version = "*", features = ["serde1"] }
 sys-info = "*"
 uptime_lib = "*"
 thiserror = "*"
 udev = "*"
 futures = "*"
 udisks2 = "*"
+serde = "*"
+serde_json = "*"
 
 [build-dependencies]
 clap = { version = "*", features = ["derive"] }
 clap_complete = "*"
 clap_mangen = "*"
+serde = "*"
 
 [lints.clippy]
 pedantic = {level="warn", priority = 0}

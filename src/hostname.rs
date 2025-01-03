@@ -1,6 +1,9 @@
 use sys_info::hostname;
 
 use crate::fetcherror::FetchError;
+use serde::{Deserialize, Serialize};
+
+#[derive(Serialize, Deserialize)]
 pub struct HostName(pub String);
 
 impl HostName {

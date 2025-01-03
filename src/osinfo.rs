@@ -1,8 +1,15 @@
 use os_release::OsRelease;
 
 use crate::fetcherror::FetchError;
+use serde::{Deserialize, Serialize};
 
-pub struct OsInfo(OsRelease);
+#[derive(Serialize, Deserialize)]
+pub struct OsInfo {
+    pub name: String,
+    pub build_id: String,
+    pub color: Option<String>,
+    pub version_codename: String,
+}
 
 impl OsInfo {
     /// Returns os-release information
@@ -11,21 +18,19 @@ impl OsInfo {
     ///
     /// Returns errors if os-release cannot be parsed
     pub fn new() -> Result<Self, FetchError> {
-        Ok(Self(OsRelease::new()?))
-    }
-
-    fn build_id(&self) -> String {
-        match self.0.extra.get("BUILD_ID") {
-            Some(id) => id.replace('\"', ""),
-            None => self.0.version_id.clone(),
-        }
-    }
-
-    pub fn color(&self) -> Option<String> {
-        self.0
-            .extra
-            .get("ANSI_COLOR")
-            .map(|x| x.trim_matches('"').to_owned())
+        let os = OsRelease::new()?;
+        Ok(Self {
+            name: os.name,
+            build_id: match os.extra.get("BUILD_ID") {
+                Some(id) => id.replace('\"', ""),
+                None => os.version_id.clone(),
+            },
+            color: os
+                .extra
+                .get("ANSI_COLOR")
+                .map(|x| x.trim_matches('"').to_owned()),
+            version_codename: os.version_codename,
+        })
     }
 }
 
@@ -34,9 +39,7 @@ impl std::fmt::Display for OsInfo {
         write!(
             f,
             "{} {} ({})",
-            self.0.name,
-            self.build_id(),
-            self.0.version_codename,
+            self.name, self.build_id, self.version_codename,
         )
     }
 }

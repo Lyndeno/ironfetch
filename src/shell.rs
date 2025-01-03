@@ -1,7 +1,9 @@
 use std::{env, path::PathBuf};
 
 use crate::fetcherror::FetchError;
+use serde::{Deserialize, Serialize};
 
+#[derive(Serialize, Deserialize)]
 pub struct Shell {
     pub path: PathBuf,
     pub version: String,

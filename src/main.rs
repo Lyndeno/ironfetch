@@ -1,83 +1,20 @@
-use ironfetch::colourblocks::colourblocks;
-use ironfetch::fetchsection::{FetchArray, SEPARATOR};
-use ironfetch::kernel::Kernel;
-
-use ironfetch::cpu::Cpu;
-
-use ironfetch::memory::Memory;
-
-use ironfetch::osinfo::OsInfo;
-
-use ironfetch::hostname::HostName;
-
-use ironfetch::uptime::Uptime;
-
-use ironfetch::model::Model;
-
-use ironfetch::shell::Shell;
-
-use ironfetch::platform::Profile;
-
-use ironfetch::disk::Disk;
-
 use clap::Parser;
 
 use ironfetch::args::Args;
+use ironfetch::fetcherror::FetchError;
+use ironfetch::machine::Machine;
 
-fn main() {
+fn main() -> Result<(), FetchError> {
+    let machine;
     let args = Args::parse();
-
-    let mut array = FetchArray::default();
-
-    if let Ok(r) = OsInfo::new() {
-        array.set_colour(r.color());
-        array.push(("OS", r));
+    if let Some(path) = args.input {
+        machine = Machine::from_file(path)?;
+    } else {
+        machine = Machine::new();
+        if let Some(path) = args.output {
+            machine.to_file(path)?;
+        }
     }
-
-    if let Ok(r) = Shell::new() {
-        array.push(("Shell", r));
-    }
-
-    if let Ok(r) = Kernel::new() {
-        array.push(("Kernel", r));
-    }
-
-    if let Ok(r) = Model::new() {
-        array.push(("Model", r));
-    }
-
-    if let Ok(r) = HostName::new() {
-        array.push(("Hostname", r));
-    }
-
-    if let Ok(r) = Uptime::new() {
-        array.push(("Uptime", r));
-    }
-
-    if let Ok(r) = Cpu::new() {
-        array.push(("CPU", r));
-    }
-
-    if let Ok(r) = Memory::new(args.memory_unit) {
-        array.push(("Memory", &r));
-        array.push(("Swap", r.display_swap()));
-    }
-
-    if let Ok(r) = Profile::new() {
-        array.push(("Profile", r));
-    }
-
-    if let Ok(r) = Disk::new() {
-        array.push(("Disk", r));
-    }
-
-    println!(
-        "{}\n{}",
-        array,
-        colourblocks(
-            array.get_indent() + SEPARATOR.len(),
-            args.colours,
-            args.colour_length
-        )
-    );
+    println!("{machine}");
+    Ok(())
 }
