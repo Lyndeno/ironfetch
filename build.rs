@@ -4,9 +4,6 @@ use std::env;
 use std::io::Error;
 use std::path::PathBuf;
 
-#[path = "src/memunit.rs"]
-mod memunit;
-
 #[path = "src/args.rs"]
 mod args;
 use crate::args::Args;

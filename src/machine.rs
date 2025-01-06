@@ -59,7 +59,7 @@ impl Default for Machine {
         Self {
             kernel: Kernel::new().ok(),
             cpu: Cpu::new().ok(),
-            memory: Memory::new(None).ok(),
+            memory: Memory::new().ok(),
             os: OsInfo::new().ok(),
             hostname: HostName::new().ok(),
             uptime: Uptime::new().ok(),

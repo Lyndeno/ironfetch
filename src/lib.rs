@@ -8,7 +8,6 @@ pub mod hostname;
 pub mod kernel;
 pub mod machine;
 pub mod memory;
-pub mod memunit;
 pub mod model;
 pub mod osinfo;
 pub mod platform;

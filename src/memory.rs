@@ -4,7 +4,6 @@ use std::path::Path;
 use udev::{Device, Entry};
 
 use crate::fetcherror::FetchError;
-use crate::memunit::MemUnits;
 use measurements::Data;
 
 use std::str::FromStr;
@@ -40,7 +39,6 @@ impl From<MemInfo> for MemStats {
 
 #[derive(Serialize, Deserialize)]
 pub struct Memory {
-    pub display_unit: Option<MemUnits>,
     pub meminfo: MemStats,
     pub devices: Option<Vec<MemDevice>>,
 }
@@ -110,7 +108,7 @@ impl Memory {
     ///
     /// Will return an error if the memory stats cannot be parsed.
     /// Does not error on failure to obtain smbios information
-    pub fn new(display_unit: Option<MemUnits>) -> Result<Self, FetchError> {
+    pub fn new() -> Result<Self, FetchError> {
         let meminfo = MemStats::from(sys_info::mem_info()?);
 
         let udev = Device::from_syspath(Path::new("/sys/devices/virtual/dmi/id"))?;
@@ -133,7 +131,6 @@ impl Memory {
         }
 
         Ok(Self {
-            display_unit,
             meminfo,
             // This will usually error do to permission errors, so just wrap it None instead
             // as it is not needed for basic use
@@ -169,36 +166,21 @@ impl Memory {
         Data::from_kibioctets(self.meminfo.swap_free as f64)
     }
 
-    pub fn display_gb(&self) -> String {
+    pub fn display(&self) -> String {
         self.display_unit(
             self.used().as_gibioctets(),
             self.total().as_gibioctets(),
             "GiB",
         )
     }
-    pub fn display_mb(&self) -> String {
-        self.display_unit(
-            self.used().as_mebioctets(),
-            self.total().as_mebioctets(),
-            "MiB",
-        )
-    }
 
-    pub fn display_swap_gb(&self) -> String {
+    pub fn display_swap(&self) -> String {
         display_mem_unit(
             self.swap_used().as_gibioctets(),
             self.swap_total().as_gibioctets(),
             "GiB",
         )
     }
-    pub fn display_swap_mb(&self) -> String {
-        display_mem_unit(
-            self.swap_used().as_mebioctets(),
-            self.swap_total().as_mebioctets(),
-            "MiB",
-        )
-    }
-
     fn get_type(&self) -> Vec<String> {
         let mut memtype = Vec::new();
         if let Some(v) = &self.devices {
@@ -273,20 +255,6 @@ impl Memory {
         }
         s
     }
-
-    pub fn display_swap(&self) -> String {
-        match self.display_unit {
-            None | Some(MemUnits::GiB) => self.display_swap_gb(),
-            Some(MemUnits::MiB) => self.display_swap_mb(),
-        }
-    }
-
-    fn display(&self) -> String {
-        match self.display_unit {
-            None | Some(MemUnits::GiB) => self.display_gb(),
-            Some(MemUnits::MiB) => self.display_mb(),
-        }
-    }
 }
 
 fn display_mem_unit(used: f64, total: f64, unit: &str) -> String {
@@ -352,7 +320,6 @@ mod tests {
             .devices;
         let mem = Memory {
             devices,
-            display_unit: None,
             meminfo: MemStats {
                 total: 0,
                 free: 0,
