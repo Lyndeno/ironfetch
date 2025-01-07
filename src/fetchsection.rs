@@ -2,6 +2,8 @@ use std::fmt::Display;
 
 use std::fmt::Write;
 
+use crate::machine::Machine;
+
 pub const SEPARATOR: &str = ": ";
 
 pub struct FetchArray {
@@ -97,5 +99,55 @@ impl<A: Display, B: Display> From<(A, B)> for FetchSection {
             name: name.to_string(),
             content: content.to_string(),
         }
+    }
+}
+
+impl From<&Machine> for FetchArray {
+    fn from(value: &Machine) -> Self {
+        let mut array = Self::new();
+
+        if let Some(r) = &value.os {
+            array.set_colour(r.color.clone());
+            array.push(("OS", r));
+        }
+
+        if let Some(r) = &value.shell {
+            array.push(("Shell", r));
+        }
+
+        if let Some(r) = &value.kernel {
+            array.push(("Kernel", r));
+        }
+
+        if let Some(r) = &value.model {
+            array.push(("Model", r));
+        }
+
+        if let Some(r) = &value.hostname {
+            array.push(("Hostname", r));
+        }
+
+        if let Some(r) = &value.uptime {
+            array.push(("Uptime", r));
+        }
+
+        if let Some(r) = &value.cpu {
+            array.push(("CPU", r));
+        }
+
+        if let Some(r) = &value.memory {
+            array.push(("Memory", &r));
+            array.push(("Swap", r.display_swap()));
+        }
+
+        if let Some(r) = &value.platform {
+            array.push(("Profile", r));
+        }
+
+        if let Some(r) = &value.disk {
+            array.push(("Disk", r));
+        }
+
+        array
     }
 }

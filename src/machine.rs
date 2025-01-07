@@ -73,49 +73,7 @@ impl Default for Machine {
 
 impl Display for Machine {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        let mut array = FetchArray::default();
-
-        if let Some(r) = &self.os {
-            array.set_colour(r.color.clone());
-            array.push(("OS", r));
-        }
-
-        if let Some(r) = &self.shell {
-            array.push(("Shell", r));
-        }
-
-        if let Some(r) = &self.kernel {
-            array.push(("Kernel", r));
-        }
-
-        if let Some(r) = &self.model {
-            array.push(("Model", r));
-        }
-
-        if let Some(r) = &self.hostname {
-            array.push(("Hostname", r));
-        }
-
-        if let Some(r) = &self.uptime {
-            array.push(("Uptime", r));
-        }
-
-        if let Some(r) = &self.cpu {
-            array.push(("CPU", r));
-        }
-
-        if let Some(r) = &self.memory {
-            array.push(("Memory", &r));
-            array.push(("Swap", r.display_swap()));
-        }
-
-        if let Some(r) = &self.platform {
-            array.push(("Profile", r));
-        }
-
-        if let Some(r) = &self.disk {
-            array.push(("Disk", r));
-        }
+        let array = FetchArray::from(self);
 
         write!(
             f,
