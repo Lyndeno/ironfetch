@@ -7,8 +7,9 @@ use crate::colourblocks::colourblocks;
 
 use crate::cpu::Cpu;
 use crate::disk::Disk;
+use crate::fetcharray::FetchArray;
 use crate::fetcherror::FetchError;
-use crate::fetchsection::{FetchArray, SEPARATOR};
+use crate::fetchsection::SEPARATOR;
 use crate::hostname::HostName;
 use crate::kernel::Kernel;
 use crate::memory::Memory;
