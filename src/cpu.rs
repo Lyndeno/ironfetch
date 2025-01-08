@@ -1,3 +1,5 @@
+use std::collections::HashSet;
+
 use measurements::frequency::Frequency;
 use procfs::prelude::*;
 use procfs::CpuInfo;
@@ -48,17 +50,15 @@ impl Cpu {
     }
 
     pub fn physical_core_count(&self) -> Option<usize> {
-        let mut core_id = Vec::new();
+        let mut core_id = HashSet::new();
         for cpu_num in 0..self.logical_core_count() {
             let id = self.cpu.get_field(cpu_num, "core id")?.parse::<usize>();
             if let Ok(v) = id {
-                core_id.push(v);
+                core_id.insert(v);
             } else {
                 return None;
             }
         }
-        core_id.sort();
-        core_id.dedup();
         Some(core_id.len())
     }
 
