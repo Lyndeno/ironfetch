@@ -2,9 +2,9 @@ use measurements::Data;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
-use crate::Result;
+use crate::{fetchsection::FetchSection, Result};
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Clone)]
 pub struct Disk {
     pub capacity: Data,
 }
@@ -57,6 +57,12 @@ impl std::fmt::Display for Disk {
         } else {
             write!(f, "{:.1} TB", self.capacity.as_teraoctets())
         }
+    }
+}
+
+impl From<Disk> for FetchSection {
+    fn from(value: Disk) -> Self {
+        ("Disk", value).into()
     }
 }
 

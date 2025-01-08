@@ -2,9 +2,9 @@ use sys_info::hostname;
 
 use serde::{Deserialize, Serialize};
 
-use crate::Result;
+use crate::{fetchsection::FetchSection, Result};
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Clone)]
 pub struct HostName(pub String);
 
 impl HostName {
@@ -21,5 +21,11 @@ impl HostName {
 impl std::fmt::Display for HostName {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}", self.0)
+    }
+}
+
+impl From<HostName> for FetchSection {
+    fn from(value: HostName) -> Self {
+        ("Hostname", value).into()
     }
 }

@@ -1,3 +1,5 @@
+use std::ops::Deref;
+
 use crate::fetchsection::FetchSection;
 
 pub struct FetchArray {
@@ -25,6 +27,12 @@ impl FetchArray {
 
     pub fn push<T: Into<FetchSection>>(&mut self, value: T) {
         self.sections.push(value.into());
+    }
+
+    pub fn push_multi<T: IntoIterator<Item = FetchSection>>(&mut self, values: T) {
+        for value in values {
+            self.sections.push(value.into());
+        }
     }
 
     pub fn get_indent(&self) -> usize {

@@ -3,10 +3,10 @@ use std::{
     io::{BufRead, BufReader},
 };
 
-use crate::Result;
+use crate::{fetchsection::FetchSection, Result};
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Clone)]
 pub struct Model {
     product_name: Option<String>,
     board_vendor: String,
@@ -51,5 +51,11 @@ impl std::fmt::Display for Model {
         text.push(' ');
         text.push_str(&self.board_name);
         write!(f, "{text}")
+    }
+}
+
+impl From<Model> for FetchSection {
+    fn from(value: Model) -> Self {
+        ("Model", value).into()
     }
 }

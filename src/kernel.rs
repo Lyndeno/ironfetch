@@ -3,9 +3,9 @@ use std::ffi::OsStr;
 
 use serde::{Deserialize, Serialize};
 
-use crate::{Error, Result};
+use crate::{fetchsection::FetchSection, Error, Result};
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Clone)]
 pub struct Kernel {
     release: String,
     architecture: String,
@@ -39,5 +39,11 @@ impl Kernel {
 impl std::fmt::Display for Kernel {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{} {} {}", self.name, self.release, self.architecture)
+    }
+}
+
+impl From<Kernel> for FetchSection {
+    fn from(value: Kernel) -> Self {
+        ("Kernel", value).into()
     }
 }

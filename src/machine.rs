@@ -8,7 +8,7 @@ use crate::colourblocks::colourblocks;
 use crate::cpu::Cpu;
 use crate::disk::Disk;
 use crate::fetcharray::FetchArray;
-use crate::fetchsection::SEPARATOR;
+use crate::fetchsection::{FetchSection, SEPARATOR};
 use crate::hostname::HostName;
 use crate::kernel::Kernel;
 use crate::memory::Memory;
@@ -22,7 +22,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::Result;
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Clone)]
 pub struct Machine {
     pub kernel: Option<Kernel>,
     pub cpu: Option<Cpu>,
@@ -75,7 +75,7 @@ impl Default for Machine {
 
 impl Display for Machine {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        let array = FetchArray::from(self);
+        let array = FetchArray::from(self.clone());
 
         write!(
             f,
@@ -86,50 +86,49 @@ impl Display for Machine {
     }
 }
 
-impl From<&Machine> for FetchArray {
-    fn from(value: &Machine) -> Self {
+impl From<Machine> for FetchArray {
+    fn from(value: Machine) -> Self {
         let mut array = Self::new();
 
-        if let Some(r) = &value.os {
+        if let Some(r) = value.os {
             array.set_colour(r.color.clone());
-            array.push(("OS", r));
+            array.push(r);
         }
 
-        if let Some(r) = &value.shell {
-            array.push(("Shell", r));
+        if let Some(r) = value.shell {
+            array.push(r);
         }
 
-        if let Some(r) = &value.kernel {
-            array.push(("Kernel", r));
+        if let Some(r) = value.kernel {
+            array.push(r);
         }
 
-        if let Some(r) = &value.model {
-            array.push(("Model", r));
+        if let Some(r) = value.model {
+            array.push(r);
         }
 
-        if let Some(r) = &value.hostname {
-            array.push(("Hostname", r));
+        if let Some(r) = value.hostname {
+            array.push(r);
         }
 
-        if let Some(r) = &value.uptime {
-            array.push(("Uptime", r));
+        if let Some(r) = value.uptime {
+            array.push(r);
         }
 
-        if let Some(r) = &value.cpu {
-            array.push(("CPU", r));
+        if let Some(r) = value.cpu {
+            array.push(r);
         }
 
-        if let Some(r) = &value.memory {
-            array.push(("Memory", &r));
-            array.push(("Swap", r.display_swap()));
+        if let Some(r) = value.memory {
+            array.push_multi(Vec::<FetchSection>::from(r));
         }
 
-        if let Some(r) = &value.platform {
-            array.push(("Profile", r));
+        if let Some(r) = value.platform {
+            array.push(r);
         }
 
-        if let Some(r) = &value.disk {
-            array.push(("Disk", r));
+        if let Some(r) = value.disk {
+            array.push(r);
         }
 
         array

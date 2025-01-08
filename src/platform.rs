@@ -3,10 +3,10 @@ use std::{
     io::{BufRead, BufReader},
 };
 
-use crate::Result;
+use crate::{fetchsection::FetchSection, Result};
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Clone)]
 pub struct Profile {
     current: String,
     choices: String,
@@ -39,5 +39,11 @@ impl std::fmt::Display for Profile {
             .choices
             .replace(&self.current, &("[".to_owned() + &self.current + "]"));
         write!(f, "{s}")
+    }
+}
+
+impl From<Profile> for FetchSection {
+    fn from(value: Profile) -> Self {
+        ("Profile", value).into()
     }
 }

@@ -1,13 +1,13 @@
 use std::time::Duration;
 
-use crate::Result;
+use crate::{fetchsection::FetchSection, Result};
 use serde::{Deserialize, Serialize};
 
 const SECONDS_MIN: u64 = 60;
 const SECONDS_HOUR: u64 = SECONDS_MIN * 60;
 const SECONDS_DAY: u64 = SECONDS_HOUR * 24;
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Clone)]
 pub struct Uptime(pub Duration);
 
 impl Uptime {
@@ -53,5 +53,11 @@ impl std::fmt::Display for Uptime {
             }
         }
         write!(f, "{s}")
+    }
+}
+
+impl From<Uptime> for FetchSection {
+    fn from(value: Uptime) -> Self {
+        ("Uptime", value).into()
     }
 }

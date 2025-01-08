@@ -1,3 +1,4 @@
+use crate::fetchsection::FetchSection;
 use crate::{Error, Result};
 use measurements::Data;
 use serde::{Deserialize, Serialize};
@@ -7,7 +8,7 @@ use std::str::FromStr;
 use sys_info::MemInfo;
 use udev::{Device, Entry};
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Clone)]
 pub struct MemStats {
     total: u64,
     free: u64,
@@ -32,13 +33,13 @@ impl From<MemInfo> for MemStats {
     }
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Clone)]
 pub struct Memory {
     pub meminfo: MemStats,
     pub devices: Option<Vec<MemDevice>>,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct MemDevice {
     properties: HashMap<String, String>,
 }
@@ -259,6 +260,16 @@ fn display_mem_unit(used: f64, total: f64, unit: &str) -> String {
 impl std::fmt::Display for Memory {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}", self.display())
+    }
+}
+
+impl From<Memory> for Vec<FetchSection> {
+    fn from(value: Memory) -> Self {
+        [
+            ("Memory", &value).into(),
+            ("Swap", value.display_swap()).into(),
+        ]
+        .into()
     }
 }
 

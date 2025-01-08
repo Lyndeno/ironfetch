@@ -1,9 +1,9 @@
 use os_release::OsRelease;
 
-use crate::Result;
+use crate::{fetchsection::FetchSection, Result};
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Clone)]
 pub struct OsInfo {
     pub name: String,
     pub build_id: String,
@@ -41,5 +41,11 @@ impl std::fmt::Display for OsInfo {
             "{} {} ({})",
             self.name, self.build_id, self.version_codename,
         )
+    }
+}
+
+impl From<OsInfo> for FetchSection {
+    fn from(value: OsInfo) -> Self {
+        ("OS", value).into()
     }
 }

@@ -4,9 +4,10 @@ use procfs::CpuInfo;
 
 use serde::{Deserialize, Serialize};
 
+use crate::fetchsection::FetchSection;
 use crate::Result;
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Clone)]
 pub struct Cpu {
     cpu: CpuInfo,
 }
@@ -87,5 +88,11 @@ impl std::fmt::Display for Cpu {
             core_string,
             self.frequency_avg()
         )
+    }
+}
+
+impl From<Cpu> for FetchSection {
+    fn from(value: Cpu) -> Self {
+        ("CPU", value).into()
     }
 }
