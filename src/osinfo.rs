@@ -1,6 +1,6 @@
 use os_release::OsRelease;
 
-use crate::fetcherror::FetchError;
+use crate::Result;
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize)]
@@ -17,7 +17,7 @@ impl OsInfo {
     /// # Errors
     ///
     /// Returns errors if os-release cannot be parsed
-    pub fn new() -> Result<Self, FetchError> {
+    pub fn new() -> Result<Self> {
         let os = OsRelease::new()?;
         Ok(Self {
             name: os.name,

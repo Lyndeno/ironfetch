@@ -1,10 +1,9 @@
 use nix::sys::utsname::{uname, UtsName};
 use std::ffi::OsStr;
 
-use crate::fetcherror::FetchError;
 use serde::{Deserialize, Serialize};
 
-type Result<T> = std::result::Result<T, FetchError>;
+use crate::{Error, Result};
 
 #[derive(Serialize, Deserialize)]
 pub struct Kernel {
@@ -32,7 +31,7 @@ impl Kernel {
     fn os_str_to_string(v: &OsStr) -> Result<String> {
         match v.to_str() {
             Some(s) => Ok(String::from(s)),
-            None => Err(FetchError::OsStr),
+            None => Err(Error::OsStr),
         }
     }
 }

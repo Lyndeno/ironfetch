@@ -1,6 +1,6 @@
 use std::{env, path::PathBuf};
 
-use crate::fetcherror::FetchError;
+use crate::{Error, Result};
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize)]
@@ -15,7 +15,7 @@ impl Shell {
     /// # Errors
     ///
     /// Returns error if shell variable cannot be read
-    pub fn new() -> Result<Self, FetchError> {
+    pub fn new() -> Result<Self> {
         Ok(Self {
             path: PathBuf::from(env::var("SHELL")?),
             version: String::new(),
@@ -27,10 +27,10 @@ impl Shell {
     /// # Errors
     ///
     /// Returns an error if the string cannot be parsed
-    pub fn name(&self) -> Result<String, FetchError> {
+    pub fn name(&self) -> Result<String> {
         match self.path.file_name() {
             Some(v) => Ok(v.to_string_lossy().to_string()),
-            None => Err(FetchError::OsStr),
+            None => Err(Error::OsStr),
         }
     }
 }

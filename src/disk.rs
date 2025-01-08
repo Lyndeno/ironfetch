@@ -1,7 +1,8 @@
-use crate::fetcherror::FetchError;
 use measurements::Data;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
+
+use crate::Result;
 
 #[derive(Serialize, Deserialize)]
 pub struct Disk {
@@ -13,7 +14,7 @@ impl Disk {
     ///
     /// # Errors
     /// Returns an error if there is an issue retrieving disk capacity
-    pub fn new() -> Result<Self, FetchError> {
+    pub fn new() -> Result<Self> {
         Ok(Self {
             capacity: futures::executor::block_on(get_capacity())?,
         })
@@ -25,7 +26,7 @@ impl Disk {
 /// # Errors
 /// Returns an error if there is a problem communicating with udisks
 #[allow(clippy::cast_precision_loss)]
-pub async fn get_capacity() -> Result<Data, FetchError> {
+pub async fn get_capacity() -> Result<Data> {
     let client = udisks2::Client::new().await?;
     let manager = client.manager();
     let objects = manager.get_block_devices(HashMap::new()).await?;

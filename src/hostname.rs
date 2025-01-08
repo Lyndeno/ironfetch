@@ -1,7 +1,8 @@
 use sys_info::hostname;
 
-use crate::fetcherror::FetchError;
 use serde::{Deserialize, Serialize};
+
+use crate::Result;
 
 #[derive(Serialize, Deserialize)]
 pub struct HostName(pub String);
@@ -12,7 +13,7 @@ impl HostName {
     /// # Errors
     ///
     /// Returns error if hostname cannot be obtained
-    pub fn new() -> Result<Self, FetchError> {
+    pub fn new() -> Result<Self> {
         Ok(Self(hostname()?))
     }
 }

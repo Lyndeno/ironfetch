@@ -1,10 +1,10 @@
 use clap::Parser;
 
 use ironfetch::args::Args;
-use ironfetch::fetcherror::FetchError;
 use ironfetch::machine::Machine;
+use ironfetch::Result;
 
-fn main() -> Result<(), FetchError> {
+fn main() -> Result<()> {
     let machine;
     let args = Args::parse();
     if let Some(path) = args.input {

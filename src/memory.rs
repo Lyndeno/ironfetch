@@ -1,16 +1,11 @@
-use std::collections::{HashMap, HashSet};
-
-use std::path::Path;
-use udev::{Device, Entry};
-
-use crate::fetcherror::FetchError;
+use crate::{Error, Result};
 use measurements::Data;
-
-use std::str::FromStr;
-
-use sys_info::MemInfo;
-
 use serde::{Deserialize, Serialize};
+use std::collections::{HashMap, HashSet};
+use std::path::Path;
+use std::str::FromStr;
+use sys_info::MemInfo;
+use udev::{Device, Entry};
 
 #[derive(Serialize, Deserialize)]
 pub struct MemStats {
@@ -53,7 +48,7 @@ impl MemDevice {
     ///
     /// # Errors
     /// Returns error if getting memory information fails
-    pub fn new(index: usize) -> Result<Self, FetchError> {
+    pub fn new(index: usize) -> Result<Self> {
         let udev = Device::from_syspath(Path::new("/sys/devices/virtual/dmi/id"))?;
         let props = udev.properties();
         let props_vec: Vec<Entry<'_>> = props.collect();
@@ -108,7 +103,7 @@ impl Memory {
     ///
     /// Will return an error if the memory stats cannot be parsed.
     /// Does not error on failure to obtain smbios information
-    pub fn new() -> Result<Self, FetchError> {
+    pub fn new() -> Result<Self> {
         let meminfo = MemStats::from(sys_info::mem_info()?);
 
         let udev = Device::from_syspath(Path::new("/sys/devices/virtual/dmi/id"))?;
@@ -120,7 +115,7 @@ impl Memory {
                     .to_string_lossy()
                     .contains("MEMORY_ARRAY_NUM_DEVICE")
             })
-            .ok_or(FetchError::OsStr)?;
+            .ok_or(Error::OsStr)?;
 
         let count = str::parse::<usize>(&count_entry.value().to_string_lossy())?;
 

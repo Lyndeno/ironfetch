@@ -8,7 +8,6 @@ use crate::colourblocks::colourblocks;
 use crate::cpu::Cpu;
 use crate::disk::Disk;
 use crate::fetcharray::FetchArray;
-use crate::fetcherror::FetchError;
 use crate::fetchsection::SEPARATOR;
 use crate::hostname::HostName;
 use crate::kernel::Kernel;
@@ -20,6 +19,8 @@ use crate::shell::Shell;
 use crate::uptime::Uptime;
 
 use serde::{Deserialize, Serialize};
+
+use crate::Result;
 
 #[derive(Serialize, Deserialize)]
 pub struct Machine {
@@ -40,13 +41,13 @@ impl Machine {
         Self::default()
     }
 
-    pub fn from_file(path: PathBuf) -> Result<Self, FetchError> {
+    pub fn from_file(path: PathBuf) -> Result<Self> {
         let f = File::open(path)?;
         let r = BufReader::new(f);
         Ok(serde_json::from_reader(r)?)
     }
 
-    pub fn to_file(&self, path: PathBuf) -> Result<(), FetchError> {
+    pub fn to_file(&self, path: PathBuf) -> Result<()> {
         let f = File::create(path)?;
         let mut w = BufWriter::new(f);
         serde_json::to_writer_pretty(&mut w, self)?;

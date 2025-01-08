@@ -1,9 +1,10 @@
-use crate::fetcherror::FetchError;
 use measurements::frequency::Frequency;
 use procfs::prelude::*;
 use procfs::CpuInfo;
 
 use serde::{Deserialize, Serialize};
+
+use crate::Result;
 
 #[derive(Serialize, Deserialize)]
 pub struct Cpu {
@@ -16,7 +17,7 @@ impl Cpu {
     /// # Errors
     ///
     /// Returns and error if the cpu info cannot be obtained.
-    pub fn new() -> Result<Self, FetchError> {
+    pub fn new() -> Result<Self> {
         let cpu = CpuInfo::current()?;
 
         Ok(Self { cpu })

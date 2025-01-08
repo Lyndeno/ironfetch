@@ -3,7 +3,7 @@ use std::{
     io::{BufRead, BufReader},
 };
 
-use crate::fetcherror::FetchError;
+use crate::Result;
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize)]
@@ -18,7 +18,7 @@ impl Profile {
     /// # Errors
     ///
     /// Returns io errors if information cannot be read
-    pub fn new() -> Result<Self, FetchError> {
+    pub fn new() -> Result<Self> {
         Ok(Self {
             current: read_product_info("/sys/firmware/acpi/platform_profile")?,
             choices: read_product_info("/sys/firmware/acpi/platform_profile_choices")?,
@@ -26,7 +26,7 @@ impl Profile {
     }
 }
 
-fn read_product_info(path: &str) -> Result<String, std::io::Error> {
+fn read_product_info(path: &str) -> Result<String> {
     let f = File::open(path)?;
     let mut s = String::new();
     BufReader::new(f).read_line(&mut s)?;

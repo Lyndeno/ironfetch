@@ -1,4 +1,4 @@
-use crate::{fetchsection::FetchSection, machine::Machine};
+use crate::fetchsection::FetchSection;
 
 pub struct FetchArray {
     sections: Vec<FetchSection>,

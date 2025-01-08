@@ -1,6 +1,6 @@
 use std::time::Duration;
 
-use crate::fetcherror::FetchError;
+use crate::Result;
 use serde::{Deserialize, Serialize};
 
 const SECONDS_MIN: u64 = 60;
@@ -16,7 +16,7 @@ impl Uptime {
     /// # Errors
     ///
     /// Returns error if uptime cannot be read
-    pub fn new() -> Result<Self, FetchError> {
+    pub fn new() -> Result<Self> {
         Ok(Self(uptime_lib::get()?))
     }
 }
