@@ -7,11 +7,19 @@ use procfs::CpuInfo;
 use serde::{Deserialize, Serialize};
 
 use crate::fetchsection::FetchSection;
+use crate::Error;
 use crate::Result;
 
 #[derive(Serialize, Deserialize, Clone)]
 pub struct Cpu {
-    cpu: CpuInfo,
+    cores: Vec<Core>,
+}
+
+#[derive(Serialize, Deserialize, Clone)]
+pub struct Core {
+    frequency: Frequency,
+    id: Option<usize>,
+    model: Option<String>,
 }
 
 impl Cpu {
@@ -22,38 +30,44 @@ impl Cpu {
     /// Returns and error if the cpu info cannot be obtained.
     pub fn new() -> Result<Self> {
         let cpu = CpuInfo::current()?;
+        let mut cores = Vec::new();
 
-        Ok(Self { cpu })
+        for i in 0..cpu.num_cores() {
+            let core = Core {
+                frequency: Frequency::from_megahertz(
+                    cpu.get_field(i, "cpu MHz")
+                        .unwrap_or("0.00")
+                        .parse::<f64>()
+                        .unwrap_or(0_f64),
+                ),
+                id: cpu
+                    .get_field(i, "core id")
+                    .and_then(|x| x.parse::<usize>().ok()),
+                model: cpu.model_name(i).map(Into::into),
+            };
+            cores.push(core);
+        }
+
+        Ok(Self { cores })
     }
 
     pub fn logical_core_count(&self) -> usize {
-        self.cpu.num_cores()
-    }
-
-    pub fn frequency(&self, cpu_num: usize) -> Frequency {
-        Frequency::from_megahertz(
-            self.cpu
-                .get_field(cpu_num, "cpu MHz")
-                .unwrap_or("0.00") // FIXME: I really do not like this
-                .parse::<f64>()
-                .unwrap_or(0.00),
-        )
+        self.cores.len()
     }
 
     #[allow(clippy::cast_precision_loss)]
     pub fn frequency_avg(&self) -> Frequency {
         let mut sum = Frequency::from_hertz(0_f64);
-        for cpu_num in 0..self.logical_core_count() {
-            sum = sum + self.frequency(cpu_num);
+        for core in &self.cores {
+            sum = sum + core.frequency;
         }
         sum / self.logical_core_count() as f64
     }
 
     pub fn physical_core_count(&self) -> Option<usize> {
         let mut core_id = HashSet::new();
-        for cpu_num in 0..self.logical_core_count() {
-            let id = self.cpu.get_field(cpu_num, "core id")?.parse::<usize>();
-            if let Ok(v) = id {
+        for core in &self.cores {
+            if let Some(v) = core.id {
                 core_id.insert(v);
             } else {
                 return None;
@@ -64,11 +78,7 @@ impl Cpu {
 
     pub fn model(&self) -> String {
         // TODO: Implement support for multiple CPU models, technically possible
-        let string = self
-            .cpu
-            .model_name(0)
-            .unwrap_or("Unknown Model")
-            .to_string();
+        let string = self.cores[0].model.as_deref().unwrap_or("Unknown Model");
         let strings: Vec<&str> = string.split('@').collect();
         strings[0].trim().to_owned()
     }
