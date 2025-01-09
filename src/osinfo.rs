@@ -1,10 +1,6 @@
 use os_release::OsRelease;
-use udisks2::nvme::namespace;
 
-use crate::{
-    fetchsection::{AsFetchSection, FetchSection},
-    Result,
-};
+use crate::{fetchsection::AsFetchSection, Result};
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Clone)]

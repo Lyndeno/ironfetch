@@ -1,9 +1,6 @@
 use std::time::Duration;
 
-use crate::{
-    fetchsection::{AsFetchSection, FetchSection},
-    Result,
-};
+use crate::{fetchsection::AsFetchSection, Result};
 use serde::{Deserialize, Serialize};
 
 const SECONDS_MIN: u64 = 60;

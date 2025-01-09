@@ -1,5 +1,3 @@
-use std::ops::Deref;
-
 use crate::fetchsection::FetchSection;
 
 pub struct FetchArray {

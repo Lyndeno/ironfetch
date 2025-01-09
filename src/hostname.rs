@@ -2,10 +2,7 @@ use sys_info::hostname;
 
 use serde::{Deserialize, Serialize};
 
-use crate::{
-    fetchsection::{AsFetchSection, FetchSection},
-    Result,
-};
+use crate::{fetchsection::AsFetchSection, Result};
 
 #[derive(Serialize, Deserialize, Clone)]
 pub struct HostName(pub String);

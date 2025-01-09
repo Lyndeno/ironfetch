@@ -2,10 +2,7 @@ use measurements::Data;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
-use crate::{
-    fetchsection::{AsFetchSection, FetchSection},
-    Result,
-};
+use crate::{fetchsection::AsFetchSection, Result};
 
 #[derive(Serialize, Deserialize, Clone)]
 pub struct Disk {

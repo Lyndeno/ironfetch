@@ -1,9 +1,6 @@
 use std::{env, path::PathBuf};
 
-use crate::{
-    fetchsection::{AsFetchSection, FetchSection},
-    Error, Result,
-};
+use crate::{fetchsection::AsFetchSection, Error, Result};
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Clone)]

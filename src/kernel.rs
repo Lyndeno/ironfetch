@@ -3,10 +3,7 @@ use std::ffi::OsStr;
 
 use serde::{Deserialize, Serialize};
 
-use crate::{
-    fetchsection::{AsFetchSection, FetchSection},
-    Error, Result,
-};
+use crate::{fetchsection::AsFetchSection, Error, Result};
 
 #[derive(Serialize, Deserialize, Clone)]
 pub struct Kernel {
