@@ -7,58 +7,42 @@
   "cpu": {
     "cores": [
       {
-        "frequency": {
-          "hertz": 3501062000.0
-        },
+        "frequency": 3588.706,
         "id": 0,
         "model": "Intel(R) Core(TM) i7-7700HQ CPU @ 2.80GHz"
       },
       {
-        "frequency": {
-          "hertz": 3400601000.0000005
-        },
+        "frequency": 3468.131,
         "id": 1,
         "model": "Intel(R) Core(TM) i7-7700HQ CPU @ 2.80GHz"
       },
       {
-        "frequency": {
-          "hertz": 3534065000.0
-        },
+        "frequency": 3496.36,
         "id": 2,
         "model": "Intel(R) Core(TM) i7-7700HQ CPU @ 2.80GHz"
       },
       {
-        "frequency": {
-          "hertz": 800000000.0
-        },
+        "frequency": 3501.632,
         "id": 3,
         "model": "Intel(R) Core(TM) i7-7700HQ CPU @ 2.80GHz"
       },
       {
-        "frequency": {
-          "hertz": 3411218000.0
-        },
+        "frequency": 3594.267,
         "id": 0,
         "model": "Intel(R) Core(TM) i7-7700HQ CPU @ 2.80GHz"
       },
       {
-        "frequency": {
-          "hertz": 3469597000.0000005
-        },
+        "frequency": 3396.902,
         "id": 1,
         "model": "Intel(R) Core(TM) i7-7700HQ CPU @ 2.80GHz"
       },
       {
-        "frequency": {
-          "hertz": 800000000.0
-        },
+        "frequency": 3494.846,
         "id": 2,
         "model": "Intel(R) Core(TM) i7-7700HQ CPU @ 2.80GHz"
       },
       {
-        "frequency": {
-          "hertz": 3788516000.0000005
-        },
+        "frequency": 3563.47,
         "id": 3,
         "model": "Intel(R) Core(TM) i7-7700HQ CPU @ 2.80GHz"
       }

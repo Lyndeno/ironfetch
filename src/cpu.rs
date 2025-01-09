@@ -1,13 +1,12 @@
+use std::collections::HashMap;
 use std::collections::HashSet;
 
-use measurements::frequency::Frequency;
 use procfs::prelude::*;
 use procfs::CpuInfo;
 
 use serde::{Deserialize, Serialize};
 
 use crate::fetchsection::FetchSection;
-use crate::Error;
 use crate::Result;
 
 #[derive(Serialize, Deserialize, Clone)]
@@ -17,9 +16,23 @@ pub struct Cpu {
 
 #[derive(Serialize, Deserialize, Clone)]
 pub struct Core {
-    frequency: Frequency,
+    frequency: Option<f64>,
     id: Option<usize>,
     model: Option<String>,
+}
+
+impl From<HashMap<&str, &str>> for Core {
+    fn from(value: HashMap<&str, &str>) -> Self {
+        Self {
+            frequency: if let Some(v) = value.get("cpu MHz") {
+                v.parse().ok()
+            } else {
+                None
+            },
+            id: value.get("core id").and_then(|x| x.parse().ok()),
+            model: value.get("model name").map(ToString::to_string),
+        }
+    }
 }
 
 impl Cpu {
@@ -31,21 +44,10 @@ impl Cpu {
     pub fn new() -> Result<Self> {
         let cpu = CpuInfo::current()?;
         let mut cores = Vec::new();
-
         for i in 0..cpu.num_cores() {
-            let core = Core {
-                frequency: Frequency::from_megahertz(
-                    cpu.get_field(i, "cpu MHz")
-                        .unwrap_or("0.00")
-                        .parse::<f64>()
-                        .unwrap_or(0_f64),
-                ),
-                id: cpu
-                    .get_field(i, "core id")
-                    .and_then(|x| x.parse::<usize>().ok()),
-                model: cpu.model_name(i).map(Into::into),
-            };
-            cores.push(core);
+            if let Some(v) = cpu.get_info(i) {
+                cores.push(Core::from(v));
+            }
         }
 
         Ok(Self { cores })
@@ -55,13 +57,20 @@ impl Cpu {
         self.cores.len()
     }
 
-    #[allow(clippy::cast_precision_loss)]
-    pub fn frequency_avg(&self) -> Frequency {
-        let mut sum = Frequency::from_hertz(0_f64);
+    pub fn frequency_avg(&self) -> Option<f64> {
+        let mut sum = 0_f64;
+        let mut count = 0;
         for core in &self.cores {
-            sum = sum + core.frequency;
+            if let Some(f) = core.frequency {
+                count += 1;
+                sum += f;
+            }
         }
-        sum / self.logical_core_count() as f64
+        if count > 0 {
+            Some(sum / f64::from(count))
+        } else {
+            None
+        }
     }
 
     pub fn physical_core_count(&self) -> Option<usize> {
@@ -91,13 +100,12 @@ impl std::fmt::Display for Cpu {
         } else {
             format!("({})", self.logical_core_count())
         };
-        write!(
-            f,
-            "{} {} @ {:.3}",
-            self.model(),
-            core_string,
-            self.frequency_avg()
-        )
+        let freq_string = if let Some(f) = self.frequency_avg() {
+            format!(" @ {:.3} GHz", f / 1000_f64)
+        } else {
+            String::new()
+        };
+        write!(f, "{} {}{}", self.model(), core_string, freq_string)
     }
 }
 
