@@ -42,15 +42,7 @@ impl Cpu {
     ///
     /// Returns and error if the cpu info cannot be obtained.
     pub fn new() -> Result<Self> {
-        let cpu = CpuInfo::current()?;
-        let mut cores = Vec::new();
-        for i in 0..cpu.num_cores() {
-            if let Some(v) = cpu.get_info(i) {
-                cores.push(Core::from(v));
-            }
-        }
-
-        Ok(Self { cores })
+        Ok(CpuInfo::current()?.into())
     }
 
     pub fn logical_core_count(&self) -> usize {
@@ -90,6 +82,18 @@ impl Cpu {
         let string = self.cores[0].model.as_deref().unwrap_or("Unknown Model");
         let strings: Vec<&str> = string.split('@').collect();
         strings[0].trim().to_owned()
+    }
+}
+
+impl From<CpuInfo> for Cpu {
+    fn from(value: CpuInfo) -> Self {
+        let mut cores = Vec::new();
+        for i in 0..value.num_cores() {
+            if let Some(v) = value.get_info(i) {
+                cores.push(Core::from(v));
+            }
+        }
+        Self { cores }
     }
 }
 
