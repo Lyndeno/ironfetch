@@ -6,6 +6,7 @@ use procfs::CpuInfo;
 
 use serde::{Deserialize, Serialize};
 
+use crate::fetchsection::AsFetchSection;
 use crate::fetchsection::FetchSection;
 use crate::Result;
 
@@ -113,8 +114,6 @@ impl std::fmt::Display for Cpu {
     }
 }
 
-impl From<Cpu> for FetchSection {
-    fn from(value: Cpu) -> Self {
-        ("CPU", value).into()
-    }
+impl AsFetchSection for Cpu {
+    const NAME: &'static str = "CPU";
 }

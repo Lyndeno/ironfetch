@@ -1,6 +1,9 @@
 use std::{env, path::PathBuf};
 
-use crate::{fetchsection::FetchSection, Error, Result};
+use crate::{
+    fetchsection::{AsFetchSection, FetchSection},
+    Error, Result,
+};
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Clone)]
@@ -41,8 +44,6 @@ impl std::fmt::Display for Shell {
     }
 }
 
-impl From<Shell> for FetchSection {
-    fn from(value: Shell) -> Self {
-        ("Shell", value).into()
-    }
+impl AsFetchSection for Shell {
+    const NAME: &'static str = "Shell";
 }

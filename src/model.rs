@@ -3,7 +3,10 @@ use std::{
     io::{BufRead, BufReader},
 };
 
-use crate::{fetchsection::FetchSection, Result};
+use crate::{
+    fetchsection::{AsFetchSection, FetchSection},
+    Result,
+};
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Clone)]
@@ -54,8 +57,6 @@ impl std::fmt::Display for Model {
     }
 }
 
-impl From<Model> for FetchSection {
-    fn from(value: Model) -> Self {
-        ("Model", value).into()
-    }
+impl AsFetchSection for Model {
+    const NAME: &'static str = "Model";
 }

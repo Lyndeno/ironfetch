@@ -2,7 +2,10 @@ use measurements::Data;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
-use crate::{fetchsection::FetchSection, Result};
+use crate::{
+    fetchsection::{AsFetchSection, FetchSection},
+    Result,
+};
 
 #[derive(Serialize, Deserialize, Clone)]
 pub struct Disk {
@@ -60,12 +63,9 @@ impl std::fmt::Display for Disk {
     }
 }
 
-impl From<Disk> for FetchSection {
-    fn from(value: Disk) -> Self {
-        ("Disk", value).into()
-    }
+impl AsFetchSection for Disk {
+    const NAME: &'static str = "Disk";
 }
-
 #[cfg(test)]
 mod tests {
     use super::*;

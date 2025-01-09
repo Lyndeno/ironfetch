@@ -1,6 +1,10 @@
 use os_release::OsRelease;
+use udisks2::nvme::namespace;
 
-use crate::{fetchsection::FetchSection, Result};
+use crate::{
+    fetchsection::{AsFetchSection, FetchSection},
+    Result,
+};
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Clone)]
@@ -44,8 +48,6 @@ impl std::fmt::Display for OsInfo {
     }
 }
 
-impl From<OsInfo> for FetchSection {
-    fn from(value: OsInfo) -> Self {
-        ("OS", value).into()
-    }
+impl AsFetchSection for OsInfo {
+    const NAME: &'static str = "OS";
 }

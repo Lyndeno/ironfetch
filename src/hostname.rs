@@ -2,7 +2,10 @@ use sys_info::hostname;
 
 use serde::{Deserialize, Serialize};
 
-use crate::{fetchsection::FetchSection, Result};
+use crate::{
+    fetchsection::{AsFetchSection, FetchSection},
+    Result,
+};
 
 #[derive(Serialize, Deserialize, Clone)]
 pub struct HostName(pub String);
@@ -24,8 +27,6 @@ impl std::fmt::Display for HostName {
     }
 }
 
-impl From<HostName> for FetchSection {
-    fn from(value: HostName) -> Self {
-        ("Hostname", value).into()
-    }
+impl AsFetchSection for HostName {
+    const NAME: &'static str = "Hostname";
 }

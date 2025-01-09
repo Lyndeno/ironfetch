@@ -47,3 +47,17 @@ impl<A: Display, B: Display> From<(A, B)> for FetchSection {
         }
     }
 }
+
+impl<T: AsFetchSection> From<T> for FetchSection {
+    fn from(value: T) -> Self {
+        value.as_fetchsection()
+    }
+}
+
+pub trait AsFetchSection: Display {
+    const NAME: &'static str;
+
+    fn as_fetchsection(&self) -> FetchSection {
+        (Self::NAME, self).into()
+    }
+}

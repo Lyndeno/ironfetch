@@ -1,6 +1,9 @@
 use std::time::Duration;
 
-use crate::{fetchsection::FetchSection, Result};
+use crate::{
+    fetchsection::{AsFetchSection, FetchSection},
+    Result,
+};
 use serde::{Deserialize, Serialize};
 
 const SECONDS_MIN: u64 = 60;
@@ -56,8 +59,6 @@ impl std::fmt::Display for Uptime {
     }
 }
 
-impl From<Uptime> for FetchSection {
-    fn from(value: Uptime) -> Self {
-        ("Uptime", value).into()
-    }
+impl AsFetchSection for Uptime {
+    const NAME: &'static str = "Uptime";
 }
