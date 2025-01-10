@@ -1,17 +1,8 @@
 pub mod args;
 pub mod colourblocks;
-pub mod cpu;
-pub mod disk;
 pub mod fetch;
-pub mod hostname;
-pub mod kernel;
 pub mod machine;
-pub mod memory;
-pub mod model;
-pub mod osinfo;
-pub mod platform;
-pub mod shell;
-pub mod uptime;
+pub mod modules;
 
 use std::{env::VarError, io, num::ParseIntError};
 

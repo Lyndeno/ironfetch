@@ -5,17 +5,17 @@ use std::path::PathBuf;
 
 use crate::colourblocks::colourblocks;
 
-use crate::cpu::Cpu;
-use crate::disk::Disk;
 use crate::fetch::{Array, Line, SEPARATOR};
-use crate::hostname::HostName;
-use crate::kernel::Kernel;
-use crate::memory::Memory;
-use crate::model::Model;
-use crate::osinfo::OsInfo;
-use crate::platform::Profile;
-use crate::shell::Shell;
-use crate::uptime::Uptime;
+use crate::modules::cpu::Cpu;
+use crate::modules::disk::Disk;
+use crate::modules::hostname::HostName;
+use crate::modules::kernel::Kernel;
+use crate::modules::memory::Memory;
+use crate::modules::model::Model;
+use crate::modules::osinfo::OsInfo;
+use crate::modules::platform::Profile;
+use crate::modules::shell::Shell;
+use crate::modules::uptime::Uptime;
 
 use serde::{Deserialize, Serialize};
 

@@ -1,0 +1,10 @@
+pub mod cpu;
+pub mod disk;
+pub mod hostname;
+pub mod kernel;
+pub mod memory;
+pub mod model;
+pub mod osinfo;
+pub mod platform;
+pub mod shell;
+pub mod uptime;
