@@ -1,7 +1,7 @@
-mod fetcharray;
-mod fetchline;
+mod array;
+mod line;
 
-pub use fetcharray::Array;
-pub use fetchline::{AsLine, AsLines, Line, SEPARATOR};
+pub use array::Array;
+pub use line::{AsLine, AsLines, Line, SEPARATOR};
 
 pub trait IntoFetch: AsLines {}
