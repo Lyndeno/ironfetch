@@ -7,6 +7,8 @@ use procfs::CpuInfo;
 use serde::{Deserialize, Serialize};
 
 use crate::fetch::AsLine;
+use crate::fetch::AsLines;
+use crate::fetch::IntoFetch;
 use crate::Result;
 
 #[derive(Serialize, Deserialize, Clone)]
@@ -116,3 +118,7 @@ impl std::fmt::Display for Cpu {
 impl AsLine for Cpu {
     const NAME: &'static str = "CPU";
 }
+
+impl AsLines for Cpu {}
+
+impl IntoFetch for Cpu {}

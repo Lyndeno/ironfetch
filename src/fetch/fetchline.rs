@@ -65,6 +65,12 @@ pub trait AsLine: Display {
     }
 }
 
+pub trait AsLines: AsLine {
+    fn as_asfetchlines(&self) -> Vec<Line> {
+        vec![self.as_fetchsection()]
+    }
+}
+
 impl<T: AsLine> TryFrom<Result<T>> for Line {
     type Error = Error;
     fn try_from(value: Result<T>) -> std::result::Result<Self, Self::Error> {
