@@ -43,4 +43,6 @@ pub enum Error {
     Udisk(#[from] udisks2::Error),
     #[error("Error with serialization")]
     Serde(#[from] serde_json::Error),
+    #[error("Error converting from None")]
+    IsNone,
 }

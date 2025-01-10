@@ -41,12 +41,20 @@ impl Machine {
         Self::default()
     }
 
+    /// Read a machine from a json file
+    ///
+    /// # Errors
+    /// Returns an error if reading fails
     pub fn from_file(path: PathBuf) -> Result<Self> {
         let f = File::open(path)?;
         let r = BufReader::new(f);
         Ok(serde_json::from_reader(r)?)
     }
 
+    /// Writes machine to a json file
+    ///
+    /// # Errors
+    /// Returns () if writing failed
     pub fn to_file(&self, path: PathBuf) -> Result<()> {
         let f = File::create(path)?;
         let mut w = BufWriter::new(f);
@@ -88,49 +96,34 @@ impl Display for Machine {
 
 impl From<Machine> for FetchArray {
     fn from(value: Machine) -> Self {
-        let mut array = Self::new();
+        let mut array: Vec<Result<FetchSection>> = Vec::new();
 
-        if let Some(r) = value.os {
-            array.set_colour(r.color.clone());
-            array.push(r);
-        }
+        let colour = if let Some(r) = value.os {
+            array.push(Ok(r.clone().into()));
+            r.color
+        } else {
+            None
+        };
 
-        if let Some(r) = value.shell {
-            array.push(r);
-        }
-
-        if let Some(r) = value.kernel {
-            array.push(r);
-        }
-
-        if let Some(r) = value.model {
-            array.push(r);
-        }
-
-        if let Some(r) = value.hostname {
-            array.push(r);
-        }
-
-        if let Some(r) = value.uptime {
-            array.push(r);
-        }
-
-        if let Some(r) = value.cpu {
-            array.push(r);
-        }
+        array.push(value.shell.try_into());
+        array.push(value.kernel.try_into());
+        array.push(value.model.try_into());
+        array.push(value.hostname.try_into());
+        array.push(value.uptime.try_into());
+        array.push(value.cpu.try_into());
 
         if let Some(r) = value.memory {
-            array.push_multi(Vec::<FetchSection>::from(r));
+            let arr: Vec<FetchSection> = r.into();
+            array.append(&mut arr.into_iter().map(Ok).collect());
         }
 
-        if let Some(r) = value.platform {
-            array.push(r);
-        }
+        array.push(value.platform.try_into());
+        array.push(value.disk.try_into());
 
-        if let Some(r) = value.disk {
-            array.push(r);
-        }
+        let sections: Vec<FetchSection> = array.into_iter().flatten().collect();
 
-        array
+        let mut fetch_array = Self::from(sections);
+        fetch_array.set_colour(colour);
+        fetch_array
     }
 }

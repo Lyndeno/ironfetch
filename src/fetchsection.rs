@@ -2,6 +2,9 @@ use std::fmt::Display;
 
 use std::fmt::Write;
 
+use crate::Error;
+use crate::Result;
+
 pub const SEPARATOR: &str = ": ";
 /// Simple fetching program
 pub struct FetchSection {
@@ -59,5 +62,19 @@ pub trait AsFetchSection: Display {
 
     fn as_fetchsection(&self) -> FetchSection {
         (Self::NAME, self).into()
+    }
+}
+
+impl<T: AsFetchSection> TryFrom<Result<T>> for FetchSection {
+    type Error = Error;
+    fn try_from(value: Result<T>) -> std::result::Result<Self, Self::Error> {
+        value.map(Into::into)
+    }
+}
+
+impl<T: AsFetchSection> TryFrom<Option<T>> for FetchSection {
+    type Error = Error;
+    fn try_from(value: Option<T>) -> std::result::Result<Self, Self::Error> {
+        value.map(Into::into).ok_or(Error::IsNone)
     }
 }

@@ -29,7 +29,7 @@ impl FetchArray {
 
     pub fn push_multi<T: IntoIterator<Item = FetchSection>>(&mut self, values: T) {
         for value in values {
-            self.sections.push(value.into());
+            self.sections.push(value);
         }
     }
 
@@ -40,6 +40,19 @@ impl FetchArray {
             indent = if length > indent { length } else { indent };
         }
         indent
+    }
+
+    pub fn append(&mut self, value: &mut Self) {
+        self.sections.append(&mut value.sections);
+    }
+}
+
+impl From<Vec<FetchSection>> for FetchArray {
+    fn from(value: Vec<FetchSection>) -> Self {
+        Self {
+            sections: value,
+            colour: None,
+        }
     }
 }
 
