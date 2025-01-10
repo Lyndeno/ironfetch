@@ -8,7 +8,7 @@ use crate::colourblocks::colourblocks;
 use crate::cpu::Cpu;
 use crate::disk::Disk;
 use crate::fetcharray::FetchArray;
-use crate::fetchsection::{FetchSection, SEPARATOR};
+use crate::fetchsection::{FetchLine, SEPARATOR};
 use crate::hostname::HostName;
 use crate::kernel::Kernel;
 use crate::memory::Memory;
@@ -100,7 +100,7 @@ impl Display for Machine {
 
 impl From<Machine> for FetchArray {
     fn from(value: Machine) -> Self {
-        let mut array: Vec<Result<FetchSection>> = Vec::new();
+        let mut array: Vec<Result<FetchLine>> = Vec::new();
         let colour = value.colour();
 
         array.push(value.os.try_into());
@@ -112,14 +112,14 @@ impl From<Machine> for FetchArray {
         array.push(value.cpu.try_into());
 
         if let Some(r) = value.memory {
-            let arr: Vec<FetchSection> = r.into();
+            let arr: Vec<FetchLine> = r.into();
             array.append(&mut arr.into_iter().map(Ok).collect());
         }
 
         array.push(value.platform.try_into());
         array.push(value.disk.try_into());
 
-        let sections: Vec<FetchSection> = array.into_iter().flatten().collect();
+        let sections: Vec<FetchLine> = array.into_iter().flatten().collect();
 
         let mut fetch_array = Self::from(sections);
         fetch_array.set_colour(colour);

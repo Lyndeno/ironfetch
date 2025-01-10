@@ -1,7 +1,7 @@
-use crate::fetchsection::FetchSection;
+use crate::fetchsection::FetchLine;
 
 pub struct FetchArray {
-    sections: Vec<FetchSection>,
+    sections: Vec<FetchLine>,
     colour: Option<String>,
 }
 
@@ -23,11 +23,11 @@ impl FetchArray {
         self.colour = colour;
     }
 
-    pub fn push<T: Into<FetchSection>>(&mut self, value: T) {
+    pub fn push<T: Into<FetchLine>>(&mut self, value: T) {
         self.sections.push(value.into());
     }
 
-    pub fn push_multi<T: IntoIterator<Item = FetchSection>>(&mut self, values: T) {
+    pub fn push_multi<T: IntoIterator<Item = FetchLine>>(&mut self, values: T) {
         for value in values {
             self.sections.push(value);
         }
@@ -47,8 +47,8 @@ impl FetchArray {
     }
 }
 
-impl From<Vec<FetchSection>> for FetchArray {
-    fn from(value: Vec<FetchSection>) -> Self {
+impl From<Vec<FetchLine>> for FetchArray {
+    fn from(value: Vec<FetchLine>) -> Self {
         Self {
             sections: value,
             colour: None,

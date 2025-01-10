@@ -7,12 +7,12 @@ use crate::Result;
 
 pub const SEPARATOR: &str = ": ";
 /// Simple fetching program
-pub struct FetchSection {
+pub struct FetchLine {
     pub name: String,
     pub content: String,
 }
 
-impl FetchSection {
+impl FetchLine {
     /// Write the section to provided formatter
     ///
     /// # Errors
@@ -42,7 +42,7 @@ impl FetchSection {
     }
 }
 
-impl<A: Display, B: Display> From<(A, B)> for FetchSection {
+impl<A: Display, B: Display> From<(A, B)> for FetchLine {
     fn from((name, content): (A, B)) -> Self {
         Self {
             name: name.to_string(),
@@ -51,7 +51,7 @@ impl<A: Display, B: Display> From<(A, B)> for FetchSection {
     }
 }
 
-impl<T: AsFetchSection> From<T> for FetchSection {
+impl<T: AsFetchSection> From<T> for FetchLine {
     fn from(value: T) -> Self {
         value.as_fetchsection()
     }
@@ -60,19 +60,19 @@ impl<T: AsFetchSection> From<T> for FetchSection {
 pub trait AsFetchSection: Display {
     const NAME: &'static str;
 
-    fn as_fetchsection(&self) -> FetchSection {
+    fn as_fetchsection(&self) -> FetchLine {
         (Self::NAME, self).into()
     }
 }
 
-impl<T: AsFetchSection> TryFrom<Result<T>> for FetchSection {
+impl<T: AsFetchSection> TryFrom<Result<T>> for FetchLine {
     type Error = Error;
     fn try_from(value: Result<T>) -> std::result::Result<Self, Self::Error> {
         value.map(Into::into)
     }
 }
 
-impl<T: AsFetchSection> TryFrom<Option<T>> for FetchSection {
+impl<T: AsFetchSection> TryFrom<Option<T>> for FetchLine {
     type Error = Error;
     fn try_from(value: Option<T>) -> std::result::Result<Self, Self::Error> {
         value.map(Into::into).ok_or(Error::IsNone)
