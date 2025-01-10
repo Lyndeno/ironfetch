@@ -62,6 +62,10 @@ impl Machine {
         w.flush()?;
         Ok(())
     }
+
+    pub fn colour(&self) -> Option<String> {
+        self.os.clone().and_then(|x| x.color)
+    }
 }
 
 impl Default for Machine {
@@ -97,14 +101,9 @@ impl Display for Machine {
 impl From<Machine> for FetchArray {
     fn from(value: Machine) -> Self {
         let mut array: Vec<Result<FetchSection>> = Vec::new();
+        let colour = value.colour();
 
-        let colour = if let Some(r) = value.os {
-            array.push(Ok(r.clone().into()));
-            r.color
-        } else {
-            None
-        };
-
+        array.push(value.os.try_into());
         array.push(value.shell.try_into());
         array.push(value.kernel.try_into());
         array.push(value.model.try_into());
