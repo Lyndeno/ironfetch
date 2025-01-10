@@ -1,6 +1,6 @@
 use os_release::OsRelease;
 
-use crate::{fetchsection::AsFetchSection, Result};
+use crate::{fetch::AsLine, Result};
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Clone)]
@@ -44,6 +44,6 @@ impl std::fmt::Display for OsInfo {
     }
 }
 
-impl AsFetchSection for OsInfo {
+impl AsLine for OsInfo {
     const NAME: &'static str = "OS";
 }

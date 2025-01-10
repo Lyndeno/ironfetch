@@ -1,6 +1,6 @@
 use std::{env, path::PathBuf};
 
-use crate::{fetchsection::AsFetchSection, Error, Result};
+use crate::{fetch::AsLine, Error, Result};
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Clone)]
@@ -41,6 +41,6 @@ impl std::fmt::Display for Shell {
     }
 }
 
-impl AsFetchSection for Shell {
+impl AsLine for Shell {
     const NAME: &'static str = "Shell";
 }

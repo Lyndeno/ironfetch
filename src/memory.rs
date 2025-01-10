@@ -1,4 +1,4 @@
-use crate::fetchsection::FetchLine;
+use crate::fetch::Line;
 use crate::{Error, Result};
 use measurements::Data;
 use serde::{Deserialize, Serialize};
@@ -263,7 +263,7 @@ impl std::fmt::Display for Memory {
     }
 }
 
-impl From<Memory> for Vec<FetchLine> {
+impl From<Memory> for Vec<Line> {
     fn from(value: Memory) -> Self {
         [
             ("Memory", &value).into(),

@@ -1,19 +1,19 @@
-use crate::fetchsection::FetchLine;
+use crate::fetch::Line;
 
-pub struct FetchArray {
-    sections: Vec<FetchLine>,
+pub struct Array {
+    sections: Vec<Line>,
     colour: Option<String>,
 }
 
-impl Default for FetchArray {
+impl Default for Array {
     fn default() -> Self {
         Self::new()
     }
 }
 
-impl FetchArray {
+impl Array {
     pub fn new() -> Self {
-        FetchArray {
+        Array {
             sections: Vec::new(),
             colour: None,
         }
@@ -23,11 +23,11 @@ impl FetchArray {
         self.colour = colour;
     }
 
-    pub fn push<T: Into<FetchLine>>(&mut self, value: T) {
+    pub fn push<T: Into<Line>>(&mut self, value: T) {
         self.sections.push(value.into());
     }
 
-    pub fn push_multi<T: IntoIterator<Item = FetchLine>>(&mut self, values: T) {
+    pub fn push_multi<T: IntoIterator<Item = Line>>(&mut self, values: T) {
         for value in values {
             self.sections.push(value);
         }
@@ -47,8 +47,8 @@ impl FetchArray {
     }
 }
 
-impl From<Vec<FetchLine>> for FetchArray {
-    fn from(value: Vec<FetchLine>) -> Self {
+impl From<Vec<Line>> for Array {
+    fn from(value: Vec<Line>) -> Self {
         Self {
             sections: value,
             colour: None,
@@ -56,7 +56,7 @@ impl From<Vec<FetchLine>> for FetchArray {
     }
 }
 
-impl std::fmt::Display for FetchArray {
+impl std::fmt::Display for Array {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let indent = self.get_indent();
         let mut iter = self.sections.iter().peekable();

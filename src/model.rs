@@ -3,7 +3,7 @@ use std::{
     io::{BufRead, BufReader},
 };
 
-use crate::{fetchsection::AsFetchSection, Result};
+use crate::{fetch::AsLine, Result};
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Clone)]
@@ -54,6 +54,6 @@ impl std::fmt::Display for Model {
     }
 }
 
-impl AsFetchSection for Model {
+impl AsLine for Model {
     const NAME: &'static str = "Model";
 }

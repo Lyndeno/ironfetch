@@ -2,7 +2,7 @@ use measurements::Data;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
-use crate::{fetchsection::AsFetchSection, Result};
+use crate::{fetch::AsLine, Result};
 
 #[derive(Serialize, Deserialize, Clone)]
 pub struct Disk {
@@ -60,7 +60,7 @@ impl std::fmt::Display for Disk {
     }
 }
 
-impl AsFetchSection for Disk {
+impl AsLine for Disk {
     const NAME: &'static str = "Disk";
 }
 #[cfg(test)]
