@@ -116,7 +116,9 @@ impl std::fmt::Display for Cpu {
 }
 
 impl AsLine for Cpu {
-    const NAME: &'static str = "CPU";
+    fn name(&self) -> &'static str {
+        "CPU"
+    }
 }
 
 impl AsLines for Cpu {}

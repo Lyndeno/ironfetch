@@ -46,7 +46,9 @@ impl std::fmt::Display for Profile {
 }
 
 impl AsLine for Profile {
-    const NAME: &'static str = "Profile";
+    fn name(&self) -> &'static str {
+        "Profile"
+    }
 }
 
 impl AsLines for Profile {}

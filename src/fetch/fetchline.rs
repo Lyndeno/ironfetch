@@ -58,15 +58,15 @@ impl<T: AsLine> From<T> for Line {
 }
 
 pub trait AsLine: Display {
-    const NAME: &'static str;
+    fn name(&self) -> &'static str;
 
     fn as_fetchsection(&self) -> Line {
-        (Self::NAME, self).into()
+        (self.name(), self).into()
     }
 }
 
 pub trait AsLines: AsLine {
-    fn as_asfetchlines(&self) -> Vec<Line> {
+    fn as_fetchlines(&self) -> Vec<Line> {
         vec![self.as_fetchsection()]
     }
 }

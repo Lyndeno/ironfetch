@@ -28,7 +28,9 @@ impl std::fmt::Display for HostName {
 }
 
 impl AsLine for HostName {
-    const NAME: &'static str = "Hostname";
+    fn name(&self) -> &'static str {
+        "Hostname"
+    }
 }
 
 impl IntoFetch for HostName {}

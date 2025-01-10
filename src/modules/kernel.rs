@@ -46,7 +46,9 @@ impl std::fmt::Display for Kernel {
 }
 
 impl AsLine for Kernel {
-    const NAME: &'static str = "Kernel";
+    fn name(&self) -> &'static str {
+        "Kernel"
+    }
 }
 
 impl AsLines for Kernel {}

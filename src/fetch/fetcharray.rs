@@ -1,5 +1,7 @@
 use crate::fetch::Line;
 
+use super::IntoFetch;
+
 pub struct Array {
     sections: Vec<Line>,
     colour: Option<String>,
@@ -30,6 +32,16 @@ impl Array {
     pub fn push_multi<T: IntoIterator<Item = Line>>(&mut self, values: T) {
         for value in values {
             self.sections.push(value);
+        }
+    }
+
+    pub fn push_obj<T: IntoFetch>(&mut self, value: &T) {
+        self.push_multi(value.as_fetchlines());
+    }
+
+    pub fn push_obj_opt<T: IntoFetch>(&mut self, value: Option<T>) {
+        if let Some(v) = value {
+            self.push_obj(&v);
         }
     }
 

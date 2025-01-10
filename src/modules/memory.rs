@@ -274,11 +274,13 @@ impl From<Memory> for Vec<Line> {
 }
 
 impl AsLine for Memory {
-    const NAME: &'static str = "Memory";
+    fn name(&self) -> &'static str {
+        "Memory"
+    }
 }
 
 impl AsLines for Memory {
-    fn as_asfetchlines(&self) -> Vec<Line> {
+    fn as_fetchlines(&self) -> Vec<Line> {
         self.clone().into()
     }
 }

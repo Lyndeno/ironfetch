@@ -48,7 +48,9 @@ impl std::fmt::Display for OsInfo {
 }
 
 impl AsLine for OsInfo {
-    const NAME: &'static str = "OS";
+    fn name(&self) -> &'static str {
+        "OS"
+    }
 }
 
 impl AsLines for OsInfo {}

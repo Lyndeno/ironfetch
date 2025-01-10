@@ -5,7 +5,7 @@ use std::path::PathBuf;
 
 use crate::colourblocks::colourblocks;
 
-use crate::fetch::{Array, Line, SEPARATOR};
+use crate::fetch::{Array, SEPARATOR};
 use crate::modules::cpu::Cpu;
 use crate::modules::disk::Disk;
 use crate::modules::hostname::HostName;
@@ -99,29 +99,20 @@ impl Display for Machine {
 
 impl From<Machine> for Array {
     fn from(value: Machine) -> Self {
-        let mut array: Vec<Result<Line>> = Vec::new();
-        let colour = value.colour();
+        let mut array = Array::new();
+        array.set_colour(value.colour());
 
-        array.push(value.os.try_into());
-        array.push(value.shell.try_into());
-        array.push(value.kernel.try_into());
-        array.push(value.model.try_into());
-        array.push(value.hostname.try_into());
-        array.push(value.uptime.try_into());
-        array.push(value.cpu.try_into());
+        array.push_obj_opt(value.os);
+        array.push_obj_opt(value.shell);
+        array.push_obj_opt(value.kernel);
+        array.push_obj_opt(value.model);
+        array.push_obj_opt(value.hostname);
+        array.push_obj_opt(value.uptime);
+        array.push_obj_opt(value.cpu);
+        array.push_obj_opt(value.memory);
+        array.push_obj_opt(value.platform);
+        array.push_obj_opt(value.disk);
 
-        if let Some(r) = value.memory {
-            let arr: Vec<Line> = r.into();
-            array.append(&mut arr.into_iter().map(Ok).collect());
-        }
-
-        array.push(value.platform.try_into());
-        array.push(value.disk.try_into());
-
-        let sections: Vec<Line> = array.into_iter().flatten().collect();
-
-        let mut fetch_array = Self::from(sections);
-        fetch_array.set_colour(colour);
-        fetch_array
+        array
     }
 }

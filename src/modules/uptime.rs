@@ -60,7 +60,9 @@ impl std::fmt::Display for Uptime {
 }
 
 impl AsLine for Uptime {
-    const NAME: &'static str = "Uptime";
+    fn name(&self) -> &'static str {
+        "Uptime"
+    }
 }
 
 impl AsLines for Uptime {}

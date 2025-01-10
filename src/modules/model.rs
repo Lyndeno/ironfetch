@@ -58,7 +58,9 @@ impl std::fmt::Display for Model {
 }
 
 impl AsLine for Model {
-    const NAME: &'static str = "Model";
+    fn name(&self) -> &'static str {
+        "Model"
+    }
 }
 
 impl AsLines for Model {}

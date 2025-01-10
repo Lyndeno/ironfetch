@@ -64,7 +64,9 @@ impl std::fmt::Display for Disk {
 }
 
 impl AsLine for Disk {
-    const NAME: &'static str = "Disk";
+    fn name(&self) -> &'static str {
+        "Disk"
+    }
 }
 
 impl AsLines for Disk {}

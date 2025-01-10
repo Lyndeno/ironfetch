@@ -45,7 +45,9 @@ impl std::fmt::Display for Shell {
 }
 
 impl AsLine for Shell {
-    const NAME: &'static str = "Shell";
+    fn name(&self) -> &'static str {
+        "Shell"
+    }
 }
 
 impl AsLines for Shell {}
