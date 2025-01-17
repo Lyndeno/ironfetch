@@ -55,7 +55,7 @@ impl<A: Display, B: Display> From<(A, B)> for Line {
 
 impl<T: Fetch> From<T> for Line {
     fn from(value: T) -> Self {
-        value.as_fetchsection()
+        (value.name(), value).into()
     }
 }
 
