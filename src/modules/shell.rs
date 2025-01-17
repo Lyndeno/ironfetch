@@ -1,9 +1,6 @@
 use std::{env, path::PathBuf};
 
-use crate::{
-    fetch::{AsLine, AsLines, IntoFetch},
-    Error, Result,
-};
+use crate::{fetch::Fetch, Error, Result};
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Clone)]
@@ -44,12 +41,8 @@ impl std::fmt::Display for Shell {
     }
 }
 
-impl AsLine for Shell {
+impl Fetch for Shell {
     fn name(&self) -> &'static str {
         "Shell"
     }
 }
-
-impl AsLines for Shell {}
-
-impl IntoFetch for Shell {}

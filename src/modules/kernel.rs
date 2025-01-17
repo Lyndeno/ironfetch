@@ -3,10 +3,7 @@ use std::ffi::OsStr;
 
 use serde::{Deserialize, Serialize};
 
-use crate::{
-    fetch::{AsLine, AsLines, IntoFetch},
-    Error, Result,
-};
+use crate::{fetch::Fetch, Error, Result};
 
 #[derive(Serialize, Deserialize, Clone)]
 pub struct Kernel {
@@ -45,12 +42,8 @@ impl std::fmt::Display for Kernel {
     }
 }
 
-impl AsLine for Kernel {
+impl Fetch for Kernel {
     fn name(&self) -> &'static str {
         "Kernel"
     }
 }
-
-impl AsLines for Kernel {}
-
-impl IntoFetch for Kernel {}

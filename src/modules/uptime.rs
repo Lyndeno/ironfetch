@@ -1,9 +1,6 @@
 use std::time::Duration;
 
-use crate::{
-    fetch::{AsLine, AsLines, IntoFetch},
-    Result,
-};
+use crate::{fetch::Fetch, Result};
 use serde::{Deserialize, Serialize};
 
 const SECONDS_MIN: u64 = 60;
@@ -59,12 +56,8 @@ impl std::fmt::Display for Uptime {
     }
 }
 
-impl AsLine for Uptime {
+impl Fetch for Uptime {
     fn name(&self) -> &'static str {
         "Uptime"
     }
 }
-
-impl AsLines for Uptime {}
-
-impl IntoFetch for Uptime {}

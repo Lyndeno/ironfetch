@@ -1,6 +1,6 @@
 use crate::fetch::Line;
 
-use super::IntoFetch;
+use super::Fetch;
 
 pub struct Array {
     sections: Vec<Line>,
@@ -35,11 +35,11 @@ impl Array {
         }
     }
 
-    pub fn push_obj<T: IntoFetch>(&mut self, value: &T) {
+    pub fn push_obj<T: Fetch>(&mut self, value: &T) {
         self.push_multi(value.as_fetchlines());
     }
 
-    pub fn push_obj_opt<T: IntoFetch>(&mut self, value: Option<T>) {
+    pub fn push_obj_opt<T: Fetch>(&mut self, value: Option<T>) {
         if let Some(v) = value {
             self.push_obj(&v);
         }

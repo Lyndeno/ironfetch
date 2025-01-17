@@ -1,7 +1,19 @@
 mod array;
 mod line;
 
-pub use array::Array;
-pub use line::{AsLine, AsLines, Line, SEPARATOR};
+use std::fmt::Display;
 
-pub trait IntoFetch: AsLines {}
+pub use array::Array;
+pub use line::{Line, SEPARATOR};
+
+pub trait Fetch: Display {
+    fn name(&self) -> &'static str;
+
+    fn as_fetchsection(&self) -> Line {
+        (self.name(), self).into()
+    }
+
+    fn as_fetchlines(&self) -> Vec<Line> {
+        vec![self.as_fetchsection()]
+    }
+}

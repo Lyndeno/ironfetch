@@ -1,4 +1,4 @@
-use crate::fetch::{AsLine, AsLines, IntoFetch, Line};
+use crate::fetch::{Fetch, Line};
 use crate::{Error, Result};
 use measurements::Data;
 use serde::{Deserialize, Serialize};
@@ -273,19 +273,14 @@ impl From<Memory> for Vec<Line> {
     }
 }
 
-impl AsLine for Memory {
+impl Fetch for Memory {
     fn name(&self) -> &'static str {
         "Memory"
     }
-}
-
-impl AsLines for Memory {
     fn as_fetchlines(&self) -> Vec<Line> {
         self.clone().into()
     }
 }
-
-impl IntoFetch for Memory {}
 
 fn print_strings(strings: Vec<String>) -> Option<String> {
     if strings.is_empty() {

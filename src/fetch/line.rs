@@ -5,6 +5,8 @@ use std::fmt::Write;
 use crate::Error;
 use crate::Result;
 
+use super::Fetch;
+
 pub const SEPARATOR: &str = ": ";
 /// Simple fetching program
 pub struct Line {
@@ -51,34 +53,20 @@ impl<A: Display, B: Display> From<(A, B)> for Line {
     }
 }
 
-impl<T: AsLine> From<T> for Line {
+impl<T: Fetch> From<T> for Line {
     fn from(value: T) -> Self {
         value.as_fetchsection()
     }
 }
 
-pub trait AsLine: Display {
-    fn name(&self) -> &'static str;
-
-    fn as_fetchsection(&self) -> Line {
-        (self.name(), self).into()
-    }
-}
-
-pub trait AsLines: AsLine {
-    fn as_fetchlines(&self) -> Vec<Line> {
-        vec![self.as_fetchsection()]
-    }
-}
-
-impl<T: AsLine> TryFrom<Result<T>> for Line {
+impl<T: Fetch> TryFrom<Result<T>> for Line {
     type Error = Error;
     fn try_from(value: Result<T>) -> std::result::Result<Self, Self::Error> {
         value.map(Into::into)
     }
 }
 
-impl<T: AsLine> TryFrom<Option<T>> for Line {
+impl<T: Fetch> TryFrom<Option<T>> for Line {
     type Error = Error;
     fn try_from(value: Option<T>) -> std::result::Result<Self, Self::Error> {
         value.map(Into::into).ok_or(Error::IsNone)

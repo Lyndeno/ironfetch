@@ -1,9 +1,6 @@
 use os_release::OsRelease;
 
-use crate::{
-    fetch::{AsLine, AsLines, IntoFetch},
-    Result,
-};
+use crate::{fetch::Fetch, Result};
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Clone)]
@@ -47,12 +44,8 @@ impl std::fmt::Display for OsInfo {
     }
 }
 
-impl AsLine for OsInfo {
+impl Fetch for OsInfo {
     fn name(&self) -> &'static str {
         "OS"
     }
 }
-
-impl AsLines for OsInfo {}
-
-impl IntoFetch for OsInfo {}

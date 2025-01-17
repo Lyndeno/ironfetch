@@ -3,10 +3,7 @@ use std::{
     io::{BufRead, BufReader},
 };
 
-use crate::{
-    fetch::{AsLine, AsLines, IntoFetch},
-    Result,
-};
+use crate::{fetch::Fetch, Result};
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Clone)]
@@ -57,12 +54,8 @@ impl std::fmt::Display for Model {
     }
 }
 
-impl AsLine for Model {
+impl Fetch for Model {
     fn name(&self) -> &'static str {
         "Model"
     }
 }
-
-impl AsLines for Model {}
-
-impl IntoFetch for Model {}

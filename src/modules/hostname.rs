@@ -2,10 +2,7 @@ use sys_info::hostname;
 
 use serde::{Deserialize, Serialize};
 
-use crate::{
-    fetch::{AsLine, AsLines, IntoFetch},
-    Result,
-};
+use crate::{fetch::Fetch, Result};
 
 #[derive(Serialize, Deserialize, Clone)]
 pub struct HostName(pub String);
@@ -27,12 +24,8 @@ impl std::fmt::Display for HostName {
     }
 }
 
-impl AsLine for HostName {
+impl Fetch for HostName {
     fn name(&self) -> &'static str {
         "Hostname"
     }
 }
-
-impl IntoFetch for HostName {}
-
-impl AsLines for HostName {}
