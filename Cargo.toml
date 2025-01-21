@@ -20,6 +20,8 @@ futures = "*"
 udisks2 = "*"
 serde = "*"
 serde_json = "*"
+upower_dbus = "*"
+zbus = "3.7.0"
 
 [build-dependencies]
 clap = { version = "*", features = ["derive"] }

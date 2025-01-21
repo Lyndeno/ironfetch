@@ -6,6 +6,7 @@ use std::path::PathBuf;
 use crate::colourblocks::colourblocks;
 
 use crate::fetch::{Array, SEPARATOR};
+use crate::modules::battery::Battery;
 use crate::modules::cpu::Cpu;
 use crate::modules::disk::Disk;
 use crate::modules::hostname::HostName;
@@ -33,6 +34,7 @@ pub struct Machine {
     pub shell: Option<Shell>,
     pub platform: Option<Profile>,
     pub disk: Option<Disk>,
+    pub battery: Option<Battery>,
 }
 
 impl Machine {
@@ -80,6 +82,7 @@ impl Default for Machine {
             shell: Shell::new().ok(),
             platform: Profile::new().ok(),
             disk: Disk::new().ok(),
+            battery: Battery::new().ok(),
         }
     }
 }
@@ -112,6 +115,7 @@ impl From<Machine> for Array {
         array.push_obj_opt(value.memory);
         array.push_obj_opt(value.platform);
         array.push_obj_opt(value.disk);
+        array.push_obj_opt(value.battery);
 
         array
     }

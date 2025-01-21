@@ -29,4 +29,6 @@ pub enum Error {
     Serde(#[from] serde_json::Error),
     #[error("Error converting from None")]
     IsNone,
+    #[error("Error getting information with zbus")]
+    Zbus(#[from] zbus::Error),
 }
