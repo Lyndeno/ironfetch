@@ -7,27 +7,27 @@ license = "MIT"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-clap = { version = "*", features = ["derive"] }
-measurements = { version = "*", features = ["serde"] }
-nix = { version="*", features = ["feature"]}
-os-release = "*"
-procfs = { version = "*", features = ["serde1"] }
-sys-info = "*"
-uptime_lib = "*"
-thiserror = "*"
-udev = "*"
-futures = "*"
-udisks2 = "*"
-serde = "*"
-serde_json = "*"
-upower_dbus = "*"
-zbus = "3.7.0"
+clap = { version = "4.*.*", features = ["derive"] }
+measurements = { version = "0.11.*", features = ["serde"] }
+nix = { version="0.29.*", features = ["feature"]}
+os-release = "0.1.*"
+procfs = "0.17.*"
+sys-info = "0.9.*"
+uptime_lib = "0.3.*"
+thiserror = "2.*.*"
+udev = "0.9.*"
+futures = "0.3.*"
+udisks2 = "0.3.*"
+serde = "1.*.*"
+serde_json = "1.0.*"
+upower_dbus = { git = "https://github.com/pop-os/dbus-settings-bindings.git", version = "0.3.*" }
+zbus = "4.*.*"
 
 [build-dependencies]
-clap = { version = "*", features = ["derive"] }
-clap_complete = "*"
-clap_mangen = "*"
-serde = "*"
+clap = { version = "4.*.*", features = ["derive"] }
+clap_complete = "4.*.*"
+clap_mangen = "0.2.*"
+serde = "1.*.*"
 
 [lints.clippy]
 pedantic = {level="warn", priority = 0}
