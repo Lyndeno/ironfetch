@@ -37,7 +37,7 @@ impl Display for State {
 }
 
 impl Battery {
-    pub fn new() -> Result<Self> {
+    pub fn new() -> Result<Option<Self>> {
         futures::executor::block_on(async move {
             let connection = zbus::Connection::system().await?;
 
@@ -47,10 +47,14 @@ impl Battery {
             let percentage = device.percentage().await?;
             let state = device.state().await?;
 
-            Ok(Self {
+            if state == BatteryState::Unknown && percentage == 0f64 {
+                return Ok(None);
+            }
+
+            Ok(Some(Self {
                 percentage,
                 state: state.into(),
-            })
+            }))
         })
     }
 }

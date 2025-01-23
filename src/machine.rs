@@ -82,7 +82,7 @@ impl Default for Machine {
             shell: Shell::new().ok(),
             platform: Profile::new().ok(),
             disk: Disk::new().ok(),
-            battery: Battery::new().ok(),
+            battery: Battery::new().ok().flatten(),
         }
     }
 }
