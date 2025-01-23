@@ -876,14 +876,14 @@ dependencies = [
 
 [[package]]
 name = "ironfetch"
-version = "0.6.1"
+version = "0.7.0"
 dependencies = [
  "clap",
  "clap_complete",
  "clap_mangen",
  "futures",
  "measurements",
- "nix 0.29.0",
+ "nix 0.26.4",
  "os-release",
  "procfs",
  "serde",
@@ -1040,6 +1040,7 @@ dependencies = [
  "cfg-if",
  "libc",
  "memoffset 0.7.1",
+ "pin-utils",
 ]
 
 [[package]]
