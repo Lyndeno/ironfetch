@@ -52,6 +52,9 @@
           cargoArtifacts = craneLib.buildDepsOnly common-args;
         });
     in rec {
+      checks = {
+        inherit ironfetch;
+      };
       packages.ironfetch = ironfetch;
       packages.default = packages.ironfetch;
 
