@@ -2,8 +2,8 @@
   inputs = {
     utils.url = "github:numtide/flake-utils";
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-    naersk.url = "github:nix-community/naersk";
-    naersk.inputs.nixpkgs.follows = "nixpkgs";
+
+    crane.url = "github:ipetkov/crane";
 
     pre-commit-hooks-nix = {
       url = "github:cachix/pre-commit-hooks.nix";
@@ -15,15 +15,29 @@
     self,
     nixpkgs,
     utils,
-    naersk,
+    crane,
     pre-commit-hooks-nix,
   }:
     utils.lib.eachDefaultSystem (system: let
       pkgs = nixpkgs.legacyPackages."${system}";
-      naersk-lib = naersk.lib."${system}";
-    in rec {
-      packages.ironfetch = naersk-lib.buildPackage {
-        nativeBuildInputs = [pkgs.installShellFiles pkgs.pkg-config pkgs.udev];
+      craneLib = crane.mkLib pkgs;
+      lib = pkgs.lib;
+
+      jsonFilter = path: _type: builtins.match ".*json$" path != null;
+      jsonOrCargo = path: type:
+        (jsonFilter path type) || (craneLib.filterCargoSources path type);
+
+      common-args = {
+        src = lib.cleanSourceWith {
+          src = ./.;
+          filter = jsonOrCargo;
+          name = "source";
+        };
+        strictDeps = true;
+
+        buildInputs = [pkgs.udev];
+        nativeBuildInputs = [pkgs.installShellFiles pkgs.pkg-config];
+
         postInstall = ''
           installShellCompletion --cmd ironfetch \
             --bash ./target/release/build/ironfetch-*/out/ironfetch.bash \
@@ -31,9 +45,14 @@
             --zsh ./target/release/build/ironfetch-*/out/_ironfetch
           installManPage ./target/release/build/ironfetch-*/out/ironfetch.1
         '';
-        pname = "ironfetch";
-        root = ./.;
       };
+
+      ironfetch = craneLib.buildPackage (common-args
+        // {
+          cargoArtifacts = craneLib.buildDepsOnly common-args;
+        });
+    in rec {
+      packages.ironfetch = ironfetch;
       packages.default = packages.ironfetch;
 
       apps.ironfetch = utils.lib.mkApp {
@@ -54,10 +73,8 @@
           };
         };
       in
-        pkgs.mkShell {
-          nativeBuildInputs = with pkgs; [
-            rustc
-            cargo
+        craneLib.devShell {
+          packages = with pkgs; [
             rustfmt
             clippy
             cargo-deny
@@ -66,7 +83,6 @@
             pkg-config
             udev
           ];
-          RUST_SRC_PATH = "${pkgs.rust.packages.stable.rustPlatform.rustLibSrc}";
           shellHook = ''
             ${pre-commit-format.shellHook}
           '';
