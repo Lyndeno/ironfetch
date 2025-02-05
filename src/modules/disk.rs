@@ -1,12 +1,11 @@
-use measurements::Data;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
-use crate::{fetch::Fetch, Result};
+use crate::{fetch::Fetch, Result, GIGABYTE, TERABYTE};
 
 #[derive(Serialize, Deserialize, Clone)]
 pub struct Disk {
-    pub capacity: Data,
+    pub capacity: u64,
 }
 
 impl Disk {
@@ -26,7 +25,7 @@ impl Disk {
 /// # Errors
 /// Returns an error if there is a problem communicating with udisks
 #[allow(clippy::cast_precision_loss)]
-pub async fn get_capacity() -> Result<Data> {
+pub async fn get_capacity() -> Result<u64> {
     let client = udisks2::Client::new().await?;
     let manager = client.manager();
     let objects = manager.get_block_devices(HashMap::new()).await?;
@@ -47,15 +46,15 @@ pub async fn get_capacity() -> Result<Data> {
             }
         }
     }
-    Ok(Data::from_octets(hm.into_iter().map(|x| x.1 as f64).sum()))
+    Ok(hm.into_iter().map(|x| x.1).sum())
 }
 
 impl std::fmt::Display for Disk {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        if self.capacity < Data::from_teraoctets(1.0) {
-            write!(f, "{:.1} GB", self.capacity.as_gigaoctets())
+        if self.capacity < TERABYTE {
+            write!(f, "{:.1} GB", self.capacity as f64 / GIGABYTE as f64)
         } else {
-            write!(f, "{:.1} TB", self.capacity.as_teraoctets())
+            write!(f, "{:.1} TB", self.capacity as f64 / TERABYTE as f64)
         }
     }
 }
@@ -71,9 +70,7 @@ mod tests {
 
     #[test]
     fn test_tb() {
-        let disk = Disk {
-            capacity: Data::from_teraoctets(1.0),
-        };
+        let disk = Disk { capacity: TERABYTE };
         let display = disk.to_string();
         let desired = "1.0 TB";
         assert_eq!(&display, desired);
@@ -82,7 +79,7 @@ mod tests {
     #[test]
     fn test_gb() {
         let disk = Disk {
-            capacity: Data::from_gigaoctets(100.0),
+            capacity: 100 * GIGABYTE,
         };
         let display = disk.to_string();
         let desired = "100.0 GB";

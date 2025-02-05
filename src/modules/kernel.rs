@@ -18,14 +18,19 @@ impl Kernel {
     /// # Errors
     ///
     /// Returns an error if there is any problem getting kernel information or parsing the strings
-    pub fn new() -> Result<Self> {
+    #[cfg(target_os = "linux")]
+    pub fn new() -> Result<Option<Self>> {
         let info: UtsName = uname()?;
-        Ok(Self {
+        Ok(Some(Self {
             // TODO: Error correction
             release: Self::os_str_to_string(info.release())?,
             architecture: Self::os_str_to_string(info.machine())?,
             name: Self::os_str_to_string(info.sysname())?,
-        })
+        }))
+    }
+    #[cfg(not(target_os = "linux"))]
+    pub fn new() -> Result<Option<Self>> {
+        Ok(None)
     }
 
     fn os_str_to_string(v: &OsStr) -> Result<String> {

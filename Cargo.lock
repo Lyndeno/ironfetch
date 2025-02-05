@@ -745,7 +745,7 @@ dependencies = [
  "clap_complete",
  "clap_mangen",
  "futures",
- "measurements",
+ "memdev",
  "nix",
  "os-release",
  "procfs",
@@ -795,12 +795,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b5aba8db14291edd000dfcc4d620c7ebfb122c613afb886ca8803fa4e128a20a"
 
 [[package]]
-name = "libm"
-version = "0.2.11"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8355be11b20d696c8f18f6cc018c4e372165b1fa8126cef092399c9951984ffa"
-
-[[package]]
 name = "libudev-sys"
 version = "0.1.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -845,20 +839,20 @@ dependencies = [
 ]
 
 [[package]]
-name = "measurements"
-version = "0.11.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f5b734b4e8187ea5777bc29c086f0970a27d8de42061b48f5af32cafc0ca904b"
-dependencies = [
- "libm",
- "serde",
-]
-
-[[package]]
 name = "memchr"
 version = "2.7.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "78ca9ab1a0babb1e7d5695e3530886289c18cf2f87ec19a575a0abdce112e3a3"
+
+[[package]]
+name = "memdev"
+version = "0.1.0"
+source = "git+https://github.com/lyndeno/memdev.git#dbf65eaaf4904717101440546cfb378b37597119"
+dependencies = [
+ "serde",
+ "thiserror 2.0.11",
+ "udev",
+]
 
 [[package]]
 name = "memoffset"

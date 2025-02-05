@@ -72,7 +72,7 @@ impl Machine {
 impl Default for Machine {
     fn default() -> Self {
         Self {
-            kernel: Kernel::new().ok(),
+            kernel: Kernel::new().ok().flatten(),
             cpu: Cpu::new().ok(),
             memory: Memory::new().ok(),
             os: OsInfo::new().ok(),

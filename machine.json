@@ -49,7 +49,6 @@
     ]
   },
   "memory": {
-    "display_unit": null,
     "meminfo": {
       "total": 131806504,
       "free": 117924872,
@@ -59,116 +58,54 @@
       "swap_total": 65903100,
       "swap_free": 65903100
     },
-    "devices": [
-      {
-        "properties": {
-          "TYPE": "DDR4",
-          "DATA_WIDTH": "64",
-          "VOLATILE_SIZE": "34359738368",
-          "TYPE_DETAIL": "Synchronous Unbuffered (Unregistered)",
-          "FORM_FACTOR": "DIMM",
-          "ASSET_TAG": "Not Specified",
-          "RANK": "2",
-          "LOCATOR": "DIMM_A1",
-          "MANUFACTURER": "G Skill Intl",
-          "MAXIMUM_VOLTAGE": "1",
-          "MEMORY_OPERATING_MODE_CAPABILITY": "Volatile memory",
-          "SERIAL_NUMBER": "00000000",
-          "MINIMUM_VOLTAGE": "1",
-          "CONFIGURED_SPEED_MTS": "3600",
-          "FIRMWARE_VERSION": "Unknown",
-          "BANK_LOCATOR": "BANK 0",
-          "MODULE_MANUFACTURER_ID": "Bank 5, Hex 0xCD",
-          "CONFIGURED_VOLTAGE": "1",
-          "MEMORY_TECHNOLOGY": "DRAM",
-          "SIZE": "34359738368",
-          "SPEED_MTS": "3600",
-          "TOTAL_WIDTH": "64",
-          "PART_NUMBER": "F4-3600C18-32GVK"
+    "devices": {
+      "devices": [
+        {
+          "manufacturer": "8C260000802C",
+          "frequency": 2667,
+          "form_factor": "SODIMM",
+          "mem_type": "Ddr4",
+          "extra_props": {
+            "PART_NUMBER": "TIMETEC-SD4-2666",
+            "MAXIMUM_VOLTAGE": "1",
+            "RANK": "2",
+            "SIZE": "34359738368",
+            "SPEED_MTS": "2667",
+            "ASSET_TAG": "00221200",
+            "BANK_LOCATOR": "BANK 0",
+            "SERIAL_NUMBER": "00000000",
+            "TYPE_DETAIL": "Synchronous Unbuffered (Unregistered)",
+            "MINIMUM_VOLTAGE": "1",
+            "LOCATOR": "DIMM A",
+            "TOTAL_WIDTH": "64",
+            "DATA_WIDTH": "64",
+            "CONFIGURED_VOLTAGE": "1"
+          }
+        },
+        {
+          "manufacturer": "8C260000802C",
+          "frequency": 2667,
+          "form_factor": "SODIMM",
+          "mem_type": "Ddr4",
+          "extra_props": {
+            "SIZE": "34359738368",
+            "MAXIMUM_VOLTAGE": "1",
+            "SERIAL_NUMBER": "00000000",
+            "ASSET_TAG": "00221200",
+            "CONFIGURED_VOLTAGE": "1",
+            "DATA_WIDTH": "64",
+            "BANK_LOCATOR": "BANK 2",
+            "SPEED_MTS": "2667",
+            "TOTAL_WIDTH": "64",
+            "PART_NUMBER": "TIMETEC-SD4-2666",
+            "RANK": "2",
+            "TYPE_DETAIL": "Synchronous Unbuffered (Unregistered)",
+            "MINIMUM_VOLTAGE": "1",
+            "LOCATOR": "DIMM B"
+          }
         }
-      },
-      {
-        "properties": {
-          "MEMORY_OPERATING_MODE_CAPABILITY": "Volatile memory",
-          "DATA_WIDTH": "64",
-          "BANK_LOCATOR": "BANK 1",
-          "LOCATOR": "DIMM_A2",
-          "MAXIMUM_VOLTAGE": "1",
-          "VOLATILE_SIZE": "34359738368",
-          "RANK": "2",
-          "CONFIGURED_VOLTAGE": "1",
-          "PART_NUMBER": "F4-3600C18-32GVK",
-          "TYPE_DETAIL": "Synchronous Unbuffered (Unregistered)",
-          "SERIAL_NUMBER": "00000000",
-          "FORM_FACTOR": "DIMM",
-          "TOTAL_WIDTH": "64",
-          "SPEED_MTS": "3600",
-          "MODULE_MANUFACTURER_ID": "Bank 5, Hex 0xCD",
-          "MINIMUM_VOLTAGE": "1",
-          "ASSET_TAG": "Not Specified",
-          "SIZE": "34359738368",
-          "FIRMWARE_VERSION": "Unknown",
-          "MANUFACTURER": "G Skill Intl",
-          "TYPE": "DDR4",
-          "MEMORY_TECHNOLOGY": "DRAM",
-          "CONFIGURED_SPEED_MTS": "3600"
-        }
-      },
-      {
-        "properties": {
-          "BANK_LOCATOR": "BANK 2",
-          "TYPE_DETAIL": "Synchronous Unbuffered (Unregistered)",
-          "MAXIMUM_VOLTAGE": "1",
-          "FORM_FACTOR": "DIMM",
-          "TOTAL_WIDTH": "64",
-          "MODULE_MANUFACTURER_ID": "Bank 5, Hex 0xCD",
-          "MINIMUM_VOLTAGE": "1",
-          "DATA_WIDTH": "64",
-          "ASSET_TAG": "Not Specified",
-          "FIRMWARE_VERSION": "Unknown",
-          "LOCATOR": "DIMM_B1",
-          "MEMORY_OPERATING_MODE_CAPABILITY": "Volatile memory",
-          "RANK": "2",
-          "CONFIGURED_VOLTAGE": "1",
-          "TYPE": "DDR4",
-          "PART_NUMBER": "F4-3600C18-32GVK",
-          "CONFIGURED_SPEED_MTS": "3600",
-          "MANUFACTURER": "G Skill Intl",
-          "SERIAL_NUMBER": "00000000",
-          "SIZE": "34359738368",
-          "SPEED_MTS": "3600",
-          "VOLATILE_SIZE": "34359738368",
-          "MEMORY_TECHNOLOGY": "DRAM"
-        }
-      },
-      {
-        "properties": {
-          "ASSET_TAG": "Not Specified",
-          "SERIAL_NUMBER": "00000000",
-          "CONFIGURED_SPEED_MTS": "3600",
-          "MINIMUM_VOLTAGE": "1",
-          "CONFIGURED_VOLTAGE": "1",
-          "FIRMWARE_VERSION": "Unknown",
-          "LOCATOR": "DIMM_B2",
-          "TYPE": "DDR4",
-          "SIZE": "34359738368",
-          "VOLATILE_SIZE": "34359738368",
-          "MAXIMUM_VOLTAGE": "1",
-          "PART_NUMBER": "F4-3600C18-32GVK",
-          "TOTAL_WIDTH": "64",
-          "MODULE_MANUFACTURER_ID": "Bank 5, Hex 0xCD",
-          "DATA_WIDTH": "64",
-          "SPEED_MTS": "3600",
-          "RANK": "2",
-          "TYPE_DETAIL": "Synchronous Unbuffered (Unregistered)",
-          "MEMORY_TECHNOLOGY": "DRAM",
-          "BANK_LOCATOR": "BANK 3",
-          "FORM_FACTOR": "DIMM",
-          "MANUFACTURER": "G Skill Intl",
-          "MEMORY_OPERATING_MODE_CAPABILITY": "Volatile memory"
-        }
-      }
-    ]
+      ]
+    }
   },
   "os": {
     "name": "NixOS",
@@ -192,8 +129,6 @@
   },
   "platform": null,
   "disk": {
-    "capacity": {
-      "octets": 38019517046784.0
-    }
+    "capacity": 38019517046784
   }
 }

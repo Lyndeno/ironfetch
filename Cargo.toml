@@ -8,26 +8,28 @@ license = "MIT"
 
 [dependencies]
 clap = { version = "4.*.*", features = ["derive"] }
-measurements = { version = "0.11.*", features = ["serde"] }
 nix = { version="0.29.*", features = ["feature"]}
 os-release = "0.1.*"
 procfs = "0.17.*"
 sys-info = "0.9.*"
 uptime_lib = "0.3.*"
 thiserror = "2.*.*"
-udev = "0.9.*"
 futures = "0.3.*"
-udisks2 = "0.3.*"
-serde = "1.*.*"
+serde = { version = "1.*.*", features = [ "derive" ] }
 serde_json = "1.0.*"
-upower_dbus = { git = "https://github.com/pop-os/dbus-settings-bindings.git", version = "0.3.*" }
 zbus = "4.*.*"
+
+[target.'cfg(target_os = "linux")'.dependencies]
+udisks2 = "0.3.*"
+udev = "0.9.*"
+upower_dbus = { git = "https://github.com/pop-os/dbus-settings-bindings.git", version = "0.3.*" }
+memdev = { git = "https://github.com/lyndeno/memdev.git", version = "0.1.*", features = ["serde"]}
 
 [build-dependencies]
 clap = { version = "4.*.*", features = ["derive"] }
 clap_complete = "4.*.*"
 clap_mangen = "0.2.*"
-serde = "1.*.*"
+serde = { version = "1.*.*", features = [ "derive" ] }
 
 [lints.clippy]
 pedantic = {level="warn", priority = 0}
