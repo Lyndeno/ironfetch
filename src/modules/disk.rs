@@ -49,6 +49,7 @@ pub async fn get_capacity() -> Result<u64> {
     Ok(hm.into_iter().map(|x| x.1).sum())
 }
 
+#[allow(clippy::cast_precision_loss)]
 impl std::fmt::Display for Disk {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         if self.capacity < TERABYTE {

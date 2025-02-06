@@ -66,6 +66,7 @@ impl Memory {
         self.meminfo.swap_total - self.meminfo.swap_free
     }
 
+    #[allow(clippy::cast_precision_loss)]
     pub fn display(&self) -> String {
         self.display_unit(
             self.used() as f64 / GIBIBYTE as f64,
@@ -74,6 +75,7 @@ impl Memory {
         )
     }
 
+    #[allow(clippy::cast_precision_loss)]
     pub fn display_swap(&self) -> String {
         display_mem_unit(
             self.swap_used() as f64 / GIBIBYTE as f64,

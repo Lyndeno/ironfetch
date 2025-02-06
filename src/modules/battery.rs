@@ -20,6 +20,7 @@ impl From<BatteryState> for State {
     }
 }
 
+#[allow(clippy::enum_glob_use)]
 impl Display for State {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         use BatteryState::*;
@@ -37,6 +38,13 @@ impl Display for State {
 }
 
 impl Battery {
+    /// Returns battery if found
+    ///
+    /// # Errors
+    /// Returns an error if there is a problem talking to upower
+    ///
+    /// # Returns
+    /// Returns None if there is no battery.
     pub fn new() -> Result<Option<Self>> {
         futures::executor::block_on(async move {
             let connection = zbus::Connection::system().await?;
