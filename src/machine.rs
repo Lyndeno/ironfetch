@@ -6,17 +6,10 @@ use std::path::PathBuf;
 use crate::colourblocks::colourblocks;
 
 use crate::fetch::{Array, SEPARATOR};
-use crate::modules::battery::Battery;
-use crate::modules::cpu::Cpu;
-use crate::modules::disk::Disk;
-use crate::modules::hostname::HostName;
-use crate::modules::kernel::Kernel;
-use crate::modules::memory::Memory;
-use crate::modules::model::Model;
-use crate::modules::osinfo::OsInfo;
-use crate::modules::platform::Profile;
-use crate::modules::shell::Shell;
-use crate::modules::uptime::Uptime;
+use crate::modules::{
+    battery::Battery, cpu::Cpu, disk::Disk, hostname::HostName, kernel::Kernel, memory::Memory,
+    model::Model, osinfo::OsInfo, platform::Profile, shell::Shell, uptime::Uptime,
+};
 
 use serde::{Deserialize, Serialize};
 
