@@ -7,7 +7,8 @@ const SECONDS_MIN: u64 = 60;
 const SECONDS_HOUR: u64 = SECONDS_MIN * 60;
 const SECONDS_DAY: u64 = SECONDS_HOUR * 24;
 
-#[derive(Serialize, Deserialize, Clone)]
+#[derive(Serialize, Deserialize, Clone, Fetch)]
+#[fetch(name = "Uptime")]
 pub struct Uptime(pub Duration);
 
 impl Uptime {
@@ -53,11 +54,5 @@ impl std::fmt::Display for Uptime {
             }
         }
         write!(f, "{s}")
-    }
-}
-
-impl Fetch for Uptime {
-    fn name(&self) -> &'static str {
-        "Uptime"
     }
 }

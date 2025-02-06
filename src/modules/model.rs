@@ -6,7 +6,7 @@ use std::{
 use crate::{fetch::Fetch, Result};
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize, Clone)]
+#[derive(Serialize, Deserialize, Clone, Fetch)]
 pub struct Model {
     product_name: Option<String>,
     board_vendor: String,
@@ -51,11 +51,5 @@ impl std::fmt::Display for Model {
         text.push(' ');
         text.push_str(&self.board_name);
         write!(f, "{text}")
-    }
-}
-
-impl Fetch for Model {
-    fn name(&self) -> &'static str {
-        "Model"
     }
 }

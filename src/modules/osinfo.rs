@@ -3,7 +3,8 @@ use os_release::OsRelease;
 use crate::{fetch::Fetch, Result};
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize, Clone)]
+#[derive(Serialize, Deserialize, Clone, Fetch)]
+#[fetch(name = "OS")]
 pub struct OsInfo {
     pub name: String,
     pub build_id: String,
@@ -41,11 +42,5 @@ impl std::fmt::Display for OsInfo {
             "{} {} ({})",
             self.name, self.build_id, self.version_codename,
         )
-    }
-}
-
-impl Fetch for OsInfo {
-    fn name(&self) -> &'static str {
-        "OS"
     }
 }

@@ -5,7 +5,7 @@ use upower_dbus::{BatteryState, UPowerProxy};
 
 use crate::{fetch::Fetch, Result};
 
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Clone, Serialize, Deserialize, Fetch)]
 pub struct Battery {
     percentage: f64,
     state: State,
@@ -56,12 +56,6 @@ impl Battery {
                 state: state.into(),
             }))
         })
-    }
-}
-
-impl Fetch for Battery {
-    fn name(&self) -> &'static str {
-        "Battery"
     }
 }
 

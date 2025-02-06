@@ -3,7 +3,7 @@ use std::collections::HashMap;
 
 use crate::{fetch::Fetch, Result, GIGABYTE, TERABYTE};
 
-#[derive(Serialize, Deserialize, Clone)]
+#[derive(Serialize, Deserialize, Clone, Fetch)]
 pub struct Disk {
     pub capacity: u64,
 }
@@ -59,11 +59,6 @@ impl std::fmt::Display for Disk {
     }
 }
 
-impl Fetch for Disk {
-    fn name(&self) -> &'static str {
-        "Disk"
-    }
-}
 #[cfg(test)]
 mod tests {
     use super::*;

@@ -9,7 +9,8 @@ use serde::{Deserialize, Serialize};
 use crate::fetch::Fetch;
 use crate::Result;
 
-#[derive(Serialize, Deserialize, Clone)]
+#[derive(Serialize, Deserialize, Clone, Fetch)]
+#[fetch(name = "CPU")]
 pub struct Cpu {
     cores: Vec<Core>,
 }
@@ -110,11 +111,5 @@ impl std::fmt::Display for Cpu {
             String::new()
         };
         write!(f, "{} {}{}", self.model(), core_string, freq_string)
-    }
-}
-
-impl Fetch for Cpu {
-    fn name(&self) -> &'static str {
-        "CPU"
     }
 }

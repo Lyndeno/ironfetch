@@ -3,7 +3,7 @@ use std::{env, path::PathBuf};
 use crate::{fetch::Fetch, Error, Result};
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize, Clone)]
+#[derive(Serialize, Deserialize, Clone, Fetch)]
 pub struct Shell {
     pub path: PathBuf,
     pub version: String,
@@ -38,11 +38,5 @@ impl Shell {
 impl std::fmt::Display for Shell {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}", self.name().unwrap_or_default())
-    }
-}
-
-impl Fetch for Shell {
-    fn name(&self) -> &'static str {
-        "Shell"
     }
 }

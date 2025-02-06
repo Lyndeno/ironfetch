@@ -4,6 +4,7 @@ mod line;
 use std::fmt::Display;
 
 pub use array::Array;
+pub use fetch_derive::Fetch;
 pub use line::{Line, SEPARATOR};
 
 pub trait Fetch: Display + Clone {

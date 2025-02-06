@@ -6,7 +6,7 @@ use std::{
 use crate::{fetch::Fetch, Result};
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize, Clone)]
+#[derive(Serialize, Deserialize, Clone, Fetch)]
 pub struct Profile {
     current: String,
     choices: String,
@@ -39,11 +39,5 @@ impl std::fmt::Display for Profile {
             .choices
             .replace(&self.current, &("[".to_owned() + &self.current + "]"));
         write!(f, "{s}")
-    }
-}
-
-impl Fetch for Profile {
-    fn name(&self) -> &'static str {
-        "Profile"
     }
 }
