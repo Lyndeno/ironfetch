@@ -76,6 +76,10 @@
           inherit src;
         };
 
+        ironfetch-deny = craneLib.cargoDeny {
+          inherit src;
+        };
+
         pre-commit-check = pre-commit-check {
           alejandra.enable = true;
         };

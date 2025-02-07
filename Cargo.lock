@@ -904,7 +904,7 @@ checksum = "78ca9ab1a0babb1e7d5695e3530886289c18cf2f87ec19a575a0abdce112e3a3"
 [[package]]
 name = "memdev"
 version = "0.1.0"
-source = "git+https://github.com/lyndeno/memdev.git#dbf65eaaf4904717101440546cfb378b37597119"
+source = "git+https://github.com/lyndeno/memdev.git#90bd5286c612a133c0010222b74295f6a864ee61"
 dependencies = [
  "serde",
  "thiserror 2.0.11",
