@@ -1,0 +1,26 @@
+name: Check Flake
+
+on:
+  pull_request:
+
+  workflow_dispatch:
+
+  workflow_call:
+
+  push:
+    branches:
+    - master
+
+jobs:
+  check-flake:
+    runs-on: ubuntu-20.04
+
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@main
+      - name: Setup Nix Cache
+        uses: DeterminateSystems/magic-nix-cache-action@main
+      - name: Check Nix Flake
+        run: nix flake check
