@@ -27,12 +27,14 @@
       jsonOrCargo = path: type:
         (jsonFilter path type) || (craneLib.filterCargoSources path type);
 
+      src = lib.cleanSourceWith {
+        src = ./.;
+        filter = jsonOrCargo;
+        name = "source";
+      };
+
       common-args = {
-        src = lib.cleanSourceWith {
-          src = ./.;
-          filter = jsonOrCargo;
-          name = "source";
-        };
+        inherit src;
         strictDeps = true;
 
         buildInputs = [pkgs.udev];
@@ -47,13 +49,36 @@
         '';
       };
 
+      cargoArtifacts = craneLib.buildDepsOnly common-args;
+
       ironfetch = craneLib.buildPackage (common-args
         // {
-          cargoArtifacts = craneLib.buildDepsOnly common-args;
+          inherit cargoArtifacts;
         });
+
+      pre-commit-check = hooks:
+        pre-commit-hooks-nix.lib.${system}.run {
+          src = ./.;
+
+          inherit hooks;
+        };
     in rec {
       checks = {
         inherit ironfetch;
+
+        ironfetch-clippy = craneLib.cargoClippy (common-args
+          // {
+            inherit cargoArtifacts;
+            cargoClippyExtraArgs = "--all-targets -- --deny warnings";
+          });
+
+        ironfetch-fmt = craneLib.cargoFmt {
+          inherit src;
+        };
+
+        pre-commit-check = pre-commit-check {
+          alejandra.enable = true;
+        };
       };
       packages.ironfetch = ironfetch;
       packages.default = packages.ironfetch;
@@ -66,14 +91,10 @@
       formatter = pkgs.alejandra;
 
       devShells.default = let
-        pre-commit-format = pre-commit-hooks-nix.lib.${system}.run {
-          src = ./.;
-
-          hooks = {
-            alejandra.enable = true;
-            rustfmt.enable = true;
-            clippy.enable = true;
-          };
+        checks = pre-commit-check {
+          alejandra.enable = true;
+          rustfmt.enable = true;
+          clippy.enable = true;
         };
       in
         craneLib.devShell {
@@ -87,7 +108,7 @@
             udev
           ];
           shellHook = ''
-            ${pre-commit-format.shellHook}
+            ${checks.shellHook}
           '';
         };
     });
