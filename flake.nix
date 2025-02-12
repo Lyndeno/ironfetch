@@ -17,8 +17,13 @@
     utils,
     crane,
     pre-commit-hooks-nix,
-  }:
-    utils.lib.eachDefaultSystem (system: let
+  }: let
+    systems = [
+      "x86_64-linux"
+      "aarch64-linux"
+    ];
+  in
+    utils.lib.eachSystem systems (system: let
       pkgs = nixpkgs.legacyPackages."${system}";
       craneLib = crane.mkLib pkgs;
       lib = pkgs.lib;
