@@ -120,5 +120,10 @@
             ${checks.shellHook}
           '';
         };
-    });
+    })
+    // {
+      hydraJobs = {
+        inherit (self) checks packages devShells;
+      };
+    };
 }
