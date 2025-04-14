@@ -17,14 +17,14 @@ thiserror = "2.*.*"
 futures = "0.3.*"
 serde = { version = "1.*.*", features = [ "derive" ] }
 serde_json = "1.0.*"
-zbus = "4.*.*"
+zbus = "5.5"
 fetch_derive = { path = "fetch_derive" }
 derive_more = {version = "2.0.1", features = ["display"]}
+serde_repr = "0.1.20"
 
 [target.'cfg(target_os = "linux")'.dependencies]
 udisks2 = "0.3.*"
 udev = "0.9.*"
-upower_dbus = { git = "https://github.com/pop-os/dbus-settings-bindings.git", version = "0.3.*" }
 memdev = { git = "https://github.com/lyndeno/memdev.git", version = "0.1.*", features = ["serde"]}
 
 [build-dependencies]
