@@ -1,5 +1,3 @@
-use std::fmt::Display;
-
 use derive_more::Display;
 use serde::{Deserialize, Serialize};
 use serde_repr::{Deserialize_repr, Serialize_repr};
@@ -12,27 +10,27 @@ use crate::{fetch::Fetch, Result};
 #[display("{} at {:.0}%", state, percentage)]
 pub struct Battery {
     percentage: f64,
-    state: State,
+    state: BatteryState,
 }
 
-#[derive(Clone, Serialize, Deserialize)]
-struct State(BatteryState);
-
-impl From<BatteryState> for State {
-    fn from(value: BatteryState) -> Self {
-        Self(value)
-    }
-}
-
-#[derive(Copy, Clone, Debug, Serialize_repr, Deserialize_repr, OwnedValue, PartialEq, Eq)]
+#[derive(
+    Copy, Clone, Debug, Serialize_repr, Deserialize_repr, OwnedValue, PartialEq, Eq, Display,
+)]
 #[repr(u32)]
 enum BatteryState {
+    #[display("Unknown")]
     Unknown = 0,
+    #[display("Charging")]
     Charging = 1,
+    #[display("Discharging")]
     Discharging = 2,
+    #[display("Empty")]
     Empty = 3,
+    #[display("Fully Charged")]
     FullyCharged = 4,
+    #[display("Pending Charge")]
     PendingCharge = 5,
+    #[display("Pending Discharge")]
     PendingDischarge = 6,
 }
 
@@ -68,23 +66,6 @@ trait Device {
 
     #[zbus(property)]
     fn state(&self) -> zbus::Result<BatteryState>;
-}
-
-#[allow(clippy::enum_glob_use)]
-impl Display for State {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        use BatteryState::*;
-        let s = match self.0 {
-            Unknown => "Unknown",
-            Charging => "Charging",
-            Discharging => "Discharging",
-            Empty => "Empty",
-            FullyCharged => "Fully Charged",
-            PendingCharge => "Pending Charge",
-            PendingDischarge => "Pending Discharge",
-        };
-        write!(f, "{s}")
-    }
 }
 
 impl Battery {
