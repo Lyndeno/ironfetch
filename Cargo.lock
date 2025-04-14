@@ -843,7 +843,7 @@ dependencies = [
  "udisks2",
  "upower_dbus",
  "uptime_lib",
- "zbus 4.4.0",
+ "zbus 5.5.0",
 ]
 
 [[package]]
