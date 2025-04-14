@@ -1,3 +1,4 @@
+use futures::stream::{FuturesUnordered, StreamExt};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
@@ -30,23 +31,19 @@ pub async fn get_capacity() -> Result<u64> {
     let manager = client.manager();
     let objects = manager.get_block_devices(HashMap::new()).await?;
 
-    let mut v = Vec::new();
-    for obj in objects {
-        v.push(obj.to_string());
-    }
+    let v: Vec<String> = objects.into_iter().map(|x| x.to_string()).collect();
 
-    let mut hm = HashMap::new();
-    for drivestr in v {
-        let object = client.object(drivestr.clone());
-        if let Ok(o) = object {
-            if let Ok(b) = o.block().await {
-                if let Ok(d) = client.drive_for_block(&b).await {
-                    hm.insert(d.id().await?, d.size().await?);
-                }
-            }
-        }
-    }
+    let f: FuturesUnordered<_> = v.into_iter().map(|s| get_size(s, &client)).collect();
+
+    let hm: HashMap<String, u64> = f.filter_map(|x| async { x.ok() }).collect().await;
     Ok(hm.into_iter().map(|x| x.1).sum())
+}
+
+async fn get_size(drivestr: String, client: &udisks2::Client) -> Result<(String, u64)> {
+    let object = client.object(drivestr)?;
+    let block_proxy = object.block().await?;
+    let drive_proxy = client.drive_for_block(&block_proxy).await?;
+    Ok((drive_proxy.id().await?, drive_proxy.size().await?))
 }
 
 #[allow(clippy::cast_precision_loss)]

@@ -31,6 +31,8 @@ pub enum Error {
     IsNone,
     #[error("Error getting information with zbus")]
     Zbus(#[from] zbus::Error),
+    #[error("Error getting information with zbus")]
+    ZVariant(#[from] zbus::zvariant::Error),
     #[error("Memory device error")]
     Memdev(#[from] memdev::Error),
 }
