@@ -19,6 +19,7 @@ serde = { version = "1.*.*", features = [ "derive" ] }
 serde_json = "1.0.*"
 zbus = "4.*.*"
 fetch_derive = { path = "fetch_derive" }
+derive_more = {version = "2.0.1", features = ["display"]}
 
 [target.'cfg(target_os = "linux")'.dependencies]
 udisks2 = "0.3.*"

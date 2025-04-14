@@ -1,9 +1,11 @@
 use std::{env, path::PathBuf};
 
 use crate::{fetch::Fetch, Error, Result};
+use derive_more::Display;
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize, Clone, Fetch)]
+#[derive(Serialize, Deserialize, Clone, Fetch, Display)]
+#[display("{}", self.name().unwrap_or_default())]
 pub struct Shell {
     pub path: PathBuf,
     pub version: String,
@@ -32,11 +34,5 @@ impl Shell {
             Some(v) => Ok(v.to_string_lossy().to_string()),
             None => Err(Error::OsStr),
         }
-    }
-}
-
-impl std::fmt::Display for Shell {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}", self.name().unwrap_or_default())
     }
 }

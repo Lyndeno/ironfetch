@@ -1,11 +1,13 @@
 use std::fmt::Display;
 
+use derive_more::Display;
 use serde::{Deserialize, Serialize};
 use upower_dbus::{BatteryState, UPowerProxy};
 
 use crate::{fetch::Fetch, Result};
 
-#[derive(Clone, Serialize, Deserialize, Fetch)]
+#[derive(Clone, Serialize, Deserialize, Fetch, Display)]
+#[display("{} at {:.0}%", state, percentage)]
 pub struct Battery {
     percentage: f64,
     state: State,
@@ -64,11 +66,5 @@ impl Battery {
                 state: state.into(),
             }))
         })
-    }
-}
-
-impl std::fmt::Display for Battery {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{} at {:.0}%", self.state, self.percentage)
     }
 }

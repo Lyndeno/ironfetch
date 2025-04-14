@@ -1,10 +1,12 @@
 use os_release::OsRelease;
 
 use crate::{fetch::Fetch, Result};
+use derive_more::Display;
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize, Clone, Fetch)]
+#[derive(Serialize, Deserialize, Clone, Fetch, Display)]
 #[fetch(name = "OS")]
+#[display("{} {} ({})", name, build_id, version_codename)]
 pub struct OsInfo {
     pub name: String,
     pub build_id: String,
@@ -32,15 +34,5 @@ impl OsInfo {
                 .map(|x| x.trim_matches('"').to_owned()),
             version_codename: os.version_codename,
         })
-    }
-}
-
-impl std::fmt::Display for OsInfo {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(
-            f,
-            "{} {} ({})",
-            self.name, self.build_id, self.version_codename,
-        )
     }
 }

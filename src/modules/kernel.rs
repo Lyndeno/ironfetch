@@ -5,7 +5,10 @@ use serde::{Deserialize, Serialize};
 
 use crate::{fetch::Fetch, Error, Result};
 
-#[derive(Serialize, Deserialize, Clone, Fetch)]
+use derive_more::Display;
+
+#[derive(Serialize, Deserialize, Clone, Fetch, Display)]
+#[display("{} {} {}", name, release, architecture)]
 pub struct Kernel {
     release: String,
     architecture: String,
@@ -38,11 +41,5 @@ impl Kernel {
             Some(s) => Ok(String::from(s)),
             None => Err(Error::OsStr),
         }
-    }
-}
-
-impl std::fmt::Display for Kernel {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{} {} {}", self.name, self.release, self.architecture)
     }
 }

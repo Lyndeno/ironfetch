@@ -1,5 +1,6 @@
 use crate::fetch::{Fetch, Line};
 use crate::{Result, GIBIBYTE, KIBIBYTE};
+use derive_more::Display;
 use memdev::memory::Memory as MemoryDevices;
 use serde::{Deserialize, Serialize};
 use std::collections::{HashMap, HashSet};
@@ -32,7 +33,8 @@ impl From<MemInfo> for MemStats {
     }
 }
 
-#[derive(Serialize, Deserialize, Clone)]
+#[derive(Serialize, Deserialize, Clone, Display)]
+#[display("{}", self.display())]
 pub struct Memory {
     pub meminfo: MemStats,
     pub devices: Option<MemoryDevices>,
@@ -149,12 +151,6 @@ impl Memory {
 
 fn display_mem_unit(used: f64, total: f64, unit: &str) -> String {
     format!("{used:.2}{unit} / {total:.2}{unit}")
-}
-
-impl std::fmt::Display for Memory {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}", self.display())
-    }
 }
 
 impl From<Memory> for Vec<Line> {
