@@ -77,23 +77,18 @@ impl Battery {
     /// # Returns
     /// Returns None if there is no battery.
     pub fn new() -> Result<Option<Self>> {
-        futures::executor::block_on(async move {
-            let connection = zbus::Connection::system().await?;
+        let connection = zbus::blocking::Connection::system()?;
 
-            let upower = UPowerProxy::new(&connection).await?;
+        let upower = UPowerProxyBlocking::new(&connection)?;
 
-            let device = upower.get_display_device().await?;
-            let percentage = device.percentage().await?;
-            let state = device.state().await?;
+        let device = upower.get_display_device()?;
+        let percentage = device.percentage()?;
+        let state = device.state()?;
 
-            if state == BatteryState::Unknown && percentage == 0f64 {
-                return Ok(None);
-            }
+        if state == BatteryState::Unknown && percentage == 0f64 {
+            return Ok(None);
+        }
 
-            Ok(Some(Self {
-                percentage,
-                state: state.into(),
-            }))
-        })
+        Ok(Some(Self { percentage, state }))
     }
 }
