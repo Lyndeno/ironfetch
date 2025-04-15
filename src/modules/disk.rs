@@ -1,6 +1,7 @@
 use futures::stream::{FuturesUnordered, StreamExt};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
+use zbus::zvariant::OwnedObjectPath;
 
 use crate::{fetch::Fetch, Result, GIGABYTE, TERABYTE};
 
@@ -31,16 +32,14 @@ pub async fn get_capacity() -> Result<u64> {
     let manager = client.manager();
     let objects = manager.get_block_devices(HashMap::new()).await?;
 
-    let v: Vec<String> = objects.into_iter().map(|x| x.to_string()).collect();
-
-    let f: FuturesUnordered<_> = v.into_iter().map(|s| get_size(s, &client)).collect();
+    let f: FuturesUnordered<_> = objects.into_iter().map(|s| get_size(s, &client)).collect();
 
     let hm: HashMap<String, u64> = f.filter_map(|x| async { x.ok() }).collect().await;
     Ok(hm.into_iter().map(|x| x.1).sum())
 }
 
-async fn get_size(drivestr: String, client: &udisks2::Client) -> Result<(String, u64)> {
-    let object = client.object(drivestr)?;
+async fn get_size(drivestr: OwnedObjectPath, client: &udisks2::Client) -> Result<(String, u64)> {
+    let object = client.object(drivestr.to_string())?;
     let block_proxy = object.block().await?;
     let drive_proxy = client.drive_for_block(&block_proxy).await?;
     Ok((drive_proxy.id().await?, drive_proxy.size().await?))
