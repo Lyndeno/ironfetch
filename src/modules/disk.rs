@@ -26,7 +26,6 @@ impl Disk {
 ///
 /// # Errors
 /// Returns an error if there is a problem communicating with udisks
-#[allow(clippy::cast_precision_loss)]
 pub async fn get_capacity() -> Result<u64> {
     let client = udisks2::Client::new().await?;
     let manager = client.manager();
