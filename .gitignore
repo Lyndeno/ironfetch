@@ -1,2 +1,4 @@
 /target
 .pre-commit-config.yaml
+perf.data
+flamegraph.svg

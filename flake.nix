@@ -115,6 +115,7 @@
             termshot
             pkg-config
             udev
+            cargo-flamegraph
           ];
           shellHook = ''
             ${checks.shellHook}
