@@ -8,7 +8,7 @@ use crate::colourblocks::colourblocks;
 use crate::fetch::{Array, SEPARATOR};
 use crate::modules::{
     battery::Battery, cpu::Cpu, disk::Disk, hostname::HostName, kernel::Kernel, memory::Memory,
-    model::Model, osinfo::OsInfo, platform::Profile, shell::Shell, uptime::Uptime,
+    model::Model, osinfo::OsInfo, platform::Profile, ppd::Ppd, shell::Shell, uptime::Uptime,
 };
 
 use serde::{Deserialize, Serialize};
@@ -28,6 +28,7 @@ pub struct Machine {
     pub platform: Option<Profile>,
     pub disk: Option<Disk>,
     pub battery: Option<Battery>,
+    pub ppd: Option<Ppd>,
 }
 
 impl Machine {
@@ -76,6 +77,7 @@ impl Default for Machine {
             platform: Profile::new().ok(),
             disk: Disk::new().ok(),
             battery: Battery::new().ok().flatten(),
+            ppd: Ppd::new().ok(),
         }
     }
 }
@@ -109,6 +111,7 @@ impl From<Machine> for Array {
         array.push_obj_opt(value.platform);
         array.push_obj_opt(value.disk);
         array.push_obj_opt(value.battery);
+        array.push_obj_opt(value.ppd);
 
         array
     }

@@ -7,5 +7,6 @@ pub mod memory;
 pub mod model;
 pub mod osinfo;
 pub mod platform;
+pub mod ppd;
 pub mod shell;
 pub mod uptime;
