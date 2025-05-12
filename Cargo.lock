@@ -1035,9 +1035,9 @@ dependencies = [
 
 [[package]]
 name = "ppd"
-version = "0.1.0"
+version = "0.1.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a480d93ebe01e7ac6d17885015369fcc95ccabe8dbc320c0d4c0f285751b6d79"
+checksum = "7cc0c3d5cc016697d367b2b646132f30f04391ae3be85d8508b96926350e87ef"
 dependencies = [
  "clap",
  "clap_complete",
