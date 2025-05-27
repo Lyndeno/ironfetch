@@ -7,6 +7,7 @@ use crate::{fetch::Fetch, Result};
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Clone, Fetch)]
+#[fetch(name = "Platform")]
 pub struct Profile {
     current: String,
     choices: String,
@@ -39,5 +40,19 @@ impl std::fmt::Display for Profile {
             .choices
             .replace(&self.current, &("[".to_owned() + &self.current + "]"));
         write!(f, "{s}")
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn platform_profile_display() {
+        let profile = Profile {
+            current: "balanced".into(),
+            choices: "performance balanced cool quiet".into(),
+        };
+        assert_eq!(profile.to_string(), "performance [balanced] cool quiet");
     }
 }

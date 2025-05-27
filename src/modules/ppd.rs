@@ -3,6 +3,7 @@ use ppd::PpdProxyBlocking;
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Clone, Fetch)]
+#[fetch(name = "Profile")]
 pub struct Ppd {
     current: String,
     choices: String,
@@ -30,5 +31,19 @@ impl std::fmt::Display for Ppd {
             .choices
             .replace(&self.current, &("[".to_owned() + &self.current + "]"));
         write!(f, "{s}")
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn ppd_display() {
+        let ppd = Ppd {
+            current: "balanced".into(),
+            choices: "performance balanced power-saver".into(),
+        };
+        assert_eq!(ppd.to_string(), "performance [balanced] power-saver");
     }
 }

@@ -109,9 +109,9 @@ impl From<Machine> for Array {
         array.push_obj_opt(value.cpu);
         array.push_obj_opt(value.memory);
         array.push_obj_opt(value.platform);
+        array.push_obj_opt(value.ppd);
         array.push_obj_opt(value.disk);
         array.push_obj_opt(value.battery);
-        array.push_obj_opt(value.ppd);
 
         array
     }
