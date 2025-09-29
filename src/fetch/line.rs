@@ -33,7 +33,7 @@ impl Line {
                 write!(t, "\x1b[{s}m{name_text}\x1b[0m")?;
                 t
             }
-            None => self.name.clone(),
+            None => name_text,
         };
         write!(f, "{}{}{}", name_coloured, SEPARATOR, self.content,)?;
         Ok(())
