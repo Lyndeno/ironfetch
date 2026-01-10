@@ -9,9 +9,8 @@ mod args;
 use crate::args::Args;
 
 fn main() -> Result<(), Error> {
-    let outdir = match env::var_os("OUT_DIR") {
-        None => return Ok(()),
-        Some(outdir) => outdir,
+    let Some(outdir) = env::var_os("OUT_DIR") else {
+        return Ok(());
     };
 
     let out_path = PathBuf::from(outdir.clone());

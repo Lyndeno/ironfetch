@@ -2,7 +2,6 @@ use std::time::Duration;
 
 use crate::{fetch::Fetch, Result};
 use serde::{Deserialize, Serialize};
-
 const SECONDS_MIN: u64 = 60;
 const SECONDS_HOUR: u64 = SECONDS_MIN * 60;
 const SECONDS_DAY: u64 = SECONDS_HOUR * 24;
@@ -47,10 +46,10 @@ impl std::fmt::Display for Uptime {
                 s.push_str(unit.1 .0);
                 if unit.1 .1 != 1 {
                     s.push('s');
-                };
+                }
                 if unit.0 < len - 1 {
                     s.push_str(", ");
-                };
+                }
             }
         }
         write!(f, "{s}")

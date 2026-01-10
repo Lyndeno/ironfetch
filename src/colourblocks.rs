@@ -19,5 +19,5 @@ pub fn colourblocks(indent: usize, colours: usize, line_length: usize) -> String
 }
 
 fn append_spaces(s: &mut String, count: usize) {
-    s.push_str(&format!("{:indent$}", "", indent = count));
+    let _ = write!(s, "{:indent$}", "", indent = count);
 }

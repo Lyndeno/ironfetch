@@ -4,6 +4,7 @@ use derive_more::Display;
 use memdev::memory::Memory as MemoryDevices;
 use serde::{Deserialize, Serialize};
 use std::collections::{HashMap, HashSet};
+use std::fmt::Write;
 use std::path::Path;
 use sys_info::MemInfo;
 use udev::Device;
@@ -137,13 +138,15 @@ impl Memory {
         }
 
         if let Some(v) = formfactors {
-            s.push_str(&format!(" ({v})"));
+            s.push_str(" (");
+            s.push_str(&v);
+            s.push(')');
         }
 
         let avg_freq = avg_freq_opt.unwrap_or(0);
 
         if avg_freq > 0 {
-            s.push_str(&format!(" @ {avg_freq} MHz"));
+            let _ = write!(s, " @ {avg_freq} MHz");
         }
         s
     }
