@@ -15,6 +15,9 @@ jobs:
   nix-build:
     name: Check Ironfetch
     runs-on: ubuntu-latest
+    permissions:
+      checks: write
+      pull-requests: write
     steps:
       - uses: actions/checkout@v4
       - uses: cachix/install-nix-action@v30
