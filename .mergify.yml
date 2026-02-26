@@ -1,0 +1,39 @@
+pull_request_rules:
+  - name: Automatically merge successful flake updates
+    conditions:
+      - author=Lyndeno
+      - or:
+        - title=Update flake.lock
+      - "check-success*=ci/hydra:ironfetch:*:packages.x86_64-linux.ironfetch"
+      - "check-success*=ci/hydra:ironfetch:*:checks.x86_64-linux.ironfetch-clippy"
+      - "check-success*=ci/hydra:ironfetch:*:checks.x86_64-linux.ironfetch-deny"
+      - "check-success*=ci/hydra:ironfetch:*:checks.x86_64-linux.ironfetch-fmt"
+      - "check-success*=ci/hydra:ironfetch:*:checks.x86_64-linux.pre-commit-check"
+      - "check-success*=ci/hydra:ironfetch:*:devShells.x86_64-linux.default"
+      - "check-success*=ci/hydra:ironfetch:*:packages.aarch64-linux.ironfetch"
+      - "check-success*=ci/hydra:ironfetch:*:checks.aarch64-linux.ironfetch-clippy"
+      - "check-success*=ci/hydra:ironfetch:*:checks.aarch64-linux.ironfetch-deny"
+      - "check-success*=ci/hydra:ironfetch:*:checks.aarch64-linux.ironfetch-fmt"
+      - "check-success*=ci/hydra:ironfetch:*:checks.aarch64-linux.pre-commit-check"
+      - "check-success*=ci/hydra:ironfetch:*:devShells.aarch64-linux.default"
+    actions:
+      merge:
+        method: merge
+  - name: Automatically merge dependabot updates
+    conditions:
+      - author=dependabot
+      - "check-success*=ci/hydra:ironfetch:*:packages.x86_64-linux.ironfetch"
+      - "check-success*=ci/hydra:ironfetch:*:checks.x86_64-linux.ironfetch-clippy"
+      - "check-success*=ci/hydra:ironfetch:*:checks.x86_64-linux.ironfetch-deny"
+      - "check-success*=ci/hydra:ironfetch:*:checks.x86_64-linux.ironfetch-fmt"
+      - "check-success*=ci/hydra:ironfetch:*:checks.x86_64-linux.pre-commit-check"
+      - "check-success*=ci/hydra:ironfetch:*:devShells.x86_64-linux.default"
+      - "check-success*=ci/hydra:ironfetch:*:packages.aarch64-linux.ironfetch"
+      - "check-success*=ci/hydra:ironfetch:*:checks.aarch64-linux.ironfetch-clippy"
+      - "check-success*=ci/hydra:ironfetch:*:checks.aarch64-linux.ironfetch-deny"
+      - "check-success*=ci/hydra:ironfetch:*:checks.aarch64-linux.ironfetch-fmt"
+      - "check-success*=ci/hydra:ironfetch:*:checks.aarch64-linux.pre-commit-check"
+      - "check-success*=ci/hydra:ironfetch:*:devShells.aarch64-linux.default"
+    actions:
+      merge:
+        method: merge
