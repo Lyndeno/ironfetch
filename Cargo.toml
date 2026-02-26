@@ -10,7 +10,7 @@ license = "MIT"
 clap = { version = "4.*.*", features = ["derive"] }
 nix = { version="0.30.*", features = ["feature"]}
 os-release = "0.1.*"
-procfs = "0.17.*"
+procfs = "0.18.*"
 sys-info = "0.9.*"
 uptime_lib = "0.3.*"
 thiserror = "2.*.*"
