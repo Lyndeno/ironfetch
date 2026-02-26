@@ -21,7 +21,7 @@ pull_request_rules:
         method: merge
   - name: Automatically merge dependabot updates
     conditions:
-      - author=dependabot
+      - author=dependabot[bot]
       - "check-success*=ci/hydra:ironfetch:*:packages.x86_64-linux.ironfetch"
       - "check-success*=ci/hydra:ironfetch:*:checks.x86_64-linux.ironfetch-clippy"
       - "check-success*=ci/hydra:ironfetch:*:checks.x86_64-linux.ironfetch-deny"
