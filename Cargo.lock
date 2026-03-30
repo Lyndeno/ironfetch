@@ -343,6 +343,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "clap_mangen"
+version = "0.3.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "d82842b45bf9f6a3be090dd860095ac30728042c08e0d6261ca7259b5d850f07"
+dependencies = [
+ "clap",
+ "roff",
+]
+
+[[package]]
 name = "colorchoice"
 version = "1.0.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -766,7 +776,7 @@ version = "0.8.0"
 dependencies = [
  "clap",
  "clap_complete",
- "clap_mangen",
+ "clap_mangen 0.3.0",
  "derive_more",
  "fetch_derive",
  "futures",
@@ -1031,7 +1041,7 @@ checksum = "5c9336eeb6b2ea4e61900f44b539ca0d095593a19ba8e831825c30e906aa475c"
 dependencies = [
  "clap",
  "clap_complete",
- "clap_mangen",
+ "clap_mangen 0.2.33",
  "serde",
  "thiserror 2.0.18",
  "zbus",
