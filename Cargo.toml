@@ -31,7 +31,7 @@ memdev = { git = "https://github.com/lyndeno/memdev.git", version = "0.1.*", fea
 [build-dependencies]
 clap = { version = "4.*.*", features = ["derive"] }
 clap_complete = "4.*.*"
-clap_mangen = "0.2.*"
+clap_mangen = "0.3.*"
 serde = { version = "1.*.*", features = [ "derive" ] }
 
 [lints.clippy]
