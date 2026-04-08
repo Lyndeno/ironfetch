@@ -4,5 +4,11 @@ updates:
     directory: /
     schedule:
       interval: weekly
-    reviewers:
-      - Lyndeno
+  - package-ecosystem: "github-actions" # See documentation for possible values
+    directory: "/" # Location of package manifests
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "nix" # See documentation for possible values
+    directory: "/" # Location of package manifests
+    schedule:
+      interval: "weekly"
