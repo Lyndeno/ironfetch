@@ -7,7 +7,7 @@ use crate::{fetch::Fetch, Result};
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Clone, Fetch)]
-#[fetch(name = "Platform")]
+#[fetch(name = "Platform", priority = 9)]
 pub struct Profile {
     current: String,
     choices: String,
@@ -19,11 +19,11 @@ impl Profile {
     /// # Errors
     ///
     /// Returns io errors if information cannot be read
-    pub fn new() -> Result<Self> {
-        Ok(Self {
+    pub fn new() -> Result<Option<Self>> {
+        Ok(Some(Self {
             current: read_product_info("/sys/firmware/acpi/platform_profile")?,
             choices: read_product_info("/sys/firmware/acpi/platform_profile_choices")?,
-        })
+        }))
     }
 }
 

@@ -10,7 +10,7 @@ use crate::fetch::Fetch;
 use crate::Result;
 
 #[derive(Serialize, Deserialize, Clone, Fetch)]
-#[fetch(name = "CPU")]
+#[fetch(name = "CPU", priority = 7)]
 pub struct Cpu {
     cores: Vec<Core>,
 }
@@ -42,8 +42,8 @@ impl Cpu {
     /// # Errors
     ///
     /// Returns and error if the cpu info cannot be obtained.
-    pub fn new() -> Result<Self> {
-        Ok(CpuInfo::current()?.into())
+    pub fn new() -> Result<Option<Self>> {
+        Ok(Some(CpuInfo::current()?.into()))
     }
 
     pub fn logical_core_count(&self) -> usize {

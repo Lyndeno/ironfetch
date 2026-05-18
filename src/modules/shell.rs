@@ -5,6 +5,7 @@ use derive_more::Display;
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Clone, Fetch, Display)]
+#[fetch(priority = 2)]
 #[display("{}", self.name().unwrap_or_default())]
 pub struct Shell {
     pub path: PathBuf,
@@ -17,11 +18,11 @@ impl Shell {
     /// # Errors
     ///
     /// Returns error if shell variable cannot be read
-    pub fn new() -> Result<Self> {
-        Ok(Self {
+    pub fn new() -> Result<Option<Self>> {
+        Ok(Some(Self {
             path: PathBuf::from(env::var("SHELL")?),
             version: String::new(),
-        })
+        }))
     }
 
     /// Returns name of shell

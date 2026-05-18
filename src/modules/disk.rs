@@ -6,6 +6,7 @@ use zbus::zvariant::OwnedObjectPath;
 use crate::{fetch::Fetch, Result, GIGABYTE, TERABYTE};
 
 #[derive(Serialize, Deserialize, Clone, Fetch)]
+#[fetch(priority = 12)]
 pub struct Disk {
     pub capacity: u64,
 }
@@ -15,10 +16,10 @@ impl Disk {
     ///
     /// # Errors
     /// Returns an error if there is an issue retrieving disk capacity
-    pub fn new() -> Result<Self> {
-        Ok(Self {
+    pub fn new() -> Result<Option<Self>> {
+        Ok(Some(Self {
             capacity: futures::executor::block_on(get_capacity())?,
-        })
+        }))
     }
 }
 

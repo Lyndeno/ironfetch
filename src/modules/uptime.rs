@@ -7,7 +7,7 @@ const SECONDS_HOUR: u64 = SECONDS_MIN * 60;
 const SECONDS_DAY: u64 = SECONDS_HOUR * 24;
 
 #[derive(Serialize, Deserialize, Clone, Fetch)]
-#[fetch(name = "Uptime")]
+#[fetch(name = "Uptime", priority = 6)]
 pub struct Uptime(pub Duration);
 
 impl Uptime {
@@ -16,8 +16,8 @@ impl Uptime {
     /// # Errors
     ///
     /// Returns error if uptime cannot be read
-    pub fn new() -> Result<Self> {
-        Ok(Self(uptime_lib::get()?))
+    pub fn new() -> Result<Option<Self>> {
+        Ok(Some(Self(uptime_lib::get()?)))
     }
 }
 

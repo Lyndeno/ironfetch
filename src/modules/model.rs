@@ -7,6 +7,7 @@ use crate::{fetch::Fetch, Result};
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Clone, Fetch)]
+#[fetch(priority = 4)]
 pub struct Model {
     product_name: Option<String>,
     board_vendor: String,
@@ -19,8 +20,8 @@ impl Model {
     /// # Errors
     ///
     /// Returns io errors if information cannot be read
-    pub fn new() -> Result<Self> {
-        Ok(Self {
+    pub fn new() -> Result<Option<Self>> {
+        Ok(Some(Self {
             product_name: match read_product_info("/sys/devices/virtual/dmi/id/product_name")?
                 .as_str()
             {
@@ -29,7 +30,7 @@ impl Model {
             },
             board_vendor: read_product_info("/sys/devices/virtual/dmi/id/board_vendor")?,
             board_name: read_product_info("/sys/devices/virtual/dmi/id/board_name")?,
-        })
+        }))
     }
 }
 

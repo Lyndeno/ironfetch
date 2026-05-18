@@ -5,7 +5,7 @@ use std::path::Path;
 use serde::{Deserialize, Serialize};
 use udev::Enumerator;
 
-use crate::fetch::{Fetch, Line};
+use crate::fetch::{DynModule, Fetch, Line, ModuleRegistration};
 use crate::{Result, GIBIBYTE};
 
 #[derive(Serialize, Deserialize, Clone)]
@@ -25,7 +25,7 @@ impl Gpu {
     ///
     /// # Errors
     /// Returns an error if the udev enumeration fails
-    pub fn new() -> Result<Self> {
+    pub fn new() -> Result<Option<Self>> {
         let mut enumerator = Enumerator::new()?;
         enumerator.match_subsystem("drm")?;
 
@@ -48,10 +48,10 @@ impl Gpu {
                 continue;
             }
 
-            let name = parent
-                .property_value("ID_MODEL_FROM_DATABASE")
-                .map(|v| v.to_string_lossy().into_owned())
-                .unwrap_or_else(|| "Unknown GPU".to_owned());
+            let name = parent.property_value("ID_MODEL_FROM_DATABASE").map_or_else(
+                || "Unknown GPU".to_owned(),
+                |v| v.to_string_lossy().into_owned(),
+            );
 
             let vram_total = read_sysfs_u64(&parent_path.join("mem_info_vram_total"));
             let vram_used = read_sysfs_u64(&parent_path.join("mem_info_vram_used"));
@@ -63,7 +63,10 @@ impl Gpu {
             });
         }
 
-        Ok(Self { devices })
+        if devices.is_empty() {
+            return Ok(None);
+        }
+        Ok(Some(Self { devices }))
     }
 }
 
@@ -81,6 +84,22 @@ impl std::fmt::Display for Gpu {
             }
         }
         Ok(())
+    }
+}
+
+impl DynModule for Gpu {
+    fn load_module() -> Option<Self> {
+        Self::new().ok().flatten()
+    }
+}
+
+inventory::submit! {
+    ModuleRegistration {
+        key: "GPU",
+        priority: 11,
+        load: <Gpu as DynModule>::load_dyn,
+        display: <Gpu as DynModule>::display_dyn,
+        colour: <Gpu as DynModule>::colour_dyn,
     }
 }
 

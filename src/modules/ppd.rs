@@ -3,7 +3,7 @@ use ppd::PpdProxyBlocking;
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Clone, Fetch)]
-#[fetch(name = "Profile")]
+#[fetch(name = "Profile", priority = 10)]
 pub struct Ppd {
     current: String,
     choices: String,
@@ -15,13 +15,13 @@ impl Ppd {
     /// # Errors
     ///
     /// Returns io errors if information cannot be read
-    pub fn new() -> Result<Self> {
+    pub fn new() -> Result<Option<Self>> {
         let conn = zbus::blocking::Connection::system()?;
         let proxy = PpdProxyBlocking::new(&conn)?;
         let current = proxy.active_profile()?;
         let choice_vec: Vec<_> = proxy.profiles()?.into_iter().map(|v| v.profile).collect();
         let choices = choice_vec.join(" ");
-        Ok(Self { current, choices })
+        Ok(Some(Self { current, choices }))
     }
 }
 

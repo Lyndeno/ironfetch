@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 use crate::{fetch::Fetch, Result};
 
 #[derive(Serialize, Deserialize, Clone, Fetch, Display)]
-#[fetch(name = "Hostname")]
+#[fetch(name = "Hostname", priority = 5)]
 pub struct HostName(pub String);
 
 impl HostName {
@@ -15,7 +15,7 @@ impl HostName {
     /// # Errors
     ///
     /// Returns error if hostname cannot be obtained
-    pub fn new() -> Result<Self> {
-        Ok(Self(hostname()?))
+    pub fn new() -> Result<Option<Self>> {
+        Ok(Some(Self(hostname()?)))
     }
 }

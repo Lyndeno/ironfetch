@@ -7,6 +7,7 @@ use zbus::{proxy, zvariant::OwnedValue};
 use crate::{fetch::Fetch, Result};
 
 #[derive(Clone, Serialize, Deserialize, Fetch, Display)]
+#[fetch(priority = 13)]
 #[display("{} at {:.0}%", state, percentage)]
 pub struct Battery {
     percentage: f64,

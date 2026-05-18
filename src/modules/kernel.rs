@@ -8,6 +8,7 @@ use crate::{fetch::Fetch, Error, Result};
 use derive_more::Display;
 
 #[derive(Serialize, Deserialize, Clone, Fetch, Display)]
+#[fetch(priority = 3)]
 #[display("{} {} {}", name, release, architecture)]
 pub struct Kernel {
     release: String,

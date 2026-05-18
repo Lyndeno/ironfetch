@@ -1,4 +1,4 @@
-use crate::fetch::{Fetch, Line};
+use crate::fetch::{DynModule, Fetch, Line, ModuleRegistration};
 use crate::{Result, GIBIBYTE, KIBIBYTE};
 use derive_more::Display;
 use memdev::memory::Memory as MemoryDevices;
@@ -52,13 +52,13 @@ impl Memory {
     ///
     /// Will return an error if the memory stats cannot be parsed.
     /// Does not error on failure to obtain smbios information
-    pub fn new() -> Result<Self> {
+    pub fn new() -> Result<Option<Self>> {
         let meminfo = MemStats::from(sys_info::mem_info()?);
 
         let udev = Device::from_syspath(Path::new("/sys/devices/virtual/dmi/id"))?;
         let devices = MemoryDevices::try_from(udev).ok();
 
-        Ok(Self { meminfo, devices })
+        Ok(Some(Self { meminfo, devices }))
     }
 
     pub fn used(&self) -> u64 {
@@ -175,6 +175,22 @@ impl Fetch for Memory {
     }
 }
 
+impl DynModule for Memory {
+    fn load_module() -> Option<Self> {
+        Self::new().ok().flatten()
+    }
+}
+
+inventory::submit! {
+    ModuleRegistration {
+        key: "Memory",
+        priority: 8,
+        load: <Memory as DynModule>::load_dyn,
+        display: <Memory as DynModule>::display_dyn,
+        colour: <Memory as DynModule>::colour_dyn,
+    }
+}
+
 fn print_strings(strings: Vec<String>) -> Option<String> {
     if strings.is_empty() {
         None
@@ -196,16 +212,14 @@ fn print_strings(strings: Vec<String>) -> Option<String> {
 
 #[cfg(test)]
 mod tests {
-    use crate::machine::Machine;
-
     use super::*;
 
     #[test]
     #[allow(clippy::unwrap_used)]
     fn test_display() {
-        let devices = Machine::from_file("./machine.json".into())
-            .unwrap()
-            .memory
+        let raw: serde_json::Value =
+            serde_json::from_str(include_str!("../../machine.json")).unwrap();
+        let devices = serde_json::from_value::<Memory>(raw["memory"].clone())
             .unwrap()
             .devices;
         let mem = Memory {

@@ -5,7 +5,7 @@ use derive_more::Display;
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Clone, Fetch, Display)]
-#[fetch(name = "OS")]
+#[fetch(name = "OS", priority = 1, colour = "color")]
 #[display("{} {} ({})", name, build_id, version_codename)]
 pub struct OsInfo {
     pub name: String,
@@ -20,9 +20,9 @@ impl OsInfo {
     /// # Errors
     ///
     /// Returns errors if os-release cannot be parsed
-    pub fn new() -> Result<Self> {
+    pub fn new() -> Result<Option<Self>> {
         let os = OsRelease::new()?;
-        Ok(Self {
+        Ok(Some(Self {
             name: os.name,
             build_id: match os.extra.get("BUILD_ID") {
                 Some(id) => id.replace('\"', ""),
@@ -33,6 +33,6 @@ impl OsInfo {
                 .get("ANSI_COLOR")
                 .map(|x| x.trim_matches('"').to_owned()),
             version_codename: os.version_codename,
-        })
+        }))
     }
 }
