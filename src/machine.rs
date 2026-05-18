@@ -135,7 +135,7 @@ impl From<&Machine> for Array {
 impl Display for Machine {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let array = Array::from(self);
-        write!(f, "{}", array)?;
+        write!(f, "{array}")?;
         if self.colour_blocks {
             write!(
                 f,
