@@ -204,7 +204,7 @@ mod tests {
     fn test_display() {
         let raw: serde_json::Value =
             serde_json::from_str(include_str!("../../machine.json")).unwrap();
-        let devices = serde_json::from_value::<Memory>(raw["memory"].clone())
+        let devices = serde_json::from_value::<Memory>(raw["Memory"].clone())
             .unwrap()
             .devices;
         let mem = Memory {
@@ -221,7 +221,7 @@ mod tests {
         };
 
         let display = mem.to_string();
-        let desired = "0.00GiB / 0.00GiB DDR4 (SODIMM) @ 2667 MHz";
+        let desired = "0.00GiB / 0.00GiB DDR4 (DIMM) @ 3600 MHz";
         assert_eq!(&display, desired);
     }
 }

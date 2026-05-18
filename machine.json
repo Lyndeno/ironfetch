@@ -1,134 +1,330 @@
 {
-  "kernel": {
-    "release": "6.6.67",
-    "architecture": "x86_64",
-    "name": "Linux"
+  "OS": {
+    "build_id": "26.05.20260515.d233902",
+    "color": "0;38;2;126;186;228",
+    "name": "NixOS",
+    "version_codename": "yarara"
   },
-  "cpu": {
+  "Shell": {
+    "path": "/nix/store/i27rhb3nr65rkrwz36bchkwmav6ggsmn-bash-5.3p9/bin/bash",
+    "version": ""
+  },
+  "Kernel": {
+    "architecture": "x86_64",
+    "name": "Linux",
+    "release": "6.18.31"
+  },
+  "Model": {
+    "board_name": "PRIME X570-PRO",
+    "board_vendor": "ASUSTeK COMPUTER INC.",
+    "product_name": null
+  },
+  "Hostname": "morpheus",
+  "Uptime": {
+    "nanos": 0,
+    "secs": 113874
+  },
+  "CPU": {
     "cores": [
       {
-        "frequency": 3588.706,
+        "frequency": 3718.852,
         "id": 0,
-        "model": "Intel(R) Core(TM) i7-7700HQ CPU @ 2.80GHz"
+        "model": "AMD Ryzen 9 5950X 16-Core Processor"
       },
       {
-        "frequency": 3468.131,
+        "frequency": 4803.818,
         "id": 1,
-        "model": "Intel(R) Core(TM) i7-7700HQ CPU @ 2.80GHz"
+        "model": "AMD Ryzen 9 5950X 16-Core Processor"
       },
       {
-        "frequency": 3496.36,
+        "frequency": 3446.152,
         "id": 2,
-        "model": "Intel(R) Core(TM) i7-7700HQ CPU @ 2.80GHz"
+        "model": "AMD Ryzen 9 5950X 16-Core Processor"
       },
       {
-        "frequency": 3501.632,
+        "frequency": 3733.568,
         "id": 3,
-        "model": "Intel(R) Core(TM) i7-7700HQ CPU @ 2.80GHz"
+        "model": "AMD Ryzen 9 5950X 16-Core Processor"
       },
       {
-        "frequency": 3594.267,
+        "frequency": 3835.989,
+        "id": 4,
+        "model": "AMD Ryzen 9 5950X 16-Core Processor"
+      },
+      {
+        "frequency": 3843.096,
+        "id": 5,
+        "model": "AMD Ryzen 9 5950X 16-Core Processor"
+      },
+      {
+        "frequency": 1746.46,
+        "id": 6,
+        "model": "AMD Ryzen 9 5950X 16-Core Processor"
+      },
+      {
+        "frequency": 3714.193,
+        "id": 7,
+        "model": "AMD Ryzen 9 5950X 16-Core Processor"
+      },
+      {
+        "frequency": 3586.234,
+        "id": 8,
+        "model": "AMD Ryzen 9 5950X 16-Core Processor"
+      },
+      {
+        "frequency": 3440.728,
+        "id": 9,
+        "model": "AMD Ryzen 9 5950X 16-Core Processor"
+      },
+      {
+        "frequency": 3597.911,
+        "id": 10,
+        "model": "AMD Ryzen 9 5950X 16-Core Processor"
+      },
+      {
+        "frequency": 3661.603,
+        "id": 11,
+        "model": "AMD Ryzen 9 5950X 16-Core Processor"
+      },
+      {
+        "frequency": 1746.46,
+        "id": 12,
+        "model": "AMD Ryzen 9 5950X 16-Core Processor"
+      },
+      {
+        "frequency": 3498.539,
+        "id": 13,
+        "model": "AMD Ryzen 9 5950X 16-Core Processor"
+      },
+      {
+        "frequency": 3922.168,
+        "id": 14,
+        "model": "AMD Ryzen 9 5950X 16-Core Processor"
+      },
+      {
+        "frequency": 3710.966,
+        "id": 15,
+        "model": "AMD Ryzen 9 5950X 16-Core Processor"
+      },
+      {
+        "frequency": 3708.687,
         "id": 0,
-        "model": "Intel(R) Core(TM) i7-7700HQ CPU @ 2.80GHz"
+        "model": "AMD Ryzen 9 5950X 16-Core Processor"
       },
       {
-        "frequency": 3396.902,
+        "frequency": 4764.491,
         "id": 1,
-        "model": "Intel(R) Core(TM) i7-7700HQ CPU @ 2.80GHz"
+        "model": "AMD Ryzen 9 5950X 16-Core Processor"
       },
       {
-        "frequency": 3494.846,
+        "frequency": 3797.508,
         "id": 2,
-        "model": "Intel(R) Core(TM) i7-7700HQ CPU @ 2.80GHz"
+        "model": "AMD Ryzen 9 5950X 16-Core Processor"
       },
       {
-        "frequency": 3563.47,
+        "frequency": 3753.323,
         "id": 3,
-        "model": "Intel(R) Core(TM) i7-7700HQ CPU @ 2.80GHz"
+        "model": "AMD Ryzen 9 5950X 16-Core Processor"
+      },
+      {
+        "frequency": 3823.02,
+        "id": 4,
+        "model": "AMD Ryzen 9 5950X 16-Core Processor"
+      },
+      {
+        "frequency": 3778.049,
+        "id": 5,
+        "model": "AMD Ryzen 9 5950X 16-Core Processor"
+      },
+      {
+        "frequency": 3770.707,
+        "id": 6,
+        "model": "AMD Ryzen 9 5950X 16-Core Processor"
+      },
+      {
+        "frequency": 3718.033,
+        "id": 7,
+        "model": "AMD Ryzen 9 5950X 16-Core Processor"
+      },
+      {
+        "frequency": 1746.46,
+        "id": 8,
+        "model": "AMD Ryzen 9 5950X 16-Core Processor"
+      },
+      {
+        "frequency": 3777.541,
+        "id": 9,
+        "model": "AMD Ryzen 9 5950X 16-Core Processor"
+      },
+      {
+        "frequency": 3640.066,
+        "id": 10,
+        "model": "AMD Ryzen 9 5950X 16-Core Processor"
+      },
+      {
+        "frequency": 1746.46,
+        "id": 11,
+        "model": "AMD Ryzen 9 5950X 16-Core Processor"
+      },
+      {
+        "frequency": 3559.577,
+        "id": 12,
+        "model": "AMD Ryzen 9 5950X 16-Core Processor"
+      },
+      {
+        "frequency": 1746.46,
+        "id": 13,
+        "model": "AMD Ryzen 9 5950X 16-Core Processor"
+      },
+      {
+        "frequency": 3482.142,
+        "id": 14,
+        "model": "AMD Ryzen 9 5950X 16-Core Processor"
+      },
+      {
+        "frequency": 3620.009,
+        "id": 15,
+        "model": "AMD Ryzen 9 5950X 16-Core Processor"
       }
     ]
   },
-  "memory": {
-    "meminfo": {
-      "total": 131806504,
-      "free": 117924872,
-      "avail": 122701644,
-      "buffers": 5612,
-      "cached": 5607420,
-      "swap_total": 65903100,
-      "swap_free": 65903100
-    },
+  "Memory": {
     "devices": {
       "devices": [
         {
-          "manufacturer": "8C260000802C",
-          "frequency": 2667,
-          "form_factor": "SODIMM",
-          "mem_type": "Ddr4",
           "extra_props": {
-            "PART_NUMBER": "TIMETEC-SD4-2666",
-            "MAXIMUM_VOLTAGE": "1",
-            "RANK": "2",
-            "SIZE": "34359738368",
-            "SPEED_MTS": "2667",
-            "ASSET_TAG": "00221200",
+            "ASSET_TAG": "Not Specified",
             "BANK_LOCATOR": "BANK 0",
-            "SERIAL_NUMBER": "00000000",
-            "TYPE_DETAIL": "Synchronous Unbuffered (Unregistered)",
-            "MINIMUM_VOLTAGE": "1",
-            "LOCATOR": "DIMM A",
-            "TOTAL_WIDTH": "64",
-            "DATA_WIDTH": "64",
-            "CONFIGURED_VOLTAGE": "1"
-          }
-        },
-        {
-          "manufacturer": "8C260000802C",
-          "frequency": 2667,
-          "form_factor": "SODIMM",
-          "mem_type": "Ddr4",
-          "extra_props": {
-            "SIZE": "34359738368",
-            "MAXIMUM_VOLTAGE": "1",
-            "SERIAL_NUMBER": "00000000",
-            "ASSET_TAG": "00221200",
             "CONFIGURED_VOLTAGE": "1",
             "DATA_WIDTH": "64",
-            "BANK_LOCATOR": "BANK 2",
-            "SPEED_MTS": "2667",
-            "TOTAL_WIDTH": "64",
-            "PART_NUMBER": "TIMETEC-SD4-2666",
-            "RANK": "2",
-            "TYPE_DETAIL": "Synchronous Unbuffered (Unregistered)",
+            "FIRMWARE_VERSION": "Unknown",
+            "LOCATOR": "DIMM_A1",
+            "MAXIMUM_VOLTAGE": "1",
+            "MEMORY_OPERATING_MODE_CAPABILITY": "Volatile memory",
+            "MEMORY_TECHNOLOGY": "DRAM",
             "MINIMUM_VOLTAGE": "1",
-            "LOCATOR": "DIMM B"
-          }
+            "MODULE_MANUFACTURER_ID": "Bank 5, Hex 0xCD",
+            "PART_NUMBER": "F4-3600C18-32GVK",
+            "RANK": "2",
+            "SERIAL_NUMBER": "00000000",
+            "SIZE": "34359738368",
+            "SPEED_MTS": "3600",
+            "TOTAL_WIDTH": "64",
+            "TYPE_DETAIL": "Synchronous Unbuffered (Unregistered)",
+            "VOLATILE_SIZE": "34359738368"
+          },
+          "form_factor": "DIMM",
+          "frequency": 3600,
+          "manufacturer": "G Skill Intl",
+          "mem_type": "Ddr4"
+        },
+        {
+          "extra_props": {
+            "ASSET_TAG": "Not Specified",
+            "BANK_LOCATOR": "BANK 1",
+            "CONFIGURED_VOLTAGE": "1",
+            "DATA_WIDTH": "64",
+            "FIRMWARE_VERSION": "Unknown",
+            "LOCATOR": "DIMM_A2",
+            "MAXIMUM_VOLTAGE": "1",
+            "MEMORY_OPERATING_MODE_CAPABILITY": "Volatile memory",
+            "MEMORY_TECHNOLOGY": "DRAM",
+            "MINIMUM_VOLTAGE": "1",
+            "MODULE_MANUFACTURER_ID": "Bank 5, Hex 0xCD",
+            "PART_NUMBER": "F4-3600C18-32GVK",
+            "RANK": "2",
+            "SERIAL_NUMBER": "00000000",
+            "SIZE": "34359738368",
+            "SPEED_MTS": "3600",
+            "TOTAL_WIDTH": "64",
+            "TYPE_DETAIL": "Synchronous Unbuffered (Unregistered)",
+            "VOLATILE_SIZE": "34359738368"
+          },
+          "form_factor": "DIMM",
+          "frequency": 3600,
+          "manufacturer": "G Skill Intl",
+          "mem_type": "Ddr4"
+        },
+        {
+          "extra_props": {
+            "ASSET_TAG": "Not Specified",
+            "BANK_LOCATOR": "BANK 2",
+            "CONFIGURED_VOLTAGE": "1",
+            "DATA_WIDTH": "64",
+            "FIRMWARE_VERSION": "Unknown",
+            "LOCATOR": "DIMM_B1",
+            "MAXIMUM_VOLTAGE": "1",
+            "MEMORY_OPERATING_MODE_CAPABILITY": "Volatile memory",
+            "MEMORY_TECHNOLOGY": "DRAM",
+            "MINIMUM_VOLTAGE": "1",
+            "MODULE_MANUFACTURER_ID": "Bank 5, Hex 0xCD",
+            "PART_NUMBER": "F4-3600C18-32GVK",
+            "RANK": "2",
+            "SERIAL_NUMBER": "00000000",
+            "SIZE": "34359738368",
+            "SPEED_MTS": "3600",
+            "TOTAL_WIDTH": "64",
+            "TYPE_DETAIL": "Synchronous Unbuffered (Unregistered)",
+            "VOLATILE_SIZE": "34359738368"
+          },
+          "form_factor": "DIMM",
+          "frequency": 3600,
+          "manufacturer": "G Skill Intl",
+          "mem_type": "Ddr4"
+        },
+        {
+          "extra_props": {
+            "ASSET_TAG": "Not Specified",
+            "BANK_LOCATOR": "BANK 3",
+            "CONFIGURED_VOLTAGE": "1",
+            "DATA_WIDTH": "64",
+            "FIRMWARE_VERSION": "Unknown",
+            "LOCATOR": "DIMM_B2",
+            "MAXIMUM_VOLTAGE": "1",
+            "MEMORY_OPERATING_MODE_CAPABILITY": "Volatile memory",
+            "MEMORY_TECHNOLOGY": "DRAM",
+            "MINIMUM_VOLTAGE": "1",
+            "MODULE_MANUFACTURER_ID": "Bank 5, Hex 0xCD",
+            "PART_NUMBER": "F4-3600C18-32GVK",
+            "RANK": "2",
+            "SERIAL_NUMBER": "00000000",
+            "SIZE": "34359738368",
+            "SPEED_MTS": "3600",
+            "TOTAL_WIDTH": "64",
+            "TYPE_DETAIL": "Synchronous Unbuffered (Unregistered)",
+            "VOLATILE_SIZE": "34359738368"
+          },
+          "form_factor": "DIMM",
+          "frequency": 3600,
+          "manufacturer": "G Skill Intl",
+          "mem_type": "Ddr4"
         }
       ]
+    },
+    "meminfo": {
+      "avail": 55424557056,
+      "buffers": 3342336,
+      "cached": 32211533824,
+      "free": 13011636224,
+      "swap_free": 67480850432,
+      "swap_total": 67482152960,
+      "total": 134964858880
     }
   },
-  "os": {
-    "name": "NixOS",
-    "build_id": "24.11.20241227.d49da4c",
-    "color": "1;34",
-    "version_codename": "vicuna"
+  "Profile": {
+    "choices": "power-saver balanced performance",
+    "current": "balanced"
   },
-  "hostname": "morpheus",
-  "uptime": {
-    "secs": 6313,
-    "nanos": 0
+  "GPU": {
+    "devices": [
+      {
+        "name": "Navi 22 [Radeon RX 6700/6700 XT/6750 XT / 6800M/6850M XT]",
+        "vram_total": 12868124672,
+        "vram_used": 868954112
+      }
+    ]
   },
-  "model": {
-    "product_name": null,
-    "board_vendor": "ASUSTeK COMPUTER INC.",
-    "board_name": "PRIME X570-PRO"
-  },
-  "shell": {
-    "path": "/run/current-system/sw/bin/fish",
-    "version": ""
-  },
-  "platform": null,
-  "disk": {
+  "Disk": {
     "capacity": 38019517046784
   }
 }
