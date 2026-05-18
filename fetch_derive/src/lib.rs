@@ -1,4 +1,4 @@
-use darling::FromDeriveInput;
+use darling::{ast::NestedMeta, Error, FromDeriveInput, FromMeta};
 use proc_macro::TokenStream;
 use quote::quote;
 
@@ -18,10 +18,75 @@ struct DeriveMacroArgs {
     colour: Option<String>,
 }
 
+/// `#[register_module(name = "...", priority = N, colour = "field")]`
+///
+/// Generates `DynModule` + `inventory::submit!` for structs that implement
+/// `Fetch` manually (e.g. because they need a custom `as_fetchlines`).
+/// Does not touch the `Fetch` impl — that stays entirely hand-written.
+///
+/// `name` defaults to the struct name if omitted.
+#[derive(FromMeta)]
+struct RegisterModuleArgs {
+    name: Option<String>,
+    priority: u32,
+    colour: Option<String>,
+}
+
 #[proc_macro_derive(Fetch, attributes(fetch))]
 pub fn fetch_macro_derive(input: TokenStream) -> TokenStream {
     let ast = syn::parse(input).unwrap();
     impl_fetch_macro(&ast)
+}
+
+/// Attribute macro for structs that implement `Fetch` manually.
+/// Emits only the registration boilerplate; leaves `impl Fetch` untouched.
+#[proc_macro_attribute]
+pub fn register_module(args: TokenStream, input: TokenStream) -> TokenStream {
+    let attr_args = match NestedMeta::parse_meta_list(args.into()) {
+        Ok(v) => v,
+        Err(e) => return TokenStream::from(Error::from(e).write_errors()),
+    };
+
+    let reg_args = match RegisterModuleArgs::from_list(&attr_args) {
+        Ok(v) => v,
+        Err(e) => return TokenStream::from(e.write_errors()),
+    };
+
+    let item: syn::ItemStruct = syn::parse(input).unwrap();
+    let struct_ident = &item.ident;
+    let struct_ident_str = struct_ident.to_string();
+
+    let name_string = reg_args
+        .name
+        .as_deref()
+        .unwrap_or(&struct_ident_str)
+        .to_string();
+    let name_str = name_string.as_str();
+    let priority = reg_args.priority;
+
+    let colour_override = build_colour_override(reg_args.colour);
+
+    quote! {
+        #item
+
+        impl crate::fetch::DynModule for #struct_ident {
+            fn load_module() -> ::core::option::Option<Self> {
+                Self::new().ok().flatten()
+            }
+            #colour_override
+        }
+
+        ::inventory::submit! {
+            crate::fetch::ModuleRegistration {
+                key: #name_str,
+                priority: #priority,
+                load: <#struct_ident as crate::fetch::DynModule>::load_dyn,
+                display: <#struct_ident as crate::fetch::DynModule>::display_dyn,
+                colour: <#struct_ident as crate::fetch::DynModule>::colour_dyn,
+            }
+        }
+    }
+    .into()
 }
 
 fn impl_fetch_macro(ast: &syn::DeriveInput) -> TokenStream {
@@ -56,15 +121,7 @@ fn impl_fetch_macro(ast: &syn::DeriveInput) -> TokenStream {
         return fetch_impl.into();
     };
 
-    let colour_override = if let Some(field) = colour {
-        quote! {
-            fn colour_dyn(val: &::serde_json::Value) -> ::core::option::Option<::std::string::String> {
-                val.get(#field)?.as_str().map(::std::string::String::from)
-            }
-        }
-    } else {
-        quote! {}
-    };
+    let colour_override = build_colour_override(colour);
 
     quote! {
         #fetch_impl
@@ -87,4 +144,15 @@ fn impl_fetch_macro(ast: &syn::DeriveInput) -> TokenStream {
         }
     }
     .into()
+}
+
+fn build_colour_override(field: Option<String>) -> proc_macro2::TokenStream {
+    match field {
+        Some(f) => quote! {
+            fn colour_dyn(val: &::serde_json::Value) -> ::core::option::Option<::std::string::String> {
+                val.get(#f)?.as_str().map(::std::string::String::from)
+            }
+        },
+        None => quote! {},
+    }
 }

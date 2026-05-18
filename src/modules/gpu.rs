@@ -5,7 +5,7 @@ use std::path::Path;
 use serde::{Deserialize, Serialize};
 use udev::Enumerator;
 
-use crate::fetch::{DynModule, Fetch, Line, ModuleRegistration};
+use crate::fetch::{Fetch, Line};
 use crate::{Result, GIBIBYTE};
 
 #[derive(Serialize, Deserialize, Clone)]
@@ -15,6 +15,7 @@ pub struct GpuDevice {
     vram_used: Option<u64>,
 }
 
+#[fetch_derive::register_module(name = "GPU", priority = 11)]
 #[derive(Serialize, Deserialize, Clone)]
 pub struct Gpu {
     devices: Vec<GpuDevice>,
@@ -84,22 +85,6 @@ impl std::fmt::Display for Gpu {
             }
         }
         Ok(())
-    }
-}
-
-impl DynModule for Gpu {
-    fn load_module() -> Option<Self> {
-        Self::new().ok().flatten()
-    }
-}
-
-inventory::submit! {
-    ModuleRegistration {
-        key: "GPU",
-        priority: 11,
-        load: <Gpu as DynModule>::load_dyn,
-        display: <Gpu as DynModule>::display_dyn,
-        colour: <Gpu as DynModule>::colour_dyn,
     }
 }
 

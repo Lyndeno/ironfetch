@@ -1,4 +1,4 @@
-use crate::fetch::{DynModule, Fetch, Line, ModuleRegistration};
+use crate::fetch::{Fetch, Line};
 use crate::{Result, GIBIBYTE, KIBIBYTE};
 use derive_more::Display;
 use memdev::memory::Memory as MemoryDevices;
@@ -34,6 +34,7 @@ impl From<MemInfo> for MemStats {
     }
 }
 
+#[fetch_derive::register_module(priority = 8)]
 #[derive(Serialize, Deserialize, Clone, Display)]
 #[display("{}", self.display())]
 pub struct Memory {
@@ -172,22 +173,6 @@ impl Fetch for Memory {
     }
     fn as_fetchlines(&self) -> Vec<Line> {
         self.clone().into()
-    }
-}
-
-impl DynModule for Memory {
-    fn load_module() -> Option<Self> {
-        Self::new().ok().flatten()
-    }
-}
-
-inventory::submit! {
-    ModuleRegistration {
-        key: "Memory",
-        priority: 8,
-        load: <Memory as DynModule>::load_dyn,
-        display: <Memory as DynModule>::display_dyn,
-        colour: <Memory as DynModule>::colour_dyn,
     }
 }
 
