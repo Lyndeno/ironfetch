@@ -10,27 +10,77 @@ use crate::colourblocks::colourblocks;
 use crate::fetch::{Array, ModuleRegistration, SEPARATOR};
 use crate::Result;
 
-#[derive(Serialize, Deserialize, Clone, Default)]
+/// Controls which modules are loaded. Baseline is all modules unless `none` is
+/// set, then it is empty. `show` adds to the baseline; `hide` removes from it.
+/// Comparisons are case-insensitive so `--show gpu` matches the key `"GPU"`.
+/// When both `show` and `hide` name the same module, `hide` wins.
+#[derive(Default)]
+pub struct ModuleFilter {
+    pub none: bool,
+    pub show: Vec<String>,
+    pub hide: Vec<String>,
+}
+
+impl ModuleFilter {
+    fn is_active(&self, key: &str) -> bool {
+        let lower = key.to_lowercase();
+        let in_show = self.show.iter().any(|s| s.to_lowercase() == lower);
+        let in_hide = self.hide.iter().any(|s| s.to_lowercase() == lower);
+        // active = (baseline ∪ show) \ hide
+        (!self.none || in_show) && !in_hide
+    }
+}
+
+#[derive(Serialize, Deserialize, Clone)]
 pub struct Machine {
     // flatten collapses the map's key-value pairs into the top-level JSON
     // object, giving {"OS": {...}, "CPU": {...}} rather than {"modules": {...}}.
     #[serde(flatten)]
     modules: IndexMap<String, serde_json::Value>,
+    // Not persisted; defaults to true so --input path still shows colour blocks.
+    #[serde(skip, default = "Machine::default_colour_blocks")]
+    pub colour_blocks: bool,
+}
+
+impl Default for Machine {
+    fn default() -> Self {
+        Self {
+            modules: IndexMap::default(),
+            colour_blocks: true,
+        }
+    }
 }
 
 impl Machine {
-    pub fn new() -> Self {
+    fn default_colour_blocks() -> bool {
+        true
+    }
+
+    pub fn new(filter: &ModuleFilter) -> Self {
         // inventory::iter order is not guaranteed, so sort by priority to
         // preserve the intended display order across builds.
         let mut entries: Vec<&ModuleRegistration> =
             inventory::iter::<ModuleRegistration>().collect();
         entries.sort_by_key(|e| e.priority);
 
+        let known: Vec<&str> = entries.iter().map(|e| e.key).collect();
+        for name in filter.show.iter().chain(filter.hide.iter()) {
+            let lower = name.to_lowercase();
+            if !known.iter().any(|k| k.to_lowercase() == lower) {
+                eprintln!(
+                    "warning: unknown module '{name}' (known: {})",
+                    known.join(", ")
+                );
+            }
+        }
+
         Self {
             modules: entries
                 .iter()
+                .filter(|e| filter.is_active(e.key))
                 .filter_map(|e| Some((e.key.to_string(), (e.load)()?)))
                 .collect(),
+            colour_blocks: true,
         }
     }
 
@@ -85,11 +135,14 @@ impl From<&Machine> for Array {
 impl Display for Machine {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let array = Array::from(self);
-        write!(
-            f,
-            "{}\n{}",
-            array,
-            colourblocks(array.get_indent() + SEPARATOR.len(), 16, 8)
-        )
+        write!(f, "{}", array)?;
+        if self.colour_blocks {
+            write!(
+                f,
+                "\n{}",
+                colourblocks(array.get_indent() + SEPARATOR.len(), 16, 8)
+            )?;
+        }
+        Ok(())
     }
 }
