@@ -7,8 +7,9 @@ use crate::colourblocks::colourblocks;
 
 use crate::fetch::{Array, SEPARATOR};
 use crate::modules::{
-    battery::Battery, cpu::Cpu, disk::Disk, hostname::HostName, kernel::Kernel, memory::Memory,
-    model::Model, osinfo::OsInfo, platform::Profile, ppd::Ppd, shell::Shell, uptime::Uptime,
+    battery::Battery, cpu::Cpu, disk::Disk, gpu::Gpu, hostname::HostName, kernel::Kernel,
+    memory::Memory, model::Model, osinfo::OsInfo, platform::Profile, ppd::Ppd, shell::Shell,
+    uptime::Uptime,
 };
 
 use serde::{Deserialize, Serialize};
@@ -29,6 +30,7 @@ pub struct Machine {
     pub disk: Option<Disk>,
     pub battery: Option<Battery>,
     pub ppd: Option<Ppd>,
+    pub gpu: Option<Gpu>,
 }
 
 impl Machine {
@@ -78,6 +80,7 @@ impl Default for Machine {
             disk: Disk::new().ok(),
             battery: Battery::new().ok().flatten(),
             ppd: Ppd::new().ok(),
+            gpu: Gpu::new().ok(),
         }
     }
 }
@@ -110,6 +113,7 @@ impl From<Machine> for Array {
         array.push_obj_opt(value.memory);
         array.push_obj_opt(value.platform);
         array.push_obj_opt(value.ppd);
+        array.push_obj_opt(value.gpu);
         array.push_obj_opt(value.disk);
         array.push_obj_opt(value.battery);
 

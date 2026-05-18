@@ -1,6 +1,7 @@
 pub mod battery;
 pub mod cpu;
 pub mod disk;
+pub mod gpu;
 pub mod hostname;
 pub mod kernel;
 pub mod memory;
