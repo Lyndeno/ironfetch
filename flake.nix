@@ -14,6 +14,9 @@
       url = "github:nix-community/nix-github-actions";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    ci.url = "github:Lyndeno/ci";
+    ci.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs = {
@@ -23,6 +26,7 @@
     crane,
     pre-commit-hooks-nix,
     nix-github-actions,
+    ci,
   }: let
     systems = [
       "x86_64-linux"
@@ -94,9 +98,31 @@
         pre-commit-check = pre-commit-check {
           alejandra.enable = true;
         };
+
+        hydra-spec = ci.lib.mkHydraCheck {
+          inherit pkgs;
+          specPackage = packages.hydra-spec;
+          specFile = ./.hydra/spec.json;
+        };
+
+        mergify-check = ci.lib.mkMergifyCheck {
+          inherit pkgs;
+          mergifyPackage = packages.mergify;
+          mergifyFile = ./.mergify.yml;
+        };
       };
       packages.ironfetch = ironfetch;
       packages.default = packages.ironfetch;
+      packages.hydra-spec = ci.lib.mkHydraSpec {
+        inherit pkgs;
+        owner = "Lyndeno";
+        repo = "ironfetch";
+      };
+      packages.mergify = ci.lib.mkMergifyConfig {
+        inherit pkgs;
+        projectName = "ironfetch";
+        checks = self.checks;
+      };
 
       apps.ironfetch = utils.lib.mkApp {
         drv = packages.ironfetch;
@@ -129,9 +155,6 @@
         };
     })
     // {
-      hydraJobs = {
-        inherit (self) checks packages devShells;
-      };
       githubActions = nix-github-actions.lib.mkGithubMatrix {inherit (self) checks;};
     };
 }
