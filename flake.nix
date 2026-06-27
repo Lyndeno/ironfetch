@@ -29,8 +29,6 @@
   in
     bp
     // {
-      overlays.default = final: _prev: {
-        ironfetch = bp.mkPackagesFor final;
-      };
+      overlays.default = final: _prev: bp.mkPackagesFor final;
     };
 }
