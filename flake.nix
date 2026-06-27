@@ -10,151 +10,27 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    nix-github-actions = {
-      url = "github:nix-community/nix-github-actions";
+    blueprint = {
+      url = "github:numtide/blueprint";
       inputs.nixpkgs.follows = "nixpkgs";
+      inputs.systems.follows = "";
     };
 
     ci.url = "github:Lyndeno/ci";
     ci.inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  outputs = {
-    self,
-    nixpkgs,
-    utils,
-    crane,
-    pre-commit-hooks-nix,
-    nix-github-actions,
-    ci,
-  }: let
-    systems = [
-      "x86_64-linux"
-      "aarch64-linux"
-    ];
+  outputs = inputs: let
+    systems = ["x86_64-linux" "aarch64-linux"];
+    bp = inputs.blueprint {
+      inherit inputs systems;
+      prefix = "nix/";
+    };
   in
-    utils.lib.eachSystem systems (system: let
-      pkgs = nixpkgs.legacyPackages."${system}";
-      craneLib = crane.mkLib pkgs;
-      lib = pkgs.lib;
-
-      jsonFilter = path: _type: builtins.match ".*json$" path != null;
-      jsonOrCargo = path: type:
-        (jsonFilter path type) || (craneLib.filterCargoSources path type);
-
-      src = lib.cleanSourceWith {
-        src = ./.;
-        filter = jsonOrCargo;
-        name = "source";
-      };
-
-      common-args = {
-        inherit src;
-        strictDeps = true;
-
-        buildInputs = [pkgs.udev];
-        nativeBuildInputs = [pkgs.installShellFiles pkgs.pkg-config];
-
-        postInstall = ''
-          installShellCompletion --cmd ironfetch \
-            --bash ./target/release/build/ironfetch-*/out/ironfetch.bash \
-            --fish ./target/release/build/ironfetch-*/out/ironfetch.fish \
-            --zsh ./target/release/build/ironfetch-*/out/_ironfetch
-          installManPage ./target/release/build/ironfetch-*/out/ironfetch.1
-        '';
-      };
-
-      cargoArtifacts = craneLib.buildDepsOnly common-args;
-
-      ironfetch = craneLib.buildPackage (common-args
-        // {
-          inherit cargoArtifacts;
-        });
-
-      pre-commit-check = hooks:
-        pre-commit-hooks-nix.lib.${system}.run {
-          src = ./.;
-
-          inherit hooks;
-        };
-    in rec {
-      checks = {
-        inherit ironfetch;
-
-        ironfetch-clippy = craneLib.cargoClippy (common-args
-          // {
-            inherit cargoArtifacts;
-            cargoClippyExtraArgs = "--all-targets -- --deny warnings";
-          });
-
-        ironfetch-fmt = craneLib.cargoFmt {
-          inherit src;
-        };
-
-        ironfetch-deny = craneLib.cargoDeny {
-          inherit src;
-        };
-
-        pre-commit-check = pre-commit-check {
-          alejandra.enable = true;
-        };
-
-        hydra-spec = ci.lib.mkHydraCheck {
-          inherit pkgs;
-          specPackage = packages.hydra-spec;
-          specFile = ./.hydra/spec.json;
-        };
-
-        mergify-check = ci.lib.mkMergifyCheck {
-          inherit pkgs;
-          mergifyPackage = packages.mergify;
-          mergifyFile = ./.mergify.yml;
-        };
-      };
-      packages.ironfetch = ironfetch;
-      packages.default = packages.ironfetch;
-      packages.hydra-spec = ci.lib.mkHydraSpec {
-        inherit pkgs;
-        owner = "Lyndeno";
-        repo = "ironfetch";
-      };
-      packages.mergify = ci.lib.mkMergifyConfig {
-        inherit pkgs;
-        projectName = "ironfetch";
-        checks = self.checks;
-      };
-
-      apps.ironfetch = utils.lib.mkApp {
-        drv = packages.ironfetch;
-      };
-      apps.default = apps.ironfetch;
-
-      formatter = pkgs.alejandra;
-
-      devShells.default = let
-        checks = pre-commit-check {
-          alejandra.enable = true;
-          rustfmt.enable = true;
-          clippy.enable = true;
-        };
-      in
-        craneLib.devShell {
-          packages = with pkgs; [
-            rustfmt
-            clippy
-            cargo-deny
-            cargo-about
-            termshot
-            pkg-config
-            udev
-            cargo-flamegraph
-          ];
-          shellHook = ''
-            ${checks.shellHook}
-          '';
-        };
-    })
+    bp
     // {
-      githubActions = nix-github-actions.lib.mkGithubMatrix {inherit (self) checks;};
+      overlays.default = final: _prev: {
+        ironfetch = bp.mkPackagesFor final;
+      };
     };
 }

@@ -4,18 +4,28 @@ pull_request_rules:
       method: merge
   conditions:
   - author=dependabot[bot]
+  - check-success*=ci/hydra:ironfetch:*:aarch64-linux.devshell-default
   - check-success*=ci/hydra:ironfetch:*:aarch64-linux.hydra-spec
-  - check-success*=ci/hydra:ironfetch:*:aarch64-linux.ironfetch
-  - check-success*=ci/hydra:ironfetch:*:aarch64-linux.ironfetch-clippy
-  - check-success*=ci/hydra:ironfetch:*:aarch64-linux.ironfetch-deny
-  - check-success*=ci/hydra:ironfetch:*:aarch64-linux.ironfetch-fmt
-  - check-success*=ci/hydra:ironfetch:*:aarch64-linux.mergify-check
-  - check-success*=ci/hydra:ironfetch:*:aarch64-linux.pre-commit-check
+  - check-success*=ci/hydra:ironfetch:*:aarch64-linux.mergify
+  - check-success*=ci/hydra:ironfetch:*:aarch64-linux.pkgs-formatter
+  - check-success*=ci/hydra:ironfetch:*:aarch64-linux.pkgs-formatter-version
+  - check-success*=ci/hydra:ironfetch:*:aarch64-linux.pkgs-hydra-spec
+  - check-success*=ci/hydra:ironfetch:*:aarch64-linux.pkgs-ironfetch
+  - check-success*=ci/hydra:ironfetch:*:aarch64-linux.pkgs-ironfetch-ironfetch-clippy
+  - check-success*=ci/hydra:ironfetch:*:aarch64-linux.pkgs-ironfetch-ironfetch-deny
+  - check-success*=ci/hydra:ironfetch:*:aarch64-linux.pkgs-ironfetch-ironfetch-fmt
+  - check-success*=ci/hydra:ironfetch:*:aarch64-linux.pkgs-mergify
+  - check-success*=ci/hydra:ironfetch:*:aarch64-linux.pre-commit
+  - check-success*=ci/hydra:ironfetch:*:x86_64-linux.devshell-default
   - check-success*=ci/hydra:ironfetch:*:x86_64-linux.hydra-spec
-  - check-success*=ci/hydra:ironfetch:*:x86_64-linux.ironfetch
-  - check-success*=ci/hydra:ironfetch:*:x86_64-linux.ironfetch-clippy
-  - check-success*=ci/hydra:ironfetch:*:x86_64-linux.ironfetch-deny
-  - check-success*=ci/hydra:ironfetch:*:x86_64-linux.ironfetch-fmt
-  - check-success*=ci/hydra:ironfetch:*:x86_64-linux.mergify-check
-  - check-success*=ci/hydra:ironfetch:*:x86_64-linux.pre-commit-check
+  - check-success*=ci/hydra:ironfetch:*:x86_64-linux.mergify
+  - check-success*=ci/hydra:ironfetch:*:x86_64-linux.pkgs-formatter
+  - check-success*=ci/hydra:ironfetch:*:x86_64-linux.pkgs-formatter-version
+  - check-success*=ci/hydra:ironfetch:*:x86_64-linux.pkgs-hydra-spec
+  - check-success*=ci/hydra:ironfetch:*:x86_64-linux.pkgs-ironfetch
+  - check-success*=ci/hydra:ironfetch:*:x86_64-linux.pkgs-ironfetch-ironfetch-clippy
+  - check-success*=ci/hydra:ironfetch:*:x86_64-linux.pkgs-ironfetch-ironfetch-deny
+  - check-success*=ci/hydra:ironfetch:*:x86_64-linux.pkgs-ironfetch-ironfetch-fmt
+  - check-success*=ci/hydra:ironfetch:*:x86_64-linux.pkgs-mergify
+  - check-success*=ci/hydra:ironfetch:*:x86_64-linux.pre-commit
   name: Automatically merge dependabot updates
